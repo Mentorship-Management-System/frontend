@@ -114,11 +114,29 @@ export default function StudentCourses() {
               <option value='option1'>Semester 6</option>
               <option value='option1'>Semester 7</option>
             </Select> 
-              <HStack flexWrap='wrap' color='black' mt='3%'>
+              <HStack flexWrap='wrap' color='black' mt='3%' spacing={10}>
                   <Box className='coursebox' >
                       <Text m='0' mt='10px'>Operating System</Text>
                       <Text m='0' mt='10px'>CO401</Text>
                       <Text m='0' mt='10px'>by Sankib K. Deka</Text>
+                      <Button colorScheme='blue' onClick={handleClick}>Details</Button>
+                  </Box>
+                  <Box className='coursebox' >
+                      <Text m='0' mt='10px'>Data Structure</Text>
+                      <Text m='0' mt='10px'>CO405</Text>
+                      <Text m='0' mt='10px'>by Bhabesh Nath</Text>
+                      <Button colorScheme='blue' onClick={handleClick}>Details</Button>
+                  </Box>
+                  <Box className='coursebox' >
+                      <Text m='0' mt='10px'>Artificial Intelligence</Text>
+                      <Text m='0' mt='10px'>CO601</Text>
+                      <Text m='0' mt='10px'>by Shobhanjana Kalita</Text>
+                      <Button colorScheme='blue' onClick={handleClick}>Details</Button>
+                  </Box>
+                  <Box className='coursebox' >
+                      <Text m='0' mt='10px'>Graph Theory</Text>
+                      <Text m='0' mt='10px'>CO410</Text>
+                      <Text m='0' mt='10px'>by Arindam Karmakar</Text>
                       <Button colorScheme='blue' onClick={handleClick}>Details</Button>
                   </Box>
               </HStack>

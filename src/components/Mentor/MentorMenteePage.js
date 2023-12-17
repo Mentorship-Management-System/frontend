@@ -46,17 +46,17 @@ export default function MentorMenteePage({clickHandler}) {
                 </Box>
                 <Box className='menteebox'>
                     <Img src={img}/>
-                    <Box mr='26%'>
-                        <Text ><strong>Sanjay Das</strong></Text>
-                        <Text ><strong>CSB20079</strong></Text>
+                    <Box mr='20%'>
+                        <Text ><strong>Reehan Sarmah</strong></Text>
+                        <Text ><strong>CSB20083</strong></Text>
                     </Box>
                     <Button onClick={clickHandler}>View</Button>
                 </Box>
                 <Box className='menteebox'>
                     <Img src={img}/>
-                    <Box mr='26%'>
-                        <Text ><strong>Sanjay Das</strong></Text>
-                        <Text ><strong>CSB20079</strong></Text>
+                    <Box mr='22%'>
+                        <Text ><strong>Dheeraj Gogoi</strong></Text>
+                        <Text ><strong>CSB20028</strong></Text>
                     </Box>
                     <Button onClick={clickHandler}>View</Button>
                 </Box>

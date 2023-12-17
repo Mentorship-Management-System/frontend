@@ -5,7 +5,7 @@
 
 
 .coursebox{
-    width: 26vw;
+    width: 24vw;
     padding: 1.5%;
     border-radius: 10px;
     border-color: black;
@@ -148,6 +148,9 @@
     margin-top: 2%;
     width: 28vw;
     height: 8vh;
+    border-color: lightgray;
+    border-width: 1px;
+    border-radius: 2px;
 }
 
 .commentModel button{

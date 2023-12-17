@@ -37,7 +37,7 @@ export default function StudentDashboard() {
     <div>
         <Flex>
         <Box  position='fixed' h='100vh' w='12vw' color='white' m='0' pt='3%' zIndex='1'>
-            <Heading textAlign='center' m='0' color='white'>Student Dashboard</Heading>
+            <Heading textAlign='center' m='0' color='white' fontSize='1.5rem'>Student Dashboard</Heading>
             <VStack h='40vh' mt='50%' fontSize='1.2em' fontWeight='bold'>
                 <Text mt='1%' onClick={toggleprofile} cursor="pointer" color='white'>Profile</Text>
                 <Text mt='1%' onClick={togglementor} cursor="pointer" color='white'>Mentor</Text>
