@@ -2,18 +2,20 @@ import React from 'react'
 import {Box, Button, Center, Heading, Image, Text} from "@chakra-ui/react";
 import img from "../media/img1-removebg-preview.png";
 import { NavLink } from 'react-router-dom';
+import './Home.css';
 
 export default function Home() {
   return (
     <div>
-        <Box h="12vh" display="flex" justifyContent="space-around">
-            <Center><NavLink  style={{ textDecoration: 'none', color: "white", fontWeight: 'bold' }} to="/studentlogin">Student Panel</NavLink></Center >
-            <Center ><NavLink to="/mentorlogin" style={{ textDecoration: 'none', color: "white",fontWeight: 'bold' }}>Mentor Panel</NavLink></Center >
-            <Center ><NavLink to="/adminlogin" style={{ textDecoration: 'none', color: "white",fontWeight: 'bold' }}>Admin Panel</NavLink></Center >
-        </Box>
-        <Box mt="4%">
-            <Box display="flex" justifyContent="space-around">
-                <Heading mt="7%" fontSize="4.5rem" w="30vw">MENTORSHIP MANAGEMENT SYSTEM</Heading>
+        <Box display='flex' justifyContent='center' alignItems='center' h='100vh' w='100vw'>
+            <Box display="flex" justifyContent="space-around" w='100vw'>
+              <Box>
+                <Heading mt="20%" fontSize="4.5rem" w="34vw" color='white'>MENTORSHIP MANAGEMENT SYSTEM</Heading>
+                <Box display="flex" mt='5%'>
+                  <Center mr='5%'><NavLink to="/studentlogin"><button className='homeButton' >Student login</button></NavLink></Center >
+                  <Center><NavLink to="/mentorlogin" ><button className='homeButton'>Mentor login</button></NavLink></Center >
+                </Box>
+              </Box>
                 <Image w="35vw" src={img}/>
             </Box>
         </Box>

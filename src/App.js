@@ -1,9 +1,9 @@
 import './App.css';
 import Home from './components/Home';
 import { Routes,Route } from 'react-router-dom';
-import StudentLogin from './components/StudentLogin';
-import MentorLogin from './components/MentorLogin';
-import AdminLogin from './components/AdminLogin';
+import StudentLogin from './components/LoginPages/StudentLogin';
+import MentorLogin from './components/LoginPages/MentorLogin';
+import AdminLogin from './components/LoginPages/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import StudentDashboard from './components/StudentDashboard';
 import MentorDashboard from './components/MentorDashboard';
