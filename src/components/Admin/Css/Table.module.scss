@@ -1,0 +1,58 @@
+// Table.module.scss
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  //   border: 1px solid #ddd;
+  font-family: Arial, sans-serif;
+}
+
+.table th,
+.table td {
+  padding: 5px 20px;
+  text-align: left;
+}
+.table tr {
+  height: 8vh;
+}
+.table th {
+  background-color: #f9f9f9;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+  background-color: #ddd;
+}
+
+.table tbody td:first-child,
+.table thead th:first-child {
+  border-left: none;
+}
+
+.table tbody td:last-child,
+.table thead th:last-child {
+  border-right: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2%;
+  button {
+    width: 6vw;
+    height: 5vh;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    &:hover {
+      background-color: rgba(211, 211, 211, 0.352);
+    }
+  }
+}

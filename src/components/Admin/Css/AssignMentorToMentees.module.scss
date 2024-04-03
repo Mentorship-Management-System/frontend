@@ -1,0 +1,43 @@
+.header {
+  padding: 2% 3%;
+  .heading {
+    font-size: 1.4rem;
+    margin-bottom: 2%;
+  }
+  .searchContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2%;
+    gap: 25px;
+    .searchBar {
+      width: 30%;
+      height: 6vh;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 1% 2%;
+    }
+    .selectBar {
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .searchButton {
+      padding: 10px 20px;
+      background-color: #0d30ac;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}
+.table {
+  border-radius: 12px;
+  background-color: white;
+  padding: 2%;
+  .button {
+    text-align: end;
+  }
+}

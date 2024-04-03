@@ -1,0 +1,63 @@
+.rootSidebar {
+  height: 100%;
+  width: 100%;
+
+  .sidebar {
+    // background-color: #b3c4ea;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Default to column layout */
+
+    a {
+      width: 100%;
+      height: 15%;
+      justify-content: center;
+      text-decoration: none;
+      display: flex;
+      // flex-direction: row;
+      padding: 0 10px;
+      margin-bottom: 0.2vw;
+
+      .icon {
+        margin-left: 10%;
+        width: 32%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // color: #0d30ac;
+      }
+
+      .option {
+        width: 70%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+
+        font-weight: 600;
+        text-align: left;
+        font-size: 0.9rem;
+        // color: #0d30ac;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .selectedOption {
+      // background-color: #0d30ac;
+      border-left-color: #0d30ac;
+      border-left-width: 10px;
+      font-size: 2vw;
+      border-radius: 8px;
+      .option {
+        color: #0d30ac;
+      }
+      .icon {
+        color: #0d30ac;
+      }
+    }
+  }
+}

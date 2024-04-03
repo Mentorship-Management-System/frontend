@@ -1,0 +1,176 @@
+.cont {
+  width: 100%;
+  position: relative;
+  height: 100%;
+  .Main {
+    .Header {
+      .Reset {
+        text-align: end;
+        button {
+          color: white;
+          font-size: 0.9rem;
+          font-weight: 700;
+          width: 10vw;
+          height: 5vh;
+          background: #0d30acd7;
+          border-radius: 8px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+
+      .box {
+        padding: 1.2% 3%;
+        margin-top: 2%;
+        border-radius: 14px;
+        background-color: white;
+        height: 80%;
+        .banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin: 1% 0 4% 0;
+          .profile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 28vw;
+            div {
+              div {
+                position: relative;
+                .profileimage {
+                  height: 7vw;
+                  width: 7vw;
+                  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+                  border-radius: 70%;
+                  border: 2px white solid;
+                }
+                .cameraIcon {
+                  font-size: 1.6rem;
+                  position: absolute;
+                  bottom: 5%;
+                  left: 40%;
+                  opacity: 0.6;
+                }
+              }
+            }
+
+            .profiletxt {
+              .profilename {
+                color: #0d30ac;
+                font-size: 1.9rem;
+                font-weight: 600;
+              }
+
+              .profilesubtext {
+                color: #0d30ac;
+                font-size: 1vw;
+                font-weight: 400;
+              }
+            }
+          }
+          .buttonDiv {
+            width: 12vw;
+            display: flex;
+            justify-content: space-between;
+          }
+        }
+        .referral {
+          display: flex;
+          gap: 5;
+          align-items: center;
+          margin-left: 2%;
+          margin-bottom: 2%;
+          .cnclbtn {
+            button {
+              width: 5.5vw;
+              height: 4.5vh;
+              background: white;
+              border-radius: 8px;
+              border: 0.5px #0d30acd7 solid;
+              color: #0d30acd7;
+              font-size: 1rem;
+              font-weight: 600;
+              // word-wrap: break-word;
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }
+
+          .sbmtbtn {
+            margin-left: 3%;
+
+            button {
+              width: 5.5vw;
+              height: 4.5vh;
+              background: #0d30acd7;
+              border-radius: 8px;
+              color: white;
+              border: none;
+              font-size: 1rem;
+              font-weight: 400;
+              word-wrap: break-word;
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }
+        }
+        .details {
+          margin-left: 2%;
+          margin-top: 2%;
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          .doublecontent {
+            // width: 20vw;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            min-height: 10vh;
+            .input1 {
+              input {
+                width: 22vw;
+                max-width: 26vw;
+                height: 6vh;
+                padding-left: 15px;
+                font-size: 1rem;
+                color: #000000c0;
+                font-weight: 500;
+                background: white;
+                border-radius: 4px;
+                border: 1px solid lightgray;
+                &:focus {
+                  outline: 1px solid #0d30acd7;
+                }
+              }
+            }
+            .label1 {
+              color: gray;
+              font-size: 1rem;
+              font-weight: 500;
+              word-wrap: break-word;
+              display: flex;
+              align-items: center;
+              height: 2vh;
+              position: absolute;
+              left: 4%;
+              top: -12%;
+              background-color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+  .resetPass {
+    width: 100%;
+    margin: auto;
+    // background-color: rgba(22, 22, 22, 0.162);
+    position: absolute;
+    top: 0;
+    z-index: 10;
+  }
+}

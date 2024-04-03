@@ -1,0 +1,77 @@
+/* Navbar.module.css */
+.rootHeader {
+  height: 10vh; /* Use viewport height for responsive height */
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: white;
+  align-items: center;
+  padding: 1.5vw; /* Use viewport width for responsive padding */
+  position: relative;
+  .icon {
+    display: none;
+  }
+  .greet {
+    width: 16vw;
+
+    .greeting {
+      font-weight: 600;
+      font-size: 1.5rem;
+      color: #0d30ac;
+    }
+
+    .time {
+      display: flex;
+      flex-direction: row;
+      width: 80%;
+      padding-right: 1vw;
+      gap: 5px;
+      // justify-content: space-between;
+
+      span {
+        color: #0d30ac;
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
+    }
+  }
+  .navbarRight {
+    .notiIcon {
+      cursor: pointer;
+      margin-right: 10px;
+      // font-weight: bold;
+      border-radius: 50%;
+      width: 3vw;
+      height: 3vw;
+      background-color: #0d30ac;
+    }
+    .notiIcon:hover {
+      opacity: 0.8; /* Example of hover effect */
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      background-color: rgb(238, 238, 238);
+      border-radius: 8px;
+      padding: 2%;
+      width: 20vw;
+      margin-right: 3%;
+      .searchIcon {
+        cursor: pointer;
+        margin: 0 3%;
+      }
+
+      input {
+        padding: 5px;
+        /* border-radius: 5px; */
+        border: none;
+        outline: none;
+        box-shadow: none;
+        margin-right: 10px;
+        background-color: transparent;
+      }
+    }
+  }
+}

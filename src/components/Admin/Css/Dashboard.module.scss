@@ -1,0 +1,85 @@
+// DashboardComponent.module.scss
+
+.dashboardContainer {
+  padding: 2% 3%;
+
+  h1 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .flexContainer {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .dashboardCard {
+    width: 23%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 2%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    .flexContent {
+      display: flex;
+      flex-direction: column;
+      p {
+        font-size: 1.2rem;
+      }
+      h3 {
+        font-size: 1.3rem;
+        font-weight: bold;
+      }
+    }
+
+    .imageContainer {
+      // margin-top: 10px;
+      background-color: rgb(239, 239, 239);
+      border-radius: 8px;
+      width: 3.8vw;
+      height: 3.8vw;
+      .imageContainer img {
+        border-radius: 8px;
+        width: 3.5vw;
+        height: 3.5vw;
+      }
+    }
+  }
+  .charts {
+    margin-top: 2%;
+    justify-content: space-between;
+    .chart {
+      background-color: white;
+      padding: 1% 2%;
+      border-radius: 8px;
+    }
+    .chart1 {
+      background-color: white;
+      padding: 2%;
+      border-radius: 8px;
+      // width: 28vw;
+      .timelineContainer {
+        height: 100%;
+        // width: 100%;
+        padding: 20px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background-color: #f7fafc;
+        .timelineHeading {
+          margin-bottom: 20px;
+        }
+        .meetingItem {
+          border-bottom: 1px solid #e2e8f0;
+          padding: 10px 0;
+          .meetingTitle {
+            font-weight: bold;
+          }
+          .meetingDescription {
+            margin-top: 10px;
+            color: #555555;
+          }
+        }
+      }
+    }
+  }
+}
