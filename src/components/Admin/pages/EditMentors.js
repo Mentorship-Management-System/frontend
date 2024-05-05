@@ -5,8 +5,21 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "./ResetPassword";
 import { useNavigate } from "react-router-dom";
-
+const dummyData = [
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+  { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
+];
 const Settings = () => {
+  const [showMentees, setShowMentees] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
   const [file, setFile] = useState(null);
@@ -73,14 +86,22 @@ const Settings = () => {
                     </h2>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    Navigate(-1);
-                  }}
-                >
-                  Back
-                </Button>
+                <Flex>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowMentees(!showMentees)}
+                  >
+                    Mentee list
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      Navigate(-1);
+                    }}
+                  >
+                    Back
+                  </Button>
+                </Flex>
               </div>
 
               <div className={styles.details}>
@@ -224,6 +245,27 @@ const Settings = () => {
                   </button>
                 </div>
               </div>
+              {showMentees && (
+                <div className={styles.popupContainer}>
+                  <div className={styles.popup}>
+                    <h1 className={styles.header}>Mentee List</h1>
+                    <div className={styles.content}>
+                      {dummyData.map((item, index) => (
+                        <div key={index} className={styles.nameRow}>
+                          <span className={styles.name}>{item.name}</span>
+                          <span className={styles.name}>{item.roll}</span>
+                          <span className={styles.name}>{item.programme}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <Flex justify="flex-end">
+                      <Button onClick={() => setShowMentees(!showMentees)}>
+                        Cancel
+                      </Button>
+                    </Flex>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

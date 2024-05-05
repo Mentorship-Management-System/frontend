@@ -198,6 +198,16 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
+                <Flex className={styles.doublecontent}>
+                  <div className={styles.label1}>Mentor</div>
+                  <div className={styles.input1}>
+                    <input
+                      disabled={true}
+                      value={editedUserData.age || ""}
+                      onChange={(e) => handleFieldChange("age", e.target.value)}
+                    />
+                  </div>
+                </Flex>
               </div>
               <div className={styles.referral}>
                 <div className={styles.cnclbtn}>

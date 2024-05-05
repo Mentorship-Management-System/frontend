@@ -2,7 +2,26 @@ import React, { useState } from "react";
 import { Select, Input, Button, Center, Heading } from "@chakra-ui/react";
 import Table from "./Table";
 import classes from "../Css/AssignMentorToMentees.module.scss";
+const dummyData = [
+  { name: "Dr. Bhogeswar Bora", menteesAllocated: 2 },
+  { name: "Dr. Sanjib k. Deka", menteesAllocated: 3 },
+  { name: "Dr. Rosy Sharma", menteesAllocated: 1 },
+  { name: "Dr. Nityananda Sharma", menteesAllocated: 4 },
+  { name: "Dr. Navajroti Medhi", menteesAllocated: 2 },
+  { name: "Dr. Utpal Sharma", menteesAllocated: 3 },
+  { name: "Dr. Bhogeswar Bora", menteesAllocated: 2 },
+  { name: "Dr. Sanjib k. Deka", menteesAllocated: 3 },
+  { name: "Dr. Rosy Sharma", menteesAllocated: 1 },
+  { name: "Dr. Nityananda Sharma", menteesAllocated: 4 },
+  { name: "Dr. Navajroti Medhi", menteesAllocated: 2 },
+  { name: "Dr. Utpal Sharma", menteesAllocated: 3 },
+  { name: "Dr. Bhogeswar Bora", menteesAllocated: 2 },
+  { name: "Dr. Sanjib k. Deka", menteesAllocated: 3 },
+  { name: "Dr. Rosy Sharma", menteesAllocated: 1 },
+  { name: "Dr. Nityananda Sharma", menteesAllocated: 4 },
+];
 const StudentTable = ({ students }) => {
+  const [showMentors, setShowMentors] = useState(false);
   const [filteredStudents, setFilteredStudents] = useState(students);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [filters, setFilters] = useState({
@@ -10,6 +29,21 @@ const StudentTable = ({ students }) => {
     branch: "",
     searchText: "",
   });
+  const currentYear = new Date().getFullYear();
+  const years = Array.from(
+    { length: currentYear - 2014 },
+    (_, index) => 2015 + index
+  );
+  const [selectedNames, setSelectedNames] = useState([]);
+
+  const handleNameClick = (name) => {
+    if (selectedNames.includes(name)) {
+      setSelectedNames(selectedNames.filter((selected) => selected !== name));
+    } else {
+      setSelectedNames([...selectedNames, name]);
+    }
+  };
+
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const handleRowSelectChange = (selectedRowKeys, selectedRows) => {
@@ -68,12 +102,12 @@ const StudentTable = ({ students }) => {
         accessor: "rollNo",
       },
       {
-        Header: "Branch",
-        accessor: "branch",
-      },
-      {
         Header: "Programme",
         accessor: "programme",
+      },
+      {
+        Header: "Mentor",
+        accessor: "mentor",
       },
       {
         Header: "Email ID",
@@ -89,16 +123,16 @@ const StudentTable = ({ students }) => {
         id: 1,
         name: "John Doe",
         rollNo: "A001",
-        branch: "Computer Science",
-        programme: "Bachelor",
+        programme: "B-tech",
+        mentor: "Sanjib k. Deka",
         email: "john.doe@example.com",
       },
       {
         id: 2,
         name: "Jane Smith",
         rollNo: "A002",
-        branch: "Electrical Engineering",
-        programme: "Master",
+        programme: "M-tech",
+        mentor: "Dr. Bhogeswar Bora",
         email: "jane.smith@example.com",
       },
       // Add more dummy data as needed
@@ -111,8 +145,8 @@ const StudentTable = ({ students }) => {
       id: i,
       name: `Student ${i}`,
       rollNo: `R${10000 + i}`,
-      branch: i % 2 === 0 ? "Computer Science" : "Electrical Engineering",
       programme: i % 3 === 0 ? "B.Tech" : "B.E.",
+      mentor: i % 2 === 0 ? "Dr. Bhogeswar Bora" : "Sanjib k. Deka",
       email: `student${i}@example.com`,
     });
   }
@@ -127,19 +161,14 @@ const StudentTable = ({ students }) => {
           h="6vh"
           w="30%"
         >
-          <option value="2015">2015</option>
-          <option value="2016">2016</option>
-          <option value="2017">2017</option>
-          <option value="2018">2018</option>
-          <option value="2019">2019</option>
-          <option value="2020">2020</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024">2024</option>
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
         </Select>
         <Select
-          placeholder="Select Branch"
+          placeholder="Select programme"
           onChange={(value) => handleFilterChange("branch", value)}
           className={classes.selectBar}
           h="6vh"
@@ -153,7 +182,7 @@ const StudentTable = ({ students }) => {
         </Select>
         <input
           type="text"
-          placeholder="Search by ID..."
+          placeholder="Search by Roll No..."
           className={classes.searchBar}
         />
         <button className={classes.searchButton} onClick={handleSearch}>
@@ -161,17 +190,61 @@ const StudentTable = ({ students }) => {
         </button>
       </div>
       <div className={classes.table}>
-        <div className={classes.button}>
-          <Button
-            variant="outline"
-            border="1px solid #0d30ac"
-            disabled={selectedRowKeys.length === 0}
-          >
-            Assign Random Numbers
+        <div className={classes.buttons}>
+          <Button onClick={() => setShowMentors(!showMentors)}>
+            Select Mentors
           </Button>
+          <div className={classes.button}>
+            <Button
+              variant="outline"
+              border="1px solid #0d30ac"
+              disabled={selectedRowKeys.length === 0}
+            >
+              Assign Random Numbers
+            </Button>
+          </div>
         </div>
         <Table columns={columns} data={data} />
       </div>
+      {showMentors && (
+        <div className={classes.popupContainer}>
+          <div className={classes.popup}>
+            <h1 className={classes.header}>Select Mentees</h1>
+            <div className={classes.content}>
+              {dummyData.map((item, index) => (
+                <div
+                  key={index}
+                  className={classes.nameRow}
+                  onClick={() => handleNameClick(item.name)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedNames.includes(item.name)}
+                    readOnly
+                  />
+                  <span className={classes.name}>{item.name}</span>
+                  <span className={classes.menteesAllocated}>
+                    Mentees allocated: {item.menteesAllocated}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className={classes.footer}>
+              <Button
+                variant="outline"
+                onClick={() => setShowMentors(!showMentors)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => console.log("Selected Names:", selectedNames)}
+              >
+                Confirm
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

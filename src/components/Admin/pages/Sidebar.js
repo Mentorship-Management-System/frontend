@@ -50,10 +50,10 @@ const SideBar = ({ handleOptionClick }) => {
       icon: (
         <BiMessageAdd
           size={25}
-          color={segments[2] === "AssignMentors" && "#0D30AC"}
+          color={segments[2] === "Mentor-mentee%20list" && "#0D30AC"}
         />
       ),
-      text: "AssignMentors",
+      text: "Mentor-mentee list",
     },
     {
       icon: (
@@ -65,7 +65,7 @@ const SideBar = ({ handleOptionClick }) => {
       text: "Profile",
     },
   ];
-
+  console.log(segments);
   return (
     <div className={classes.rootSidebar}>
       <div className={classes.sidebar}>
@@ -73,7 +73,11 @@ const SideBar = ({ handleOptionClick }) => {
           <Link
             to={`/admin/${item.text}`}
             key={index}
-            className={segments[2] === item.text ? classes.selectedOption : ""}
+            className={
+              segments[2] === item.text || segments[2].includes(item.text)
+                ? classes.selectedOption
+                : ""
+            }
           >
             <div className={classes.icon}>{item.icon}</div>
 

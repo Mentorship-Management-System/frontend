@@ -116,6 +116,12 @@ const StudentMeetings = () => {
     // Add logic to set a new meeting
     setShowModal1(false); // Close the modal after setting the meeting
   };
+  const [openmodal, setOpenModal] = useState(null);
+  const toggleOpenModal = (e, meetingId) => {
+    e.stopPropagation();
+    console.log("gdgdfg");
+    setOpenModal(meetingId === openmodal ? null : meetingId);
+  };
 
   const filteredMeetings =
     filter === "all"
@@ -149,7 +155,7 @@ const StudentMeetings = () => {
                 meeting.completed ? styles.completed : styles.pending
               }`}
             >
-              <Box>
+              <Box className={styles.details}>
                 <Heading className={styles.meetingName} fontSize="1.2rem">
                   {meeting.name}
                 </Heading>
@@ -158,21 +164,21 @@ const StudentMeetings = () => {
                   {meeting.description}
                 </Text>
               </Box>
-              <Flex direction="column" justify="space-between">
+              <Flex className={styles.modalContainer}>
                 <Heading
                   fontSize="1rem"
                   color={meeting.completed ? "green" : "#ffc107"}
                 >
                   {meeting.completed ? "Completed" : "Pending"}
                 </Heading>
-                <Button onClick={() => setShowModal1(true)}>View</Button>
+
+                <Model
+                  isOpenModal={meeting.id === openmodal}
+                  toggleOpenModal={(e) => toggleOpenModal(e, meeting.id)}
+                  meeting={meeting}
+                />
               </Flex>
             </Box>
-            <Model
-              showModal1={showModal1}
-              meeting={meeting}
-              modelCloseHandler={modelCloseHandler}
-            />
           </>
         ))}
       </Box>
