@@ -46,15 +46,15 @@ const SideBar = ({ handleOptionClick }) => {
       icon: <BiRun size={25} color={segments[2] === "Meetings" && "#0D30AC"} />,
       text: "Meetings",
     },
-    // {
-    //   icon: (
-    //     <BiMessageAdd
-    //       size={25}
-    //       color={segments[2] === "Requests" && "#0D30AC"}
-    //     />
-    //   ),
-    //   text: "Requests",
-    // },
+    {
+      icon: (
+        <BiMessageAdd
+          size={25}
+          color={segments[2] === "Messges" && "#0D30AC"}
+        />
+      ),
+      text: "Messages",
+    },
     {
       icon: (
         <IoMdSettings

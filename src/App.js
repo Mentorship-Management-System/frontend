@@ -1,6 +1,6 @@
 import "./App.css";
 import Home from "./components/Home";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import StudentLogin from "./components/LoginPages/StudentLogin";
 import MentorLogin from "./components/LoginPages/MentorLogin";
 import AdminLogin from "./components/LoginPages/AdminLogin";
@@ -23,6 +23,8 @@ import StudentProfile from "./components/Student/Pages/StudentProfile";
 import StudentMeetings from "./components/Student/Pages/StudentMeetings";
 import StudentMentor from "./components/Student/Pages/StudentMentor";
 import StudentDashboard from "./components/Student/Pages/StudentDashboard";
+import Messages from "./components/Mentor/Pages/Messages";
+import StudentMessage from "./components/Student/Pages/StudentMessage";
 
 function App() {
   return (
@@ -43,19 +45,24 @@ function App() {
             element={<AssignMentorsToMentees />}
           />
           <Route path="Profile" element={<Settings />} />
+          <Route path="" element={<Navigate to="Dashboard" />} />
         </Route>
         <Route path="mentor" element={<MentorHome />}>
           <Route path="Dashboard" element={<MentorDashboard />} />
           <Route path="Mentees" element={<MentorMentees />} />
           <Route path="Mentees/:id" element={<MentorEditMentees />} />
           <Route path="Meetings" element={<MentorMeetings />} />
+          <Route path="Messages" element={<Messages />} />
           <Route path="Profile" element={<MentorProfile />} />
+          <Route path="" element={<Navigate to="Dashboard" />} />
         </Route>
         <Route path="student" element={<StudentHome />}>
           <Route path="Dashboard" element={<StudentDashboard />} />
           <Route path="Mentor" element={<StudentMentor />} />
           <Route path="Meetings" element={<StudentMeetings />} />
           <Route path="Profile" element={<StudentProfile />} />
+          <Route path="Message" element={<StudentMessage />} />
+          <Route path="" element={<Navigate to="Dashboard" />} />
         </Route>
       </Routes>
     </div>

@@ -1,0 +1,114 @@
+// StudentCardList.module.scss
+.cardList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-around;
+  padding: 20px;
+}
+.heading {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #0d30ac; // blue theme color
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 24vw;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.name {
+  color: #0d30ac; // blue theme color
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.message {
+  font-size: 1em;
+  margin-bottom: 20px;
+}
+
+.viewMore {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  background-color: #0d30ac;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  padding: 6px 12px;
+  transition: background-color 0.3s;
+  margin: 0;
+}
+.button1 {
+  border: 2px solid #0d30ac;
+  border-radius: 5px;
+  color: #0d30ac;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: background-color 0.3s;
+  margin: 0;
+
+  &:hover {
+    background-color: rgb(239, 239, 239);
+  }
+}
+
+.button:hover {
+  background-color: #0d30ac;
+}
+
+.popup {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.popupContent {
+  background-color: white;
+  border-radius: 10px;
+  max-width: 500px;
+  padding: 20px;
+  position: relative;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+}
