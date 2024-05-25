@@ -1,10 +1,20 @@
 import { Box, Button, Center, Heading, Input, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { admin_login } from "../../api/adminApi";
+import { useDispatch } from "react-redux";
+import { adminAuthActions } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 
 export default function AdminLogin() {
-    const [email, setEmail] = useState("");
+  
+  //state variables
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  //hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const emailHandler = (e) => {
     setEmail(e.target.value);
@@ -15,7 +25,23 @@ export default function AdminLogin() {
   };
 
 
-  const SubmitSignInHandler = () => {};
+  const SubmitSignInHandler = () => {
+    const payload = {
+      "email": email,
+      "password": password
+    }
+    console.log(payload);
+    admin_login(payload)
+    .then(result => {
+      result = result.data;
+      console.log(result);
+      dispatch(adminAuthActions.login({ admin: result.result }));
+      navigate("/admin/dashboard")
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  };
 
   return (
     <div>

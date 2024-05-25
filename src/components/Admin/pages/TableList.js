@@ -83,7 +83,7 @@ function Table({ columns, data }) {
                               className={styles.btnTable}
                               onClick={() =>
                                 Navigate(
-                                  `/${segments[1]}/Mentees/${cell.row.values.id}`
+                                  `/${segments[1]}/Mentees/${cell.row.values.rollNo}`
                                 )
                               }
                             >

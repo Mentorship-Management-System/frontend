@@ -7,6 +7,7 @@ import cartoon2 from "../../../media/teacher.png";
 import cartoon3 from "../../../media/project.png";
 import cartoon4 from "../../../media/research.png";
 import { Center, Flex, HStack, Heading } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const data = [
   { title: "Students", count: 580, icon: cartoon1 },
@@ -116,9 +117,13 @@ const BoysGirlsCountChart = () => {
 };
 
 const Dashboard = () => {
+  //hooks
+  const admin = useSelector(state => state.adminAuth.admin.user);
+  console.log(admin);
+
   return (
     <div className={styles.dashboardContainer}>
-      <h1>Welcome Admin</h1>
+      <h1>Welcome {admin.fname} {admin.lname}</h1>
       <div className={styles.flexContainer}>
         {data.map((item, index) => (
           <HStack className={styles.dashboardCard} key={index}>
