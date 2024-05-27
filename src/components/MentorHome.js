@@ -5,8 +5,18 @@ import { VStack } from "@chakra-ui/react";
 import Profile from "./Mentor/Pages/Profile";
 import Navbar from "./Navbar";
 import SideBar from "./Mentor/Pages/Sidebar";
+import { useDispatch } from "react-redux";
+import { mentorAuthActions } from "../redux/store";
 
 function MentorHome(props) {
+  //hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    dispatch(mentorAuthActions.logout());
+    navigate("/")
+  }
   return (
     <div>
       <div className={classes.root}>
@@ -21,7 +31,7 @@ function MentorHome(props) {
             <SideBar />
           </div>
 
-          <div className={classes.logout}>
+          <div className={classes.logout} onClick={handleLogOut}>
             <div className={classes.button}>
               <div className={classes.icon}>
                 <MdLogout size={35} color="#0D30AC" />

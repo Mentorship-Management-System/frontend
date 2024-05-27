@@ -26,7 +26,7 @@ export default function Home() {
                 </NavLink>
               </Center>
               <Center>
-                <NavLink to="/mentorlogin">
+                <NavLink to="/mentor-login">
                   <button className="homeButton">Mentor login</button>
                 </NavLink>
               </Center>

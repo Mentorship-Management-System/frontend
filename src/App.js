@@ -33,18 +33,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="studentlogin" element={<StudentLogin />} />
-        <Route path="mentorlogin" element={<MentorLogin />} />
-        <Route path="adminlogin" element={<AdminLogin />} />
+        <Route path="mentor-login" element={<MentorLogin />} />
+        <Route path="admin-login" element={<AdminLogin />} />
         <Route path="admin" element={<AdminHome />}>
           <Route path="Dashboard" element={<Dashboard />} />
           <Route path="Mentees" element={<Mentees />} />
           <Route path="Mentees/:id" element={<EditMentees />} />
           <Route path="Mentors" element={<Mentors />} />
           <Route path="Mentors/:id" element={<EditMentors />} />
-          <Route
-            path="Mentor-mentee list"
-            element={<AssignMentorsToMentees />}
-          />
+          <Route path="Mentor-mentee list" element={<AssignMentorsToMentees />} />
           <Route path="Profile" element={<Settings />} />
           <Route path="" element={<Navigate to="Dashboard" />} />
         </Route>

@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 // import ResetPassword from "./resetPassword";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Chart from "react-apexcharts";
+import { useSelector } from "react-redux";
+import { get_student } from "../../../api/studentApi";
 
 const ProgressChart = () => {
   const teachersMeetingsData = {
@@ -59,6 +61,13 @@ const ProgressChart = () => {
   );
 };
 const Settings = () => {
+  //hooks
+  const Navigate = useNavigate();
+  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const params = useParams();
+
+  //state variables
+  const [student, setStudent] = useState(null);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
   const [file, setFile] = useState(null);
@@ -66,13 +75,29 @@ const Settings = () => {
   //   const [uploaded, setUploaded] = useState(0);
   //   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  const Navigate = useNavigate();
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
       ...editedUserData,
       [fieldName]: value,
     });
   };
+
+  // useEffect functions
+  useEffect(() => {
+    const fetchStudent = () => {
+      get_student(mentor.token, params.id)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          setStudent(result.student)
+          setEditedUserData(result.student)
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+    fetchStudent();
+  }, [])
 
   //   const handleResetPasswordClick = () => {
   //     setShowResetPassword(!showResetPassword);
@@ -110,7 +135,7 @@ const Settings = () => {
                   <div className={styles.profiletxt}>
                     <h1 className={styles.profilename}>Mike Daniel</h1>
                     <h2 className={styles.profilesubtext}>
-                      Photo and personal details of the Mentee
+                      Personal details of the Mentee
                     </h2>
                   </div>
                 </div>
@@ -146,11 +171,11 @@ const Settings = () => {
               ) : (
                 <div className={styles.details}>
                   <Flex className={styles.doublecontent}>
-                    <div className={styles.label1}>User ID</div>
+                    <div className={styles.label1}>ID</div>
                     <div className={styles.input1}>
                       <input
                         disabled={disabled}
-                        value={editedUserData.username || ""}
+                        value={editedUserData.student_id || ""}
                         onChange={(e) => console.log("Dont Touch")}
                       />
                     </div>
@@ -159,22 +184,10 @@ const Settings = () => {
                     <div className={styles.label1}>First Name</div>
                     <div className={styles.input1}>
                       <input
-                        value={editedUserData.username || ""}
+                        value={editedUserData.fname || ""}
                         disabled={disabled}
                         onChange={(e) =>
-                          handleFieldChange("username", e.target.value)
-                        }
-                      />
-                    </div>
-                  </Flex>
-                  <Flex className={styles.doublecontent}>
-                    <div className={styles.label1}>Role</div>
-                    <div className={styles.input1}>
-                      <input
-                        value={editedUserData.role || ""}
-                        disabled={disabled}
-                        onChange={(e) =>
-                          handleFieldChange("username", e.target.value)
+                          handleFieldChange("fname", e.target.value)
                         }
                       />
                     </div>
@@ -185,15 +198,29 @@ const Settings = () => {
                     <div className={styles.input1}>
                       <input
                         disabled={disabled}
-                        value={editedUserData.name || ""}
+                        value={editedUserData.lname || ""}
                         onChange={(e) =>
-                          handleFieldChange("name", e.target.value)
+                          handleFieldChange("lname", e.target.value)
                         }
                       />
                     </div>
                   </Flex>
+
                   <Flex className={styles.doublecontent}>
-                    <div className={styles.label1}>Email</div>
+                    <div className={styles.label1}>Enrollment Number</div>
+                    <div className={styles.input1}>
+                      <input
+                        value={editedUserData.enrollment_no || ""}
+                        disabled={disabled}
+                        onChange={(e) =>
+                          handleFieldChange("enrollment_no", e.target.value)
+                        }
+                      />
+                    </div>
+                  </Flex>
+
+                  <Flex className={styles.doublecontent}>
+                    <div className={styles.label1}>Personal Email</div>
                     <div className={styles.input1}>
                       <input
                         value={editedUserData.email || ""}
@@ -204,26 +231,40 @@ const Settings = () => {
                       />
                     </div>
                   </Flex>
+
                   <Flex className={styles.doublecontent}>
-                    <div className={styles.label1}>Department</div>
+                    <div className={styles.label1}>G-Suite ID</div>
                     <div className={styles.input1}>
                       <input
-                        value={editedUserData.department || ""}
+                        value={editedUserData.gsuite_id || ""}
                         disabled={disabled}
                         onChange={(e) =>
-                          handleFieldChange("email", e.target.value)
+                          handleFieldChange("gsuite_id", e.target.value)
+                        }
+                      />
+                    </div>
+                  </Flex>
+
+                  <Flex className={styles.doublecontent}>
+                    <div className={styles.label1}>Programme</div>
+                    <div className={styles.input1}>
+                      <input
+                        value={editedUserData.programme || ""}
+                        disabled={disabled}
+                        onChange={(e) =>
+                          handleFieldChange("programme", e.target.value)
                         }
                       />
                     </div>
                   </Flex>
                   <Flex className={styles.doublecontent}>
-                    <div className={styles.label1}>Contact.No</div>
+                    <div className={styles.label1}>Contact Number</div>
                     <div className={styles.input1}>
                       <input
                         disabled={disabled}
-                        value={editedUserData.contactNo || ""}
+                        value={editedUserData.phone || ""}
                         onChange={(e) =>
-                          handleFieldChange("contactNo", e.target.value)
+                          handleFieldChange("phone", e.target.value)
                         }
                       />
                     </div>
@@ -241,26 +282,22 @@ const Settings = () => {
                     </div>
                   </Flex>
                   <Flex className={styles.doublecontent}>
-                    <div className={styles.label1}>DOB</div>
+                    <div className={styles.label1}>CGPA</div>
                     <div className={styles.input1}>
                       <input
                         disabled={disabled}
-                        value={editedUserData.DOB || ""}
-                        onChange={(e) =>
-                          handleFieldChange("age", e.target.value)
-                        }
+                        value={editedUserData.cgpa || ""}
+                        onChange={(e) => handleFieldChange("cgpa", e.target.value)}
                       />
                     </div>
                   </Flex>
                   <Flex className={styles.doublecontent}>
-                    <div className={styles.label1}>Age</div>
+                    <div className={styles.label1}>DOB</div>
                     <div className={styles.input1}>
                       <input
                         disabled={disabled}
-                        value={editedUserData.age || ""}
-                        onChange={(e) =>
-                          handleFieldChange("age", e.target.value)
-                        }
+                        value={editedUserData.dob || ""}
+                        onChange={(e) => handleFieldChange("dob", e.target.value)}
                       />
                     </div>
                   </Flex>

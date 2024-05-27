@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../Css/Mentees.module.scss"; // Import SCSS module for styling
 import { Button, Flex, Heading, Select } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import TableList from "./TableList";
+import { useSelector } from "react-redux";
+import { all_mentors } from "../../../api/mentorApi";
 // Dummy data
 const menteesData = [
   {
@@ -84,13 +86,48 @@ const menteesData = [
 ];
 
 const Mentors = () => {
+  //hooks
   const Navigate = useNavigate();
+  const admin = useSelector(state => state.adminAuth.admin.user);
+  const token = useSelector(state => state.adminAuth.admin.token);
+  console.log(admin);
+  
+  //state variables
+  const [mentors, setMentors] = useState([]);
   const [showList, setShowList] = useState(false);
+  const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState({
     year: "",
     branch: "",
     searchText: "",
   });
+
+  //useEffect functions
+  useEffect(() => {
+    const fetchMentors = () => {
+      all_mentors(token)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          setMentors(result.mentors);
+          let temp_data = [];
+          result.mentors.map(mentor => {
+            temp_data.push({
+              id: mentor.mentor_id,
+              name: mentor.honorifics + " " + mentor.fname + " " + mentor.lname,
+              title: mentor.position,
+              email: mentor.email,
+            })
+          })
+          setTableData(temp_data);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+    fetchMentors();
+  }, [])
+
   const handleFilterChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
   };
@@ -112,46 +149,12 @@ const Mentors = () => {
       {
         Header: "Email ID",
         accessor: "email",
-      },
-      {
-        Header: "Contact No",
-        accessor: "contact",
-      },
+      }
     ],
     []
   );
 
-  const data = React.useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Dr. Bhogeswar Borah",
-        title: "Professor",
-        email: "john.doe@example.com",
-        contact: "8090980984",
-      },
-      {
-        id: 2,
-        name: "Dr. Sarat Saharia",
-        title: "Professor",
-        email: "jane.smith@example.com",
-        contact: "8090980984",
-      },
-      // Add more dummy data as needed
-    ],
-    []
-  );
-
-  for (let i = 3; i <= 20; i++) {
-    data.push({
-      id: i,
-      name: `Student ${i}`,
-      title: i % 3 === 0 ? "Professor" : "Assistant Professor",
-      mentor: i % 2 === 0 ? "Dr. Bhogeswar Bora" : "Sanjib k. Deka",
-      email: `student${i}@example.com`,
-      contact: "9987656742",
-    });
-  }
+  
   return (
     <div className={styles.menteesContainer}>
       {/* Heading */}
@@ -193,21 +196,21 @@ const Mentors = () => {
       {/* Cards */}
       {showList ? (
         <div className={styles.table}>
-          <TableList columns={columns} data={data} />
+          <TableList columns={columns} data={tableData} />
         </div>
       ) : (
         <div className={styles.cardsContainer}>
-          {menteesData.map((mentee) => (
+          {mentors.map((mentor) => (
             <Flex justify="space-between" className={styles.headerCard}>
-              <div className={styles.card} key={mentee.id}>
+              <div className={styles.card} key={mentor.id}>
                 <img
-                  src={mentee.image}
-                  alt={mentee.name}
+                  src={mentor.image}
+                  alt={mentor.name}
                   className={styles.menteeImage}
                 />
                 <div className={styles.menteeInfo}>
-                  <p className={styles.menteeName}>{mentee.name}</p>
-                  <p className={styles.menteeRole}>{mentee.role}</p>
+                  <p className={styles.menteeName}>{mentor.honorifics} {mentor.fname} {mentor.lname}</p>
+                  <p className={styles.menteeRole}>{mentor.position}</p>
                 </div>
               </div>
               <Button
@@ -215,7 +218,7 @@ const Mentors = () => {
                 variant="outline"
                 colorScheme="blue"
                 onClick={() => {
-                  Navigate(`/admin/Mentors/${mentee.id}`);
+                  Navigate(`/admin/Mentors/${mentor.mentor_id}`);
                 }}
               >
                 View

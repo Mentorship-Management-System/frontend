@@ -1,5 +1,5 @@
 import { IoMdClose } from "react-icons/io";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Box,
@@ -12,6 +12,9 @@ import {
   Center,
 } from "@chakra-ui/react";
 import styles from "../Css/Meetings.module.scss";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { get_students_by_mentor_id } from "../../../api/studentApi";
 const dummyData = [
   { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
   { name: "Sujay Das", roll: "csb20079", programme: "B-tech" },
@@ -25,11 +28,18 @@ const dummyData = [
   { name: "Sanjasdfy Das", roll: "csb20079", programme: "B-tech" },
   { name: "Sgganjay Das", roll: "csb20079", programme: "B-tech" },
 ];
-export default function SetMeetingModal({ handelShowModal, handleSetMeeting }) {
+export default function SetMeetingModal({ handelShowModal, handleSetMeeting, isChatMeeting }) {
+  //hooks
+  const Navigate = useNavigate();
+  const mentor = useSelector(state => state.mentorAuth.mentor);
+
+  //state variables
+  const [students, setStudents] = useState([]);
   const [meetingName, setMeetingName] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingDescription, setMeetingDescription] = useState("");
   const [showMentees, setShowMentees] = useState(false);
+  const [attendees, setAttendees] = useState([]);
   const [filters, setFilters] = useState({
     year: "",
     branch: "",
@@ -39,18 +49,51 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting }) {
     { length: currentYear - 2014 },
     (_, index) => 2015 + index
   );
-  const [selectedNames, setSelectedNames] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+
+  //useEffect functions
+  useEffect(() => {
+    get_students_by_mentor_id(mentor.token, mentor.user.mentor_id)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setStudents(result.students);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, [])
+  
   const handleFilterChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
   };
 
-  const handleNameClick = (name) => {
-    if (selectedNames.includes(name)) {
-      setSelectedNames(selectedNames.filter((selected) => selected !== name));
+  const handleNameClick = (student) => {
+    // console.log(selectedStudents.includes(student))
+    if (selectedStudents.includes(student)) {
+      setSelectedStudents(selectedStudents.filter((selected) => selected.student_id !== student.student_id));
     } else {
-      setSelectedNames([...selectedNames, name]);
+      setSelectedStudents([...selectedStudents, student]);
     }
   };
+
+  const setMeeting = () => {
+    if(isChatMeeting){
+      console.log("Setting meeting for chat");
+    } else {
+      console.log("Setting normal meeting");
+      const date_time = meetingTime.split("T");
+      let new_meeting = {
+        "title": meetingName,
+        "description": meetingDescription,
+        "date": date_time[0],
+        "time": date_time[1],
+        "mentor_id": mentor.user.mentor_id,
+        "student_ids": selectedStudents.map(({ student_id }) => student_id)
+      }  
+      handleSetMeeting(new_meeting);
+    }
+  }
 
   return (
     <Box>
@@ -91,29 +134,29 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting }) {
                 />
               </div>
             </Stack>
-            {selectedNames.length !== 0 && (
+            {selectedStudents.length !== 0 && (
               <Text mt={4}>
                 <strong>Selected Mentees:</strong>
               </Text>
             )}
-            {selectedNames.map((mentee, index) => (
-              <Text key={index}>{mentee}</Text>
+            {selectedStudents.map((mentee, index) => (
+              <Text key={index}>{mentee.fname} {mentee.lname}</Text>
             ))}
           </div>
           <Flex justify="flex-end" gap="10px" mt="3%">
-            <Button
+            {!isChatMeeting && <Button
               colorScheme="blue"
               onClick={() => setShowMentees(!showMentees)}
             >
               Select mentees
-            </Button>
-            <Button colorScheme="blue" onClick={handleSetMeeting}>
+            </Button>}
+            <Button colorScheme="blue" onClick={setMeeting}>
               Set
             </Button>
           </Flex>
         </div>
       </div>
-      {showMentees && (
+      {!isChatMeeting && showMentees && (
         <div className={styles.popupContainer}>
           <div className={styles.popup}>
             <h1 className={styles.header}>Select Mentees</h1>
@@ -146,20 +189,19 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting }) {
               </Select>
             </Flex>
             <div className={styles.content}>
-              {dummyData.map((item, index) => (
+              {students?.map((item, index) => (
                 <div
                   key={index}
                   className={styles.nameRow}
-                  onClick={() => handleNameClick(item.name)}
+                  onClick={() => handleNameClick(item)}
                 >
                   <input
                     type="checkbox"
-                    checked={selectedNames.includes(item.name)}
+                    checked={selectedStudents.includes(item)}
                     readOnly
                   />
-                  <span className={styles.name}>{item.name}</span>
-                  <span className={styles.name1}>{item.roll}</span>
-                  <span className={styles.name1}>{item.programme}</span>
+                  <span className={styles.name}>{item.fname} {item.lname}</span>
+                  <span className={styles.name1}>{item.enrollment_no}</span>
                 </div>
               ))}
             </div>

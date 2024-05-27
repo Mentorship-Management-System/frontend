@@ -16,8 +16,18 @@ import { VStack } from "@chakra-ui/react";
 import Profile from "./Admin/pages/Profile";
 import SideBar from "./Admin/pages/Sidebar";
 import Navbar from "./Navbar";
+import { useDispatch } from "react-redux";
+import { adminAuthActions } from "../redux/store";
 
 function AdminHome(props) {
+  //hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const adminLogout = () => {
+    dispatch(adminAuthActions.logout());
+    navigate("/");
+  }
   return (
     <div>
       <div className={classes.root}>
@@ -32,7 +42,7 @@ function AdminHome(props) {
             <SideBar />
           </div>
 
-          <div className={classes.logout}>
+          <div className={classes.logout} onClick={adminLogout}>
             <div className={classes.button}>
               <div className={classes.icon}>
                 <MdLogout size={35} color="#0D30AC" />
@@ -42,6 +52,7 @@ function AdminHome(props) {
               </div>
             </div>
           </div>
+
         </div>
 
         <div className={classes.right}>

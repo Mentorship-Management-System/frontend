@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "./ResetPassword";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { get_mentor, update_mentor } from "../../../api/mentorApi";
+import { get_students_by_mentor_id } from "../../../api/studentApi";
 const dummyData = [
   { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
   { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
@@ -19,14 +22,51 @@ const dummyData = [
   { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
 ];
 const Settings = () => {
+  //hooks
+  const Navigate = useNavigate();
+  const admin = useSelector(state => state.adminAuth.admin);
+  const params = useParams();
+
+  //state variables
   const [showMentees, setShowMentees] = useState(false);
+  const [students, setStudents] = useState([]);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
   const [file, setFile] = useState(null);
   const [uploaded, setUploaded] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  const Navigate = useNavigate();
+
+  //useEffect functions
+  useEffect(() => {
+    const fetchMentor = () => {
+      get_mentor(admin.token, params.id)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          setEditedUserData(result.mentor)
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+    fetchMentor();
+  }, [])
+
+  useEffect(() => {
+    const fetchStudents = () => {
+      get_students_by_mentor_id(admin.token, params.id)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          setStudents(result.students)
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+    fetchStudents();
+  }, [])
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -42,6 +82,24 @@ const Settings = () => {
   const handleEdit = () => {
     setDisabled((prev) => !prev);
   };
+
+  const handleSaveEdit = () => {
+    let updated_fields = editedUserData;
+    console.log(updated_fields);
+
+    update_mentor(admin.token, params.id, updated_fields)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setEditedUserData(result.mentor)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        handleEdit()
+      })
+  }
 
   return (
     <div className={styles.cont}>
@@ -106,23 +164,36 @@ const Settings = () => {
 
               <div className={styles.details}>
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>User ID</div>
+                  <div className={styles.label1}>Mentor ID</div>
                   <div className={styles.input1}>
                     <input
-                      disabled={disabled}
-                      value={editedUserData.username || ""}
+                      disabled={true}
+                      value={editedUserData.mentor_id || ""}
                       onChange={(e) => console.log("Dont Touch")}
                     />
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
+                  <div className={styles.label1}>Honorifics</div>
+                  <div className={styles.input1}>
+                    <input
+                      value={editedUserData.honorifics || ""}
+                      disabled={disabled}
+                      onChange={(e) =>
+                        handleFieldChange("honorifics", e.target.value)
+                      }
+                    />
+                  </div>
+                </Flex>
+
+                <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>First Name</div>
                   <div className={styles.input1}>
                     <input
-                      value={editedUserData.username || ""}
+                      value={editedUserData.fname || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
+                        handleFieldChange("fname", e.target.value)
                       }
                     />
                   </div>
@@ -133,33 +204,22 @@ const Settings = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.name || ""}
+                      value={editedUserData.lname || ""}
                       onChange={(e) =>
-                        handleFieldChange("name", e.target.value)
+                        handleFieldChange("lname", e.target.value)
                       }
                     />
                   </div>
                 </Flex>
+                
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Branch</div>
+                  <div className={styles.label1}>Position</div>
                   <div className={styles.input1}>
                     <input
-                      value={editedUserData.branch || ""}
+                      value={editedUserData.position || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
-                      }
-                    />
-                  </div>
-                </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Programme</div>
-                  <div className={styles.input1}>
-                    <input
-                      value={editedUserData.programme || ""}
-                      disabled={disabled}
-                      onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
+                        handleFieldChange("position", e.target.value)
                       }
                     />
                   </div>
@@ -176,30 +236,46 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
+
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Department</div>
+                  <div className={styles.label1}>G-Suite ID</div>
                   <div className={styles.input1}>
                     <input
-                      value={editedUserData.department || ""}
+                      value={editedUserData.gsuite_id || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("email", e.target.value)
+                        handleFieldChange("gsuite_id", e.target.value)
                       }
                     />
                   </div>
                 </Flex>
+                
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Contact.No</div>
+                  <div className={styles.label1}>Contact Number</div>
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.contactNo || ""}
+                      value={editedUserData.phone || ""}
                       onChange={(e) =>
-                        handleFieldChange("contactNo", e.target.value)
+                        handleFieldChange("phone", e.target.value)
                       }
                     />
                   </div>
                 </Flex>
+                
+                <Flex className={styles.doublecontent}>
+                  <div className={styles.label1}>Extension</div>
+                  <div className={styles.input1}>
+                    <input
+                      value={editedUserData.extension || ""}
+                      disabled={disabled}
+                      onChange={(e) =>
+                        handleFieldChange("extension", e.target.value)
+                      }
+                    />
+                  </div>
+                </Flex>
+
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Gender</div>
                   <div className={styles.input1}>
@@ -212,26 +288,6 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>DOB</div>
-                  <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
-                      value={editedUserData.DOB || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
-                    />
-                  </div>
-                </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Age</div>
-                  <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
-                      value={editedUserData.age || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
-                    />
-                  </div>
-                </Flex>
               </div>
               <div className={styles.referral}>
                 <div className={styles.cnclbtn}>
@@ -240,7 +296,7 @@ const Settings = () => {
                   </button>
                 </div>
                 <div className={styles.sbmtbtn}>
-                  <button disabled={disabled} onClick={() => setClicked(true)}>
+                  <button disabled={disabled} onClick={() => handleSaveEdit()}>
                     Save
                   </button>
                 </div>
@@ -250,11 +306,11 @@ const Settings = () => {
                   <div className={styles.popup}>
                     <h1 className={styles.header}>Mentee List</h1>
                     <div className={styles.content}>
-                      {dummyData.map((item, index) => (
-                        <div key={index} className={styles.nameRow}>
-                          <span className={styles.name}>{item.name}</span>
-                          <span className={styles.name}>{item.roll}</span>
-                          <span className={styles.name}>{item.programme}</span>
+                      {students && students.map((item, index) => (
+                        <div key={index} className={styles.nameRow} onClick={() => Navigate(`/admin/Mentees/${item.enrollment_no}`)}>
+                          <span className={styles.name}>{item.student_id}</span>
+                          <span className={styles.name}>{item.fname} {item.lname}</span>
+                          <span className={styles.name}>{item.enrollment_no}</span>
                         </div>
                       ))}
                     </div>

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../Admin/Css/Mentees.module.scss"; // Import SCSS module for styling
 import { Button, Flex, Heading, Select } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import TableList from "../../Admin/pages/TableList";
+import { get_students_by_mentor_id } from "../../../api/studentApi";
+import { useSelector } from "react-redux";
 
 // Dummy data
 const menteesData = [
@@ -85,7 +87,13 @@ const menteesData = [
 ];
 
 const Mentees = () => {
+  //hooks
   const Navigate = useNavigate();
+  const mentor = useSelector(state => state.mentorAuth.mentor);
+  
+  //state variables
+  const [students, setStudents] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [showList, setShowList] = useState(false);
   const [filters, setFilters] = useState({
     year: "",
@@ -126,39 +134,34 @@ const Mentees = () => {
     []
   );
 
-  const data = React.useMemo(
-    () => [
-      {
-        id: 1,
-        name: "John Doe",
-        rollNo: "A001",
-        programme: "B-tech",
-        email: "john.doe@example.com",
-        contact: "8090980984",
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        rollNo: "A002",
-        programme: "M-tech",
-        email: "jane.smith@example.com",
-        contact: "8090980984",
-      },
-      // Add more dummy data as needed
-    ],
-    []
-  );
+  //useEffect functions
+  useEffect(() => {
+    const fetchStudents = () => {
+      get_students_by_mentor_id(mentor.token, mentor.user.mentor_id)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          let temp_data = [];
+          result.students.map(student => {
+            temp_data.push({
+              id: student.student_id,
+              name: student.fname + " " + student.lname,
+              rollNo: student.enrollment_no,
+              programme: student.programme,
+              email: student.email,
+              contact: student.phone,
+            })
+          })
+          setTableData(temp_data);
+          setStudents(result.students);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+    fetchStudents();
+  }, [])
 
-  for (let i = 3; i <= 50; i++) {
-    data.push({
-      id: i,
-      name: `Student ${i}`,
-      rollNo: `R${10000 + i}`,
-      programme: i % 3 === 0 ? "B.Tech" : "M.Tech",
-      email: `student${i}@example.com`,
-      contact: "9987656742",
-    });
-  }
   return (
     <div className={styles.menteesContainer}>
       {/* Heading */}
@@ -200,21 +203,21 @@ const Mentees = () => {
       {/* Cards */}
       {showList ? (
         <div className={styles.table}>
-          <TableList columns={columns} data={data} />
+          <TableList columns={columns} data={tableData} />
         </div>
       ) : (
         <div className={styles.cardsContainer}>
-          {menteesData.map((mentee) => (
+          {students.map((student) => (
             <Flex justify="space-between" className={styles.headerCard}>
-              <div className={styles.card} key={mentee.id}>
+              <div className={styles.card} key={student.student_id}>
                 <img
-                  src={mentee.image}
-                  alt={mentee.name}
+                  src={student.image}
+                  alt={student.name}
                   className={styles.menteeImage}
                 />
                 <div className={styles.menteeInfo}>
-                  <p className={styles.menteeName}>{mentee.name}</p>
-                  <p className={styles.menteeRole}>{mentee.role}</p>
+                  <p className={styles.menteeName}>{student.fname} {student.lname}</p>
+                  <p className={styles.menteeRole}>{student.enrollment_no}</p>
                 </div>
               </div>
               <Button
@@ -222,7 +225,7 @@ const Mentees = () => {
                 variant="outline"
                 colorScheme="blue"
                 onClick={() => {
-                  Navigate(`/mentor/Mentees/${mentee.id}`);
+                  Navigate(`/mentor/Mentees/${student.enrollment_no}`);
                 }}
               >
                 View

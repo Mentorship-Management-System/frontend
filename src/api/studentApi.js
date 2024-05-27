@@ -33,3 +33,36 @@ export const get_student = async (token, roll) => {
         return error;
     }
 }
+
+export const get_students_by_mentor_id = async (token, mentor_id) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/mentor/${mentor_id}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const updated_student = async (token, rollno, payload) => {
+    try {
+        let options = {
+            method: "PUT",
+            url: `${url}/${rollno}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

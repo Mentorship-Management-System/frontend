@@ -3,10 +3,29 @@ import styles from "../Css/Meetings.module.scss";
 
 import { Button, Box, Text, Stack, Flex, Center } from "@chakra-ui/react";
 import { IoMdClose } from "react-icons/io";
+import { approve_meeting } from "../../../api/meetingApi";
 
-const Model = ({ isOpenModal, toggleOpenModal, meeting }) => {
+const Model = ({ isOpenModal, toggleOpenModal, meeting, meetings, setOpenModal, openmodal, setMeetings, mentor, toggleModal }) => {
   const approveHandler = () => {
-    toggleOpenModal();
+    console.log(meeting);
+    
+    let new_meeting = { ...meeting, approve: 1 };
+    let temp_meetings = meetings;
+    const index = temp_meetings.findIndex(obj => obj.meeting_id === new_meeting.meeting_id);
+    if (index !== -1) temp_meetings[index] = new_meeting;
+    
+    approve_meeting(mentor.token, mentor.mentor_id, meeting.meeting_id)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setMeetings(temp_meetings)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setOpenModal(meeting.meeting_id === openmodal ? null : meeting.meeting_id);
+      })
   };
   return (
     <div>
@@ -31,28 +50,15 @@ const Model = ({ isOpenModal, toggleOpenModal, meeting }) => {
                   <strong>Description:</strong> {meeting?.description}
                 </Text>
                 <Text>
-                  <strong>Feedback:</strong>
+                  <strong>Feedback:</strong> <i>{meeting?.feedback ? meeting?.feedback : "No feedback from the student(s) yet."}</i>
                 </Text>
-                {meeting?.feedback && (
-                  <Box
-                    // backgroundColor="lightgray"
-                    // borderRadius="8px"
-                    padding="1%"
-                  >
-                    {meeting.feedback.map((feedbackItem, index) => (
-                      <Box key={index}>
-                        <Text fontWeight="bold">{feedbackItem.name}:</Text>{" "}
-                        <Text>
-                          {feedbackItem.feedback && feedbackItem.feedback}
-                        </Text>
-                      </Box>
-                    ))}
-                  </Box>
-                )}
+                {/* <Box>
+                  <Text>{meeting?.feedback ? meeting?.feedback : "No feedback from the student(s) yet."}</Text>
+                </Box> */}
               </Stack>
             </div>
             <Flex justify="flex-end" gap="10px" mt="3%">
-              <Button colorScheme="blue" onClick={approveHandler}>
+              <Button colorScheme="blue" onClick={approveHandler} display={meeting.approve ? "none" : "inline-block"}>
                 Approve Meeting
               </Button>
             </Flex>

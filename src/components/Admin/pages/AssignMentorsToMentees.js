@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Select, Input, Button, Center, Heading } from "@chakra-ui/react";
 import Table from "./Table";
 import classes from "../Css/AssignMentorToMentees.module.scss";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { all_students } from "../../../api/studentApi";
+import { all_mentors } from "../../../api/mentorApi";
 const dummyData = [
   { name: "Dr. Bhogeswar Bora", menteesAllocated: 2 },
   { name: "Dr. Sanjib k. Deka", menteesAllocated: 3 },
@@ -21,6 +25,13 @@ const dummyData = [
   { name: "Dr. Nityananda Sharma", menteesAllocated: 4 },
 ];
 const StudentTable = ({ students }) => {
+  //hooks
+  const Navigate = useNavigate();
+  const admin = useSelector(state => state.adminAuth.admin);
+  
+  //state variables
+  const [tableData, setTableData] = useState([]);
+  const [mentors, setMentors] = useState([]);
   const [showMentors, setShowMentors] = useState(false);
   const [filteredStudents, setFilteredStudents] = useState(students);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
@@ -35,6 +46,50 @@ const StudentTable = ({ students }) => {
     (_, index) => 2015 + index
   );
   const [selectedNames, setSelectedNames] = useState([]);
+
+  //useEffect functions
+
+  useEffect(() => {
+    const fetchData = () => {
+      all_students(admin.token)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          let temp_data = [];
+          result.students.map(student => {
+            temp_data.push({
+              id: student.student_id,
+              name: student.fname + " " + student.lname,
+              rollNo: student.enrollment_no,
+              programme: student.programme,
+              mentor: student.mentor.mentor_name,
+              email: student.email,
+              enrollment_year: student.enrollment_year
+            })
+          })
+          setTableData(temp_data)
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+    fetchData();
+  }, [])
+
+  useEffect(() => {
+    const fetchMentors = () => {
+      all_mentors(admin.token)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          setMentors(result.mentors);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+    fetchMentors();
+  }, [])
 
   const handleNameClick = (name) => {
     if (selectedNames.includes(name)) {
@@ -90,15 +145,11 @@ const StudentTable = ({ students }) => {
         ),
       },
       {
-        Header: "ID",
-        accessor: "id",
-      },
-      {
         Header: "Name",
         accessor: "name",
       },
       {
-        Header: "Roll No",
+        Header: "Enrollment No",
         accessor: "rollNo",
       },
       {
@@ -106,50 +157,22 @@ const StudentTable = ({ students }) => {
         accessor: "programme",
       },
       {
-        Header: "Mentor",
-        accessor: "mentor",
-      },
-      {
         Header: "Email ID",
         accessor: "email",
       },
+      {
+        Header: "Enrollment Year",
+        accessor: "enrollment_year"
+      },
+      {
+        Header: "Mentor",
+        accessor: "mentor",
+      },
     ],
     []
   );
 
-  const data = React.useMemo(
-    () => [
-      {
-        id: 1,
-        name: "John Doe",
-        rollNo: "A001",
-        programme: "B-tech",
-        mentor: "Sanjib k. Deka",
-        email: "john.doe@example.com",
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        rollNo: "A002",
-        programme: "M-tech",
-        mentor: "Dr. Bhogeswar Bora",
-        email: "jane.smith@example.com",
-      },
-      // Add more dummy data as needed
-    ],
-    []
-  );
-
-  for (let i = 3; i <= 50; i++) {
-    data.push({
-      id: i,
-      name: `Student ${i}`,
-      rollNo: `R${10000 + i}`,
-      programme: i % 3 === 0 ? "B.Tech" : "B.E.",
-      mentor: i % 2 === 0 ? "Dr. Bhogeswar Bora" : "Sanjib k. Deka",
-      email: `student${i}@example.com`,
-    });
-  }
+  
   return (
     <div className={classes.header}>
       <Heading className={classes.heading}>Mentees</Heading>
@@ -204,27 +227,27 @@ const StudentTable = ({ students }) => {
             </Button>
           </div>
         </div>
-        <Table columns={columns} data={data} />
+        <Table columns={columns} data={tableData} />
       </div>
       {showMentors && (
         <div className={classes.popupContainer}>
           <div className={classes.popup}>
             <h1 className={classes.header}>Select Mentees</h1>
             <div className={classes.content}>
-              {dummyData.map((item, index) => (
+              {mentors.map((mentor, index) => (
                 <div
                   key={index}
                   className={classes.nameRow}
-                  onClick={() => handleNameClick(item.name)}
+                  onClick={() => handleNameClick(mentor.honorifics + " " +mentor.fname + " " + mentor.lname)}
                 >
                   <input
                     type="checkbox"
-                    checked={selectedNames.includes(item.name)}
+                    checked={selectedNames.includes(mentor.honorifics + " " +mentor.fname + " " + mentor.lname)}
                     readOnly
                   />
-                  <span className={classes.name}>{item.name}</span>
+                  <span className={classes.name}>{mentor.honorifics} {mentor.fname} {mentor.lname}</span>
                   <span className={classes.menteesAllocated}>
-                    Mentees allocated: {item.menteesAllocated}
+                    Mentees allocated: {mentor.assigned_mentees.length}
                   </span>
                 </div>
               ))}

@@ -3,14 +3,24 @@ import React, { useEffect, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "./ResetPassword";
+import { useSelector } from "react-redux";
 
 const Settings = () => {
+  //hooks
+  const admin = useSelector(state => state.adminAuth.admin);
+
+  //state variables
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
   const [file, setFile] = useState(null);
   const [uploaded, setUploaded] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
+
+  //useEffect functions
+  useEffect(() => {
+    setEditedUserData(admin.user);
+  }, [])
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -66,7 +76,7 @@ const Settings = () => {
                   <div className={styles.profiletxt}>
                     <h1 className={styles.profilename}>Profile</h1>
                     <h2 className={styles.profilesubtext}>
-                      Update your photo and personal details
+                      Update your personal details
                     </h2>
                   </div>
                 </div>
@@ -79,11 +89,11 @@ const Settings = () => {
 
               <div className={styles.details}>
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>User ID</div>
+                  <div className={styles.label1}>ID</div>
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.username || ""}
+                      value={editedUserData.admin_id || ""}
                       onChange={(e) => console.log("Dont Touch")}
                     />
                   </div>
@@ -92,7 +102,7 @@ const Settings = () => {
                   <div className={styles.label1}>First Name</div>
                   <div className={styles.input1}>
                     <input
-                      value={editedUserData.username || ""}
+                      value={editedUserData.fname || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("username", e.target.value)
@@ -100,25 +110,14 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Role</div>
-                  <div className={styles.input1}>
-                    <input
-                      value={editedUserData.role || ""}
-                      disabled={disabled}
-                      onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
-                      }
-                    />
-                  </div>
-                </Flex>
+                
 
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Last Name</div>
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.name || ""}
+                      value={editedUserData.lname || ""}
                       onChange={(e) =>
                         handleFieldChange("name", e.target.value)
                       }
@@ -137,62 +136,7 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Department</div>
-                  <div className={styles.input1}>
-                    <input
-                      value={editedUserData.department || ""}
-                      disabled={disabled}
-                      onChange={(e) =>
-                        handleFieldChange("email", e.target.value)
-                      }
-                    />
-                  </div>
-                </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Contact.No</div>
-                  <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
-                      value={editedUserData.contactNo || ""}
-                      onChange={(e) =>
-                        handleFieldChange("contactNo", e.target.value)
-                      }
-                    />
-                  </div>
-                </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Gender</div>
-                  <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
-                      value={editedUserData.gender || ""}
-                      onChange={(e) =>
-                        handleFieldChange("gender", e.target.value)
-                      }
-                    />
-                  </div>
-                </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>DOB</div>
-                  <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
-                      value={editedUserData.DOB || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
-                    />
-                  </div>
-                </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Age</div>
-                  <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
-                      value={editedUserData.age || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
-                    />
-                  </div>
-                </Flex>
+                
               </div>
               <div className={styles.referral}>
                 <div className={styles.cnclbtn}>

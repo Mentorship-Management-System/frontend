@@ -1,7 +1,16 @@
 import { Box, Button, Center, Heading, Input, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { mentor_login } from "../../api/mentorApi";
+import { mentorAuthActions } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 export default function MentorLogin() {
+  //hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  //state variables
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [department, setDepartment] = useState("");
@@ -33,7 +42,21 @@ export default function MentorLogin() {
     setCurrentPassword(e.target.value);
   };
 
-  const SubmitSignInHandler = () => {};
+  const SubmitSignInHandler = () => {
+    const payload = {
+      email,
+      password
+    }
+    console.log(payload);
+
+    mentor_login(payload)
+      .then(result => {
+        result = result.data;
+        console.log(result.mentor);
+        dispatch(mentorAuthActions.login({ mentor: result.result }));
+        navigate("/mentor/dashboard")
+      })
+  };
 
   const SubmitSignUpHandler = () => {};
   return (

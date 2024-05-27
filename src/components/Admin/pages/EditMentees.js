@@ -5,7 +5,7 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "./ResetPassword";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { get_student } from "../../../api/studentApi";
+import { get_student, updated_student } from "../../../api/studentApi";
 import { useSelector } from "react-redux";
 
 const Settings = () => {
@@ -55,6 +55,27 @@ const Settings = () => {
   const handleEdit = () => {
     setDisabled((prev) => !prev);
   };
+
+  const handleSaveEdit = () => {
+    let updated_fields = editedUserData;
+    delete updated_fields.mentor;
+    delete updated_fields.mentor_email;
+    delete updated_fields.mentor_name;
+    delete updated_fields.mentor_phone;
+
+    updated_student(token, params.id, updated_fields)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setEditedUserData(result.student)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        handleEdit()
+      })
+  }
 
   return (
     <div className={styles.cont}>
@@ -127,7 +148,7 @@ const Settings = () => {
                       value={editedUserData.fname || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
+                        handleFieldChange("fname", e.target.value)
                       }
                     />
                   </div>
@@ -140,7 +161,7 @@ const Settings = () => {
                       disabled={disabled}
                       value={editedUserData.lname || ""}
                       onChange={(e) =>
-                        handleFieldChange("name", e.target.value)
+                        handleFieldChange("lname", e.target.value)
                       }
                     />
                   </div>
@@ -153,7 +174,7 @@ const Settings = () => {
                       value={editedUserData.enrollment_no || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
+                        handleFieldChange("enrollment_no", e.target.value)
                       }
                     />
                   </div>
@@ -179,7 +200,7 @@ const Settings = () => {
                       value={editedUserData.gsuite_id || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("email", e.target.value)
+                        handleFieldChange("gsuite_id", e.target.value)
                       }
                     />
                   </div>
@@ -192,7 +213,7 @@ const Settings = () => {
                       value={editedUserData.programme || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("email", e.target.value)
+                        handleFieldChange("programme", e.target.value)
                       }
                     />
                   </div>
@@ -204,7 +225,7 @@ const Settings = () => {
                       disabled={disabled}
                       value={editedUserData.phone || ""}
                       onChange={(e) =>
-                        handleFieldChange("contactNo", e.target.value)
+                        handleFieldChange("phone", e.target.value)
                       }
                     />
                   </div>
@@ -222,12 +243,22 @@ const Settings = () => {
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
+                  <div className={styles.label1}>CGPA</div>
+                  <div className={styles.input1}>
+                    <input
+                      disabled={disabled}
+                      value={editedUserData.cgpa || ""}
+                      onChange={(e) => handleFieldChange("cgpa", e.target.value)}
+                    />
+                  </div>
+                </Flex>
+                <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>DOB</div>
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
                       value={editedUserData.dob || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
+                      onChange={(e) => handleFieldChange("dob", e.target.value)}
                     />
                   </div>
                 </Flex>
@@ -238,7 +269,7 @@ const Settings = () => {
                     <input
                       disabled={true}
                       value={editedUserData.mentor && editedUserData.mentor.name || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
+                      onChange={(e) => handleFieldChange("mentor", e.target.value)}
                     />
                   </div>
                 </Flex>
@@ -250,7 +281,7 @@ const Settings = () => {
                   </button>
                 </div>
                 <div className={styles.sbmtbtn}>
-                  <button disabled={disabled} onClick={() => setClicked(true)}>
+                  <button disabled={disabled} onClick={() => handleSaveEdit()}>
                     Save
                   </button>
                 </div>

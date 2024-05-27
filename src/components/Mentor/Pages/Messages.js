@@ -1,64 +1,37 @@
-// StudentCardList.js
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "../Css/Messages.module.scss";
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Input, Text } from "@chakra-ui/react";
 import SetMeetingModal from "./SetMeetingModal";
-
-const students = [
-  {
-    name: "John Doe",
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis venenatis quam ac felis tristique, non tempor nulla viverra. Proin euismod suscipit nulla, vel fringilla libero lacinia ut. Praesent ullamcorper malesuada turpis, eget pellentesque ex. Aliquam erat volutpat. Cras luctus magna nec turpis facilisis, eget fermentum est hendrerit. Suspendisse potenti. Aenean at diam magna. Curabitur consectetur malesuada justo, a vestibulum ligula. Proin elementum enim sit amet sapien tincidunt, vel vestibulum lorem tincidunt. Integer eget nunc tellus. Donec et aliquam ex, vitae tincidunt libero. Suspendisse scelerisque, dui et ullamcorper tristique, sapien turpis luctus eros, ut scelerisque neque metus vel nunc. Mauris ut erat libero. Nulla facilisi. Fusce malesuada, sapien at vestibulum pharetra, eros lorem vestibulum lorem, et pulvinar erat nunc in ex.",
-  },
-  {
-    name: "Jane Smith",
-    message: "Short message for testing purposes.",
-  },
-  {
-    name: "Alice Johnson",
-    message:
-      "This is a longer message that will be cut off if it exceeds the limit of one hundred words. We want to ensure that only the first part of the message is shown on the card, and the rest is displayed when the user clicks on the view button. This is useful for keeping the card design clean and uncluttered while still allowing access to the full content when needed. Let's add more text to reach the limit. Here we go, adding some more words to make sure we hit the one hundred words mark. This should be enough now.",
-  },
-  {
-    name: "Bob Brown",
-    message:
-      "Another student message to display in the card. This one is not too long, but it still needs to be shown properly.",
-  },
-  {
-    name: "Carol White",
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur convallis tincidunt est, a auctor neque congue vel. Sed nec ex et erat fringilla fermentum. Nulla facilisi. Cras eget libero ut justo tincidunt congue. Vivamus sollicitudin elit vel nunc cursus, vitae venenatis nulla blandit. Aliquam erat volutpat. Vestibulum ac sapien sit amet metus vehicula facilisis non id risus. Ut auctor, urna non cursus varius, lorem lectus faucibus felis, sit amet laoreet sapien quam non purus. In dapibus sem at tortor ullamcorper, sed elementum nunc consectetur. Suspendisse potenti. Sed interdum velit ac nisi egestas, a efficitur arcu hendrerit. Integer sagittis magna et nulla posuere venenatis. Sed euismod semper lacus, eu facilisis lorem ornare sit amet. Proin at justo et orci lacinia fermentum.",
-  },
-  {
-    name: "David Black",
-    message:
-      "Short message again to ensure we have a mix of long and short messages in our test data.",
-  },
-  {
-    name: "Eva Green",
-    message:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempor, lorem ac dignissim sagittis, mi elit laoreet purus, vel viverra nisl lacus ut ex. Aliquam erat volutpat. Pellentesque at enim vitae ligula feugiat pellentesque. Maecenas a magna ut sapien bibendum venenatis non a sapien. Sed vehicula, metus a egestas convallis, justo erat vestibulum nisl, in mollis sapien leo ac nisi. Nam nec nulla et eros cursus vulputate ac nec arcu. Proin pharetra ex ut massa consectetur tempor. Nullam imperdiet pharetra lorem, eu consequat nunc. Vivamus bibendum, nisl ac tincidunt elementum, lacus velit accumsan erat, vel posuere sapien orci vel nisl. Pellentesque porttitor, leo id interdum hendrerit, sapien nulla hendrerit leo, ac tincidunt nisl lorem eget tortor. Duis dignissim, purus nec convallis dignissim, justo nunc congue risus, sit amet vehicula libero magna at lectus.",
-  },
-  {
-    name: "Frank Blue",
-    message:
-      "This is another example of a longer message that will be truncated at one hundred words. The rest of the message will be visible once the user clicks on the view button. This is a useful feature to keep the initial card uncluttered while still providing access to the full content when necessary. We continue to add words to reach the hundred word limit. This should be just about enough to hit the mark, providing a good test case for our component.",
-  },
-  {
-    name: "Grace Purple",
-    message:
-      "Another short message to ensure our component handles both long and short messages properly.",
-  },
-  {
-    name: "Hank Red",
-    message:
-      "Here is a message that is exactly one hundred words long. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet pretium urna. Vivamus venenatis velit nec neque ultricies, sit amet ullamcorper nunc dictum. Praesent ac nibh vestibulum, mollis sapien vel, luctus turpis. Integer tincidunt purus nec erat bibendum, in sollicitudin tortor placerat. Suspendisse interdum justo lectus, et sollicitudin ipsum imperdiet ut. Cras vitae auctor nisi. Praesent ac lacus ut augue ultricies venenatis. Sed quis ligula eget nisi hendrerit condimentum. Proin at ante at risus ullamcorper fermentum.",
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { ack_reply_chat, get_chat_for_mentor } from "../../../api/chatApi";
 
 const Messages = () => {
+  // Hooks
+  const navigate = useNavigate();
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
+
+  // State variables
+  const [reply, setReply] = useState("");
+  const [showReply, setShowReply] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const cardHeightRefs = useRef([]); // Array of refs for card heights
+
+  // useEffect functions
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const result = await get_chat_for_mentor(mentor.token, mentor.user.mentor_id);
+        setMessages(result.data.chats);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchChats();
+  }, []);
 
   const handleViewMessage = (message) => {
     setSelectedMessage(message);
@@ -72,50 +45,110 @@ const Messages = () => {
     setShowModal(!showModal);
   };
 
-  const handelShowModal = () => {
+  const handleShowModal = () => {
     setShowModal(!showModal);
   };
+
+  const handleReply = (index) => {
+    setShowReply((prev) => (prev === index ? null : index));
+    setReply("")
+  };
+
+  const handleSendReply = (chat) => {
+    const payload = {
+      reply
+    }
+
+    let temp_chats = messages;
+    const index = temp_chats.findIndex(obj => obj.chat_id === chat.chat_id);
+    if (index !== -1) {
+      temp_chats[index].acknowledged = 1;
+      temp_chats[index].reply_by_mentor = reply;
+    }
+
+    ack_reply_chat(mentor.token, payload, chat.chat_id)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setMessages(temp_chats)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
+  // Calculate initial card heights (optional for improved performance)
+  useEffect(() => {
+    if (cardHeightRefs.current.length > 0) {
+      cardHeightRefs.current.forEach((ref) => {
+        if (ref) {
+          ref.current.style.height = ref.current.offsetHeight + "px";
+        }
+      });
+    }
+  }, [messages]); // Update heights on message changes
 
   return (
     <Box p="3%" position="relative">
       <h1 className={styles.heading}>Message Information</h1>
       <div className={styles.cardList}>
-        {students.map((student, index) => (
-          <div key={index} className={styles.card}>
+        {messages?.map((message, index) => (
+          <div key={index} className={styles.card} ref={cardHeightRefs.current[index]}>
             <div>
-              <h2 className={styles.name}>{student.name}</h2>
+              <h2 className={styles.name}>
+                {message.student.fname} {message.student.lname}
+              </h2>
+              <Text mt="-3" mb="3" fontSize="small">
+                {message.student.enrollment_no} |{" "}
+                {new Date(message.date).toISOString().replace("T", " ").slice(0, 16)}
+              </Text>
               <p className={styles.message}>
-                {student.message.slice(0, 100)}
-                {student.message.split(" ").length > 100 && (
-                  <span onClick={() => handleViewMessage(student.message)}>
-                    ...<span className={styles.viewMore}>View</span>
-                  </span>
-                )}
+                <i>
+                  {message.message.slice(0, 100)}
+                  {message.message.split(" ").length > 100 && (
+                    <span onClick={() => handleViewMessage(message.message)}>
+                      ...
+                      <span className={styles.viewMore}>View</span>
+                    </span>
+                  )}
+                </i>
               </p>
+              {message.acknowledged && <p className={styles.message}>
+                {message.meeting_id === null ? <span><b>You replied -</b> <i>{message.reply_by_mentor}</i></span> : <span><i>Meeting set with <b>{message.student.fname} {message.student.lname} ({message.student.enrollment_no})</b></i></span>}
+              </p>}
             </div>
-            <div className={styles.buttons}>
-              <button className={styles.button1}>Acknowledge</button>
-              <button className={styles.button} onClick={handelShowModal}>
-                Set Meeting
+            {!message.acknowledged && <div className={styles.buttons}>
+              <button className={styles.button1} onClick={() => handleReply(index)}>
+                {showReply === index ? "Cancel" : "Reply"}
               </button>
-            </div>
+              {showReply === index && <button className={styles.button} onClick={() => handleSendReply(message)}>Send</button>}
+              {showReply !== index && <button className={styles.button} onClick={handleShowModal}>
+                Set Meeting
+              </button>}
+            </div>}
+            {!message.acknowledged && showReply === index && (
+              <Box mt="5">
+                <Input type="text" value={reply} onChange={(e) => setReply(e.target.value)} />
+              </Box>
+            )}
           </div>
         ))}
-        {selectedMessage && (
-          <div className={styles.popup}>
-            <div className={styles.popupContent}>
-              <span className={styles.close} onClick={handleClosePopup}>
-                &times;
-              </span>
-              <p>{selectedMessage}</p>
-            </div>
-          </div>
-        )}
       </div>
+      {selectedMessage && (
+        <div className={styles.popup}>
+          <div className={styles.popupContent}>
+            <span className={styles.close} onClick={handleClosePopup}>
+              &times;
+            </span>
+            <p>{selectedMessage}</p>
+          </div>
+        </div>
+      )}
       {showModal && (
         <SetMeetingModal
-          handelShowModal={handelShowModal}
+          handelShowModal={handleShowModal}
           handleSetMeeting={handleSetMeeting}
+          isChatMeeting={true}
         />
       )}
     </Box>
@@ -123,3 +156,4 @@ const Messages = () => {
 };
 
 export default Messages;
+
