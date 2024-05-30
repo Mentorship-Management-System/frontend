@@ -1,6 +1,6 @@
 import styles from "../../Admin/Css/Settings.module.scss";
 import React, { useEffect, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
 
@@ -11,6 +11,13 @@ const StudentProfile = () => {
   const [uploaded, setUploaded] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedSemester, setSelectedSemester] = useState(null);
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -26,6 +33,63 @@ const StudentProfile = () => {
   const handleEdit = () => {
     setDisabled((prev) => !prev);
   };
+
+  const handleSemesterChange = (event) => {
+    setSelectedSemester(parseInt(event.target.value));
+  };
+
+  const renderForm = () => {
+    if (selectedSemester === null) return null;
+    const formElements = [];
+    for (let i = 1; i <= selectedSemester; i++) {
+      formElements.push(
+        <div key={i} className={styles.semesterInputs}>
+          <label>Semester {i}</label>
+          <div className={styles.inputGroup}>
+            <input
+              type="number"
+              placeholder="SGPA"
+              step="0.01"
+              min="0"
+              max="10"
+            />
+            <input
+              type="number"
+              placeholder="CGPA"
+              step="0.01"
+              min="0"
+              max="10"
+            />
+          </div>
+        </div>
+      );
+    }
+    return (
+      <form>
+        {formElements}
+        <div className={styles.formButtons}>
+          <button type="button" onClick={togglePopup}>
+            Close
+          </button>
+          <button type="submit">Set</button>
+        </div>
+      </form>
+    );
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 450);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className={styles.cont}>
@@ -70,12 +134,65 @@ const StudentProfile = () => {
                     </h2>
                   </div>
                 </div>
-                <div className={styles.Reset}>
-                  <button onClick={handleResetPasswordClick}>
-                    RESET PASSWORD
-                  </button>
-                </div>
+                {!isMobile && (
+                  <div className={styles.Reset}>
+                    <Button
+                      className={styles.profileBtns}
+                      // _hover={{ backgroundColor: "#0d3ffc" }}
+                      border="1px solid #0d30ac"
+                      color="#0d30ac"
+                      onClick={togglePopup}
+                    >
+                      Add CGPA/SGPA
+                    </Button>
+                    <button
+                      onClick={handleResetPasswordClick}
+                      className={styles.profileBtns}
+                    >
+                      Reset Password
+                    </button>
+                  </div>
+                )}
               </div>
+              {isMobile && (
+                <Flex justify="flex-end">
+                  <Button
+                    className={styles.profileBtns}
+                    // _hover={{ backgroundColor: "#0d3ffc" }}
+                    border="1px solid #0d30ac"
+                    color="#0d30ac"
+                    onClick={togglePopup}
+                  >
+                    Add CGPA/SGPA
+                  </Button>
+                  <Button
+                    color="white"
+                    backgroundColor="#0d30ac"
+                    onClick={handleResetPasswordClick}
+                    className={styles.profileBtns}
+                  >
+                    Reset Password
+                  </Button>
+                </Flex>
+              )}
+              {isPopupOpen && (
+                <div className={styles.popupOverlay}>
+                  <div className={styles.popupContent}>
+                    <>
+                      <label>Select Semester</label>
+                      <select onChange={handleSemesterChange}>
+                        <option value="">--Select--</option>
+                        {Array.from({ length: 12 }, (_, index) => (
+                          <option key={index + 1} value={index + 1}>
+                            {index + 1}
+                          </option>
+                        ))}
+                      </select>
+                      {selectedSemester !== null && renderForm()}
+                    </>
+                  </div>
+                </div>
+              )}
 
               <div className={styles.details}>
                 <Flex className={styles.doublecontent}>

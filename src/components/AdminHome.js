@@ -24,39 +24,61 @@ function AdminHome(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setIsOpen(!isOpen);
+  };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 450);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const adminLogout = () => {
     dispatch(adminAuthActions.logout());
     navigate("/");
-  }
+  };
   return (
     <div>
       <div className={classes.root}>
-        <div className={classes.left}>
+        {isOpen && (
+          <div className={classes.overlay} onClick={toggleDrawer}></div>
+        )}
+        <div
+          className={`${classes.left} ${isMobile && classes.drawer} ${
+            isOpen ? classes.open : ""
+          }`}
+        >
           <div className={classes.profile}>
-            {/* <AuthProvider> */}
             <Profile />
-            {/* </AuthProvider> */}
           </div>
 
           <div className={classes.sideBar}>
-            <SideBar />
+            <SideBar toggleDrawer={() => setIsOpen(false)} />
           </div>
 
-          <div className={classes.logout} onClick={adminLogout}>
-            <div className={classes.button}>
+          <div className={classes.logout}>
+            <div className={classes.button} onClick={adminLogout}>
               <div className={classes.icon}>
-                <MdLogout size={35} color="#0D30AC" />
+                <MdLogout color="#0D30AC" />
               </div>
-              <div className={classes.option}>
-                <span>Log Out</span>
-              </div>
+              <div className={classes.option}>Log Out</div>
             </div>
           </div>
-
         </div>
 
         <div className={classes.right}>
-          <Navbar />
+          <Navbar toggleDrawer={toggleDrawer} />
           <Outlet />
         </div>
       </div>

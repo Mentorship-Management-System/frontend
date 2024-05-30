@@ -37,8 +37,6 @@ const meetings = [
 const data = [
   { title: "Mentees", count: 40, icon: cartoon1 },
   { title: "Mentors", count: "40+", icon: cartoon2 },
-  { title: "Courses", count: "8", icon: cartoon3 },
-  { title: "Subjects", count: "50+", icon: cartoon4 },
 ];
 
 const TeachersMeetingsChart = () => {
@@ -46,7 +44,8 @@ const TeachersMeetingsChart = () => {
     options: {
       chart: {
         type: "line",
-        height: 350,
+        width: "100%",
+        height: "90%",
         toolbar: {
           show: false,
         },
@@ -76,27 +75,31 @@ const TeachersMeetingsChart = () => {
   };
 
   return (
-    <div>
-      <Heading fontSize="1.3rem">Mentor Mentee Meetings</Heading>
+    <Box w="100%" h="100%">
+      <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
+        Mentor Mentee Meetings
+      </Heading>
       <Chart
         options={teachersMeetingsData.options}
         series={teachersMeetingsData.series}
         type="line"
-        height={350}
-        width={700}
+        height={teachersMeetingsData.options.chart.height}
+        width={teachersMeetingsData.options.chart.width}
       />
-    </div>
+    </Box>
   );
 };
 
 const Dashboard = () => {
   //hooks
-  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
   console.log(mentor);
 
   return (
     <div className={styles.dashboardContainer}>
-      <h1>Welcome {mentor.user.fname} {mentor.user.lname}</h1>
+      <h1>
+        Welcome {mentor.user.fname} {mentor.user.lname}
+      </h1>
       <div className={styles.flexContainer}>
         {data.map((item, index) => (
           <HStack className={styles.dashboardCard} key={index}>
@@ -111,9 +114,9 @@ const Dashboard = () => {
         ))}
       </div>
       <Flex className={styles.charts}>
-        <Center className={styles.chart}>
+        <Box className={styles.chart}>
           <TeachersMeetingsChart className={styles.chartItem} />
-        </Center>
+        </Box>
         <Center className={styles.chart1}>
           <Box className={styles.timelineContainer}>
             <Heading
@@ -138,13 +141,15 @@ const Dashboard = () => {
                 </Box>
               ))}
             </Box>
-            <Button
-              mt="4"
-              colorScheme="blue"
-              onClick={() => (window.location.href = "/mentor/Meetings")}
-            >
-              View All
-            </Button>
+            <Flex className={styles.buttonCont}>
+              <Button
+                mt="4"
+                colorScheme="blue"
+                onClick={() => (window.location.href = "/mentor/Meetings")}
+              >
+                View All
+              </Button>
+            </Flex>
           </Box>
         </Center>
       </Flex>

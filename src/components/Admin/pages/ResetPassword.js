@@ -33,83 +33,72 @@ const ResetPassword = ({ onSubmit }) => {
         <h1>Reset Password</h1>
       </div>
 
-      <div>
-        <div>
-          <h2>Enter current password</h2>
-        </div>
-        <div className={styles.inputBox}>
-          <SiSpringsecurity className={styles.SecurityIcon} />
-          <input
-            type={showCurrentPassword ? "text" : "password"}
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
+      <h2>Enter current password</h2>
+      <div className={styles.inputBox}>
+        <input
+          type={showCurrentPassword ? "text" : "password"}
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+        />
+        {showCurrentPassword ? (
+          <IoEyeOutline
+            className={styles.EyeIcon}
+            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
           />
-          {showCurrentPassword ? (
-            <IoEyeOutline
-              className={styles.EyeIcon}
-              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-            />
-          ) : (
-            <IoEyeOffOutline
-              className={styles.EyeIcon}
-              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-            />
-          )}
-        </div>
-        <div>
-          <h2>Enter new password</h2>
-        </div>
-        <div className={styles.inputBox}>
-          <SiSpringsecurity className={styles.SecurityIcon} />
-          <input
-            type={showNewPassword ? "text" : "password"}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+        ) : (
+          <IoEyeOffOutline
+            className={styles.EyeIcon}
+            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
           />
-          {showNewPassword ? (
-            <IoEyeOutline
-              className={styles.EyeIcon}
-              onClick={() => setShowCurrentPassword(!showNewPassword)}
-            />
-          ) : (
-            <IoEyeOffOutline
-              className={styles.EyeIcon}
-              onClick={() => setShowCurrentPassword(!showNewPassword)}
-            />
-          )}
-        </div>
-        <div>
-          <h2>Re-enter new password</h2>
-        </div>
-        <div className={styles.inputBox}>
-          <SiSpringsecurity className={styles.SecurityIcon} />
-          <input
-            type={showReenteredPassword ? "text" : "password"}
-            value={reenteredPassword}
-            onChange={(e) => setReenteredPassword(e.target.value)}
+        )}
+      </div>
+      <h2>Enter new password</h2>
+      <div className={styles.inputBox}>
+        <input
+          type={showNewPassword ? "text" : "password"}
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        {showNewPassword ? (
+          <IoEyeOutline
+            className={styles.EyeIcon}
+            onClick={() => setShowNewPassword(!showNewPassword)}
           />
-          {showReenteredPassword ? (
-            <IoEyeOutline
-              className={styles.EyeIcon}
-              onClick={() => setShowCurrentPassword(!showReenteredPassword)}
-            />
-          ) : (
-            <IoEyeOffOutline
-              className={styles.EyeIcon}
-              onClick={() => setShowCurrentPassword(!showReenteredPassword)}
-            />
-          )}
-        </div>
+        ) : (
+          <IoEyeOffOutline
+            className={styles.EyeIcon}
+            onClick={() => setShowNewPassword(!showNewPassword)}
+          />
+        )}
+      </div>
+      <h2>Re-enter new password</h2>
+      <div className={styles.inputBox}>
+        <input
+          type={showReenteredPassword ? "text" : "password"}
+          value={reenteredPassword}
+          onChange={(e) => setReenteredPassword(e.target.value)}
+        />
+        {showReenteredPassword ? (
+          <IoEyeOutline
+            className={styles.EyeIcon}
+            onClick={() => setShowReenteredPassword(!showReenteredPassword)}
+          />
+        ) : (
+          <IoEyeOffOutline
+            className={styles.EyeIcon}
+            onClick={() => setShowReenteredPassword(!showReenteredPassword)}
+          />
+        )}
       </div>
       <div className={styles.submitBtn}>
-        <button onClick={handleResetPassword}> SUBMIT</button>
+        <button onClick={handleResetPassword}> Submit</button>
       </div>
       {/* <div className={styles.submitBtn}>
                 <button onClick={handleSubmit}> Done</button>
             </div> */}
-      <div className={styles.fpLink}>
+      {/* <div className={styles.fpLink}>
         <a href="/password-recovery">Forgot Password</a>
-      </div>
+      </div> */}
 
       {successMessage && <p>{successMessage}</p>}
       {errorMessage && <p>{errorMessage}</p>}

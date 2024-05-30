@@ -28,10 +28,14 @@ const dummyData = [
   { name: "Sanjasdfy Das", roll: "csb20079", programme: "B-tech" },
   { name: "Sgganjay Das", roll: "csb20079", programme: "B-tech" },
 ];
-export default function SetMeetingModal({ handelShowModal, handleSetMeeting, isChatMeeting }) {
+export default function SetMeetingModal({
+  handelShowModal,
+  handleSetMeeting,
+  isChatMeeting,
+}) {
   //hooks
   const Navigate = useNavigate();
-  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
 
   //state variables
   const [students, setStudents] = useState([]);
@@ -54,16 +58,16 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting, isC
   //useEffect functions
   useEffect(() => {
     get_students_by_mentor_id(mentor.token, mentor.user.mentor_id)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
         setStudents(result.students);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-      })
-  }, [])
-  
+      });
+  }, []);
+
   const handleFilterChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
   };
@@ -71,32 +75,36 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting, isC
   const handleNameClick = (student) => {
     // console.log(selectedStudents.includes(student))
     if (selectedStudents.includes(student)) {
-      setSelectedStudents(selectedStudents.filter((selected) => selected.student_id !== student.student_id));
+      setSelectedStudents(
+        selectedStudents.filter(
+          (selected) => selected.student_id !== student.student_id
+        )
+      );
     } else {
       setSelectedStudents([...selectedStudents, student]);
     }
   };
 
   const setMeeting = () => {
-    if(isChatMeeting){
+    if (isChatMeeting) {
       console.log("Setting meeting for chat");
     } else {
       console.log("Setting normal meeting");
       const date_time = meetingTime.split("T");
       let new_meeting = {
-        "title": meetingName,
-        "description": meetingDescription,
-        "date": date_time[0],
-        "time": date_time[1],
-        "mentor_id": mentor.user.mentor_id,
-        "student_ids": selectedStudents.map(({ student_id }) => student_id)
-      }  
+        title: meetingName,
+        description: meetingDescription,
+        date: date_time[0],
+        time: date_time[1],
+        mentor_id: mentor.user.mentor_id,
+        student_ids: selectedStudents.map(({ student_id }) => student_id),
+      };
       handleSetMeeting(new_meeting);
     }
-  }
+  };
 
   return (
-    <Box>
+    <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.modalContent}>
           <Flex className={styles.header}>
@@ -140,16 +148,20 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting, isC
               </Text>
             )}
             {selectedStudents.map((mentee, index) => (
-              <Text key={index}>{mentee.fname} {mentee.lname}</Text>
+              <Text key={index}>
+                {mentee.fname} {mentee.lname}
+              </Text>
             ))}
           </div>
           <Flex justify="flex-end" gap="10px" mt="3%">
-            {!isChatMeeting && <Button
-              colorScheme="blue"
-              onClick={() => setShowMentees(!showMentees)}
-            >
-              Select mentees
-            </Button>}
+            {!isChatMeeting && (
+              <Button
+                colorScheme="blue"
+                onClick={() => setShowMentees(!showMentees)}
+              >
+                Select mentees
+              </Button>
+            )}
             <Button colorScheme="blue" onClick={setMeeting}>
               Set
             </Button>
@@ -200,7 +212,9 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting, isC
                     checked={selectedStudents.includes(item)}
                     readOnly
                   />
-                  <span className={styles.name}>{item.fname} {item.lname}</span>
+                  <span className={styles.name}>
+                    {item.fname} {item.lname}
+                  </span>
                   <span className={styles.name1}>{item.enrollment_no}</span>
                 </div>
               ))}
@@ -216,6 +230,6 @@ export default function SetMeetingModal({ handelShowModal, handleSetMeeting, isC
           </div>
         </div>
       )}
-    </Box>
+    </div>
   );
 }

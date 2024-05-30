@@ -18,12 +18,15 @@ import Model from "./Model";
 import SetMeetingModal from "./SetMeetingModal";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { create_meeting, get_meetings_by_mentor_id } from "../../../api/meetingApi";
+import {
+  create_meeting,
+  get_meetings_by_mentor_id,
+} from "../../../api/meetingApi";
 
 const Meetings = () => {
   //hooks
   const Navigate = useNavigate();
-  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
 
   //state variables
   const [showModal, setShowModal] = useState(false);
@@ -35,17 +38,17 @@ const Meetings = () => {
   useEffect(() => {
     const fetchMeeting = () => {
       get_meetings_by_mentor_id(mentor.token, mentor.user.mentor_id)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
-          setMeetings(result.meetings)
+          setMeetings(result.meetings);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchMeeting();
-  }, [])
+  }, []);
 
   const toggleOpenModal = (e, meetingId) => {
     e.stopPropagation();
@@ -55,14 +58,14 @@ const Meetings = () => {
   const handleSetMeeting = (new_meeting) => {
     console.log(new_meeting);
     create_meeting(mentor.token, new_meeting)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
         setMeetings(result.meetings);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-      })
+      });
     setShowModal(false);
   };
 
@@ -81,9 +84,7 @@ const Meetings = () => {
   return (
     <Box className={styles.pageContainer}>
       <Box className={styles.pageHeader}>
-        <Heading as="h1" fontSize="1.4rem">
-          Meeting Management
-        </Heading>
+        <Heading>Meeting Management</Heading>
       </Box>
       {/* Add filter selector */}
       <Flex className={styles.buttons}>
@@ -96,11 +97,7 @@ const Meetings = () => {
             <option value="pending">Pending Meetings</option>
             <option value="completed">Completed Meetings</option>
           </Select>
-          <Button
-            colorScheme="blue"
-            onClick={() => setShowModal(!showModal)}
-            w="10vw"
-          >
+          <Button colorScheme="blue" onClick={() => setShowModal(!showModal)}>
             Set Meeting
           </Button>
         </Flex>
@@ -115,19 +112,14 @@ const Meetings = () => {
             }`}
           >
             <Box className={styles.details}>
-              <Heading className={styles.meetingName} fontSize="1.2rem">
-                {meeting.title}
-              </Heading>
+              <Heading className={styles.meetingName}>{meeting.title}</Heading>
               <Text className={styles.meetingTime}>{meeting.time}</Text>
               <Text className={styles.meetingDescription}>
                 {meeting.description}
               </Text>
             </Box>
             <Flex className={styles.modalContainer}>
-              <Heading
-                fontSize="1rem"
-                color={meeting.approve ? "green" : "#ffc107"}
-              >
+              <Heading color={meeting.approve ? "green" : "#ffc107"}>
                 {meeting.approve ? "Completed" : "Pending"}
               </Heading>
 

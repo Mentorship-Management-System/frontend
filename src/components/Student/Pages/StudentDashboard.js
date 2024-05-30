@@ -36,8 +36,6 @@ const meetings = [
 const data = [
   { title: "Mentees", count: 40, icon: cartoon1 },
   { title: "Mentors", count: "40+", icon: cartoon2 },
-  { title: "Courses", count: "8", icon: cartoon3 },
-  { title: "Subjects", count: "50+", icon: cartoon4 },
 ];
 
 const TeachersMeetingsChart = () => {
@@ -45,7 +43,8 @@ const TeachersMeetingsChart = () => {
     options: {
       chart: {
         type: "line",
-        height: 350,
+        height: "90%",
+        width: "100%",
         toolbar: {
           show: false,
         },
@@ -79,16 +78,18 @@ const TeachersMeetingsChart = () => {
   };
 
   return (
-    <div>
-      <Heading fontSize="1.3rem">CGPA/SGPA Graph </Heading>
+    <Box w="100%" h="90%">
+      <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
+        CGPA/SGPA Graph{" "}
+      </Heading>
       <Chart
         options={teachersMeetingsData.options}
         series={teachersMeetingsData.series}
         type="line"
-        height={350}
-        width={700}
+        height={teachersMeetingsData.options.chart.width}
+        width={teachersMeetingsData.options.chart.width}
       />
-    </div>
+    </Box>
   );
 };
 

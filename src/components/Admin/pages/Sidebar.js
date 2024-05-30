@@ -6,7 +6,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const SideBar = ({ handleOptionClick }) => {
+const SideBar = ({ toggleDrawer, handleOptionClick }) => {
   const location = useLocation();
   const segments = location.pathname.split("/");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 430);
@@ -57,6 +57,15 @@ const SideBar = ({ handleOptionClick }) => {
     },
     {
       icon: (
+        <BiMessageAdd
+          size={25}
+          color={segments[2] === "Passout-mentee%20list" && "#0D30AC"}
+        />
+      ),
+      text: "Passout-mentee list",
+    },
+    {
+      icon: (
         <IoMdSettings
           size={25}
           color={segments[2] === "Profile" && "#0D30AC"}
@@ -72,6 +81,7 @@ const SideBar = ({ handleOptionClick }) => {
         {sidebarItems.map((item, index) => (
           <Link
             to={`/admin/${item.text}`}
+            onClick={toggleDrawer}
             key={index}
             className={
               segments[2] === item.text || segments[2].includes(item.text)

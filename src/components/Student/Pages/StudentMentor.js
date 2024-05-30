@@ -11,14 +11,30 @@ const StudentMentor = () => {
   const [file, setFile] = useState(null);
   //   const [uploaded, setUploaded] = useState(0);
   //   const [clicked, setClicked] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
   const [disabled, setDisabled] = useState(true);
   const Navigate = useNavigate();
+
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
       ...editedUserData,
       [fieldName]: value,
     });
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 450);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   //   const handleResetPasswordClick = () => {
   //     setShowResetPassword(!showResetPassword);
@@ -61,15 +77,18 @@ const StudentMentor = () => {
                   </div>
                 </div>
                 <div className={styles.buttonDiv}>
+                  {!isMobile && (
+                    <Button
+                      _hover={{ backgroundColor: "#0d3ffc" }}
+                      backgroundColor="#0d30ac"
+                      color="white"
+                      onClick={() => Navigate("/student/Message")}
+                    >
+                      Message
+                    </Button>
+                  )}
                   <Button
-                    _hover={{ backgroundColor: "#0d3ffc" }}
-                    backgroundColor="#0d30ac"
-                    color="white"
-                    onClick={() => Navigate("/student/Message")}
-                  >
-                    Message
-                  </Button>
-                  <Button
+                    className={styles.profileBtns}
                     variant="outline"
                     onClick={() => {
                       Navigate(-1);
@@ -79,6 +98,19 @@ const StudentMentor = () => {
                   </Button>
                 </div>
               </div>
+              {isMobile && (
+                <Flex justify="flex-end">
+                  <Button
+                    className={styles.profileBtns}
+                    _hover={{ backgroundColor: "#0d3ffc" }}
+                    backgroundColor="#0d30ac"
+                    color="white"
+                    onClick={() => Navigate("/student/Message")}
+                  >
+                    Message
+                  </Button>
+                </Flex>
+              )}
 
               <div className={styles.details}>
                 <Flex className={styles.doublecontent}>

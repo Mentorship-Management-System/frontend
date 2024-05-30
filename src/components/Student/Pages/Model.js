@@ -9,8 +9,14 @@ const Model = ({ isOpenModal, toggleOpenModal, meeting }) => {
     toggleOpenModal();
   };
   return (
-    <div>
-      <Button onClick={toggleOpenModal}>View</Button>
+    <Flex justify="flex-end">
+      <Button
+        onClick={toggleOpenModal}
+        h={["8vw", "8vw", "3vw", "2.7vw"]}
+        fontSize={[".9rem", ".9rem", "1rem", "1rem"]}
+      >
+        View
+      </Button>
       {isOpenModal && (
         <div className={`${styles.modal} ${styles.modal1}`}>
           <div className={styles.modalContent}>
@@ -44,7 +50,7 @@ const Model = ({ isOpenModal, toggleOpenModal, meeting }) => {
           </div>
         </div>
       )}
-    </div>
+    </Flex>
   );
 };
 

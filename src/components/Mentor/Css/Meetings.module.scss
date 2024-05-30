@@ -1,5 +1,4 @@
 /* SetMeetingPage.module.scss */
-
 .pageContainer {
   padding: 2% 3%;
   position: relative;
@@ -10,6 +9,9 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  h2 {
+    font-size: 1.5rem;
+  }
 }
 .buttons {
   justify-content: flex-end;
@@ -26,7 +28,6 @@
 
   .meetingItem {
     width: 36vw;
-    position: relative;
     background-color: #ffffff;
     padding: 2% 2%;
     border-radius: 8px;
@@ -34,12 +35,19 @@
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
+    position: relative;
     .modalContainer {
       flex-direction: column;
       justify-content: space-between;
-      position: relative;
+      h2 {
+        font-size: 1.2rem;
+        text-align: right;
+      }
     }
     .details {
+      .meetingName {
+        font-size: 1.2rem;
+      }
       .meetingTime {
         margin-bottom: 10px;
         font-weight: 600;
@@ -61,18 +69,15 @@
 }
 
 /* Styles for meeting items */
-
 .popupContainer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  // background-color: rgba(0, 0, 0, 0.053);
   display: flex;
   justify-content: center;
   z-index: 10;
-  // align-items: center;
 
   .popup {
     min-width: 28vw;
@@ -84,7 +89,7 @@
     padding: 2%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    // justify-content: space-between;
     .header {
       text-align: center;
       font-size: 1.5rem;
@@ -93,6 +98,7 @@
     }
     .content {
       overflow-y: scroll;
+      flex-grow: 1;
       .nameRow {
         display: flex;
         align-items: center;
@@ -106,6 +112,7 @@
         .name1 {
           flex-grow: 1;
           width: 5vw;
+          text-align: right;
         }
         .name {
           margin-right: 10px;
@@ -127,18 +134,28 @@
     }
   }
 }
+.overlay {
+  height: 100%;
+  width: 100%;
+  // background-color: rgba(5, 5, 5, 0.103);
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  padding-top: 15%;
+}
 .modal1 {
-  left: -550% !important;
-  top: -250% !important;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
 }
 .modal {
-  position: absolute;
-  top: 10%;
-  left: 30%;
-  z-index: 9;
   .modalContent {
-    min-width: 34vw;
-    min-height: 60% !important;
+    min-width: 30vw;
+    min-height: 10vw !important;
     background-color: white;
     border: 2px solid rgba(32, 52, 165, 0.671);
     border-radius: 8px;
@@ -183,4 +200,162 @@
 
 button {
   margin-left: 10px;
+}
+
+@media only screen and (max-width: 450px) {
+  .pageHeader {
+    h2 {
+      font-size: 1.3rem;
+    }
+  }
+  .buttons {
+    justify-content: space-around;
+    button {
+      width: 40vw;
+      height: 8vw;
+
+      font-size: 0.9rem;
+    }
+    select {
+      height: 8vw;
+      font-size: 0.9rem;
+    }
+  }
+  .meetingsContainer {
+    .meetingItem {
+      width: 100%;
+      .details {
+        .meetingTime {
+          font-size: 0.9rem;
+        }
+      }
+    }
+    .completed .pending {
+      font-size: 0.9rem;
+    }
+  }
+  .overlay {
+    padding-top: 30%;
+  }
+  .modal {
+    .modalContent {
+      width: 90vw;
+      .header {
+        h1 {
+          font-size: 1.1rem;
+        }
+        svg {
+          font-size: 1.5rem;
+        }
+      }
+      .modalBody {
+        label {
+          font-size: 1rem;
+        }
+        textarea {
+          height: 20vh;
+          font-size: 1rem;
+        }
+      }
+      button {
+        font-size: 0.9rem;
+        height: 8vw;
+      }
+    }
+  }
+  .popupContainer {
+    .popup {
+      width: 90vw;
+      .header {
+        font-size: 1.3rem;
+      }
+      .content {
+        .nameRow {
+          input {
+            width: 3vw;
+            height: 3vw;
+          }
+          .name1 {
+            font-size: 1rem;
+          }
+          .name {
+            font-size: 1rem;
+          }
+        }
+      }
+      .footer {
+        margin-top: 15px;
+        button {
+          height: 8vw;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 390px) {
+  .pageHeader {
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+
+  .meetingsContainer {
+    .meetingItem {
+      .modalContainer {
+        h2 {
+          font-size: 1rem;
+        }
+      }
+      .details {
+        .meetingName {
+          font-size: 1rem;
+        }
+        .meetingTime {
+          font-size: 0.9rem;
+        }
+        .meetingDescription {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+  .modal {
+    .modalContent {
+      .header {
+        h1 {
+          font-size: 1rem;
+        }
+      }
+      .modalBody {
+        textarea {
+          height: 20vh;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+  .popupContainer {
+    .popup {
+      div {
+        select {
+          font-size: 0.9rem;
+        }
+      }
+      .header {
+        font-size: 1.3rem;
+      }
+      .content {
+        .nameRow {
+          .name1 {
+            font-size: 0.9rem;
+          }
+          .name {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
 }

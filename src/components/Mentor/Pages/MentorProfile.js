@@ -66,13 +66,13 @@ const MentorProfile = () => {
                   <div className={styles.profiletxt}>
                     <h1 className={styles.profilename}>Profile</h1>
                     <h2 className={styles.profilesubtext}>
-                      Update your photo and personal details
+                      Update photo and personal details
                     </h2>
                   </div>
                 </div>
                 <div className={styles.Reset}>
                   <button onClick={handleResetPasswordClick}>
-                    RESET PASSWORD
+                    Reset Password
                   </button>
                 </div>
               </div>

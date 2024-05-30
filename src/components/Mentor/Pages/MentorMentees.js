@@ -89,8 +89,8 @@ const menteesData = [
 const Mentees = () => {
   //hooks
   const Navigate = useNavigate();
-  const mentor = useSelector(state => state.mentorAuth.mentor);
-  
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
+
   //state variables
   const [students, setStudents] = useState([]);
   const [tableData, setTableData] = useState([]);
@@ -138,11 +138,11 @@ const Mentees = () => {
   useEffect(() => {
     const fetchStudents = () => {
       get_students_by_mentor_id(mentor.token, mentor.user.mentor_id)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
           let temp_data = [];
-          result.students.map(student => {
+          result.students.map((student) => {
             temp_data.push({
               id: student.student_id,
               name: student.fname + " " + student.lname,
@@ -150,17 +150,17 @@ const Mentees = () => {
               programme: student.programme,
               email: student.email,
               contact: student.phone,
-            })
-          })
+            });
+          });
           setTableData(temp_data);
           setStudents(result.students);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchStudents();
-  }, [])
+  }, []);
 
   return (
     <div className={styles.menteesContainer}>
@@ -183,8 +183,7 @@ const Mentees = () => {
           placeholder="Select programme"
           onChange={(value) => handleFilterChange("branch", value)}
           className={styles.selectBar}
-          h="7vh"
-          w="30%"
+          w={["60%", "70%", "30%", "30%"]}
         >
           <option value="cse">B-Tech</option>
           <option value="ece">M-Tech</option>
@@ -192,48 +191,12 @@ const Mentees = () => {
           <option value="civil">BCA</option>
           {/* Add more options for other branches */}
         </Select>
-        {showList ? (
-          <IoListOutline onClick={() => setShowList(!showList)} />
-        ) : (
-          <CiGrid41 onClick={() => setShowList(!showList)} />
-        )}
         <button className={styles.searchButton}>Search</button>
       </div>
 
-      {/* Cards */}
-      {showList ? (
-        <div className={styles.table}>
-          <TableList columns={columns} data={tableData} />
-        </div>
-      ) : (
-        <div className={styles.cardsContainer}>
-          {students.map((student) => (
-            <Flex justify="space-between" className={styles.headerCard}>
-              <div className={styles.card} key={student.student_id}>
-                <img
-                  src={student.image}
-                  alt={student.name}
-                  className={styles.menteeImage}
-                />
-                <div className={styles.menteeInfo}>
-                  <p className={styles.menteeName}>{student.fname} {student.lname}</p>
-                  <p className={styles.menteeRole}>{student.enrollment_no}</p>
-                </div>
-              </div>
-              <Button
-                className={styles.button}
-                variant="outline"
-                colorScheme="blue"
-                onClick={() => {
-                  Navigate(`/mentor/Mentees/${student.enrollment_no}`);
-                }}
-              >
-                View
-              </Button>
-            </Flex>
-          ))}
-        </div>
-      )}
+      <div className={styles.table}>
+        <TableList columns={columns} data={tableData} />
+      </div>
     </div>
   );
 };

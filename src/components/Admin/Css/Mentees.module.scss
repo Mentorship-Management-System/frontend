@@ -25,6 +25,9 @@
       border-radius: 5px;
       padding: 1% 2%;
     }
+    .selectBar {
+      height: 3.3vw;
+    }
     .searchButton {
       padding: 10px 20px;
       background-color: #0d30ac;
@@ -40,57 +43,48 @@
     background-color: white;
     padding: 2%;
   }
-  .cardsContainer {
-    margin-bottom: 1%;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 2% 2% 0 2%;
-    background-color: white;
-    border-radius: 12px;
-    min-height: 80%;
-    .headerCard {
-      width: 22vw;
-      height: 14vh;
-      padding: 1.5% 2%;
-      border: 1px solid lightgray;
-      margin: 10px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-      //   padding: 10px;
-      display: flex;
-      margin-bottom: 3%;
-      align-items: center;
-      .button {
-        border-color: black;
-        font-weight: bold;
-        border-radius: 20px;
-        height: 4.5vh;
+}
+
+@media only screen and (max-width: 450px) {
+  .menteesContainer {
+    .header {
+      font-size: 1.3rem;
+    }
+    .searchContainer {
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 15px;
+      .searchBar {
+        height: 10vw;
+        flex-grow: 1;
       }
-      .card {
-        display: flex;
-        align-items: center;
+      .selectBar {
+        height: 10vw;
+      }
+      .searchButton {
+        padding: 6px 18px;
+      }
+    }
+  }
+}
 
-        .menteeImage {
-          width: 4vw;
-          height: 4vw;
-          border-radius: 50%;
-          margin-right: 10px;
-        }
-        .menteeInfo {
-          flex-grow: 1;
-          .menteeName {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #0d30ac;
-          }
-
-          .menteeRole {
-            margin: 0;
-          }
-        }
+@media only screen and (max-width: 390px) {
+  .menteesContainer {
+    .header {
+      font-size: 1.2rem;
+    }
+    .searchContainer {
+      margin-bottom: 20px;
+      .searchBar {
+        font-size: 0.9rem;
+      }
+      .selectBar {
+        height: 10vw;
+        font-size: 0.9rem;
+      }
+      .searchButton {
+        padding: 4px 18px;
+        font-size: 0.9rem;
       }
     }
   }

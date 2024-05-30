@@ -77,6 +77,7 @@
     margin-bottom: 2%;
   }
   .content {
+    flex-grow: 1;
     overflow-y: scroll;
   }
 }
@@ -118,4 +119,58 @@
 
 button {
   margin-left: 10px;
+}
+
+@media only screen and (max-width: 450px) {
+  .header {
+    .heading {
+      font-size: 1.3rem;
+    }
+    .searchContainer {
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 15px;
+      .searchBar {
+        height: 10vw;
+        width: 60vw;
+      }
+      .selectBar {
+        height: 10vw;
+      }
+      .searchButton {
+        padding: 6px 18px;
+      }
+    }
+  }
+  .nameRow {
+    input {
+      width: 3vw;
+      height: 3vw;
+      // font-size: 2rem;
+    }
+  }
+
+  .popup {
+    width: 90vw;
+  }
+}
+
+@media only screen and (max-width: 390px) {
+  .header {
+    .heading {
+      font-size: 1.2rem;
+    }
+    .searchContainer {
+      .searchBar {
+        height: 8vw;
+        width: 60vw;
+      }
+      .selectBar {
+        height: 8vw;
+      }
+      .searchButton {
+        padding: 6px 18px;
+      }
+    }
+  }
 }

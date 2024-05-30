@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Navbar.module.scss"; // Import CSS Modules
 import { FaBars, FaUserCircle, FaSearch } from "react-icons/fa"; // Import icons from react-icons library
-import { VStack, Text, Flex, Box, HStack, Center } from "@chakra-ui/react";
+import {
+  VStack,
+  Text,
+  Flex,
+  Box,
+  HStack,
+  Center,
+  Heading,
+} from "@chakra-ui/react";
 import { IoIosNotifications } from "react-icons/io";
+import { HiBars3BottomLeft } from "react-icons/hi2";
 
-const Navbar = () => {
+const Navbar = ({ toggleDrawer }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [greeting, setGreeting] = useState("");
 
@@ -49,24 +58,23 @@ const Navbar = () => {
   const formattedDate = formatDate(currentDate);
   return (
     <>
-      <Flex className={classes.rootHeader}>
-        <div className={classes.greet}>
-          <p className={classes.greeting}>{greeting}</p>
+      <Flex style={{ backgroundColor: "white", alignItems: "center" }}>
+        <Center onClick={toggleDrawer} className={classes.barIcon}>
+          <HiBars3BottomLeft className={classes.icon} />
+        </Center>
+        <Flex className={classes.rootHeader}>
+          <Heading className={classes.header}>
+            Mentorship Management System
+          </Heading>
+          <div className={classes.greet}>
+            <p className={classes.greeting}>{greeting}</p>
 
-          <div className={classes.time}>
-            <span>{formattedDate}</span>
-            <span>{currentDate.toLocaleTimeString()}</span>
+            <div className={classes.time}>
+              <span>{formattedDate}</span>
+              <span>{currentDate.toLocaleTimeString()}</span>
+            </div>
           </div>
-        </div>
-        <HStack className={classes.navbarRight}>
-          <Flex className={classes.search}>
-            <FaSearch className={classes.searchIcon} color="gray" />
-            <input type="text" placeholder="Search..." />
-          </Flex>
-          <Center className={classes.notiIcon}>
-            <IoIosNotifications color="#ffff" size={30} />
-          </Center>
-        </HStack>
+        </Flex>
       </Flex>
     </>
   );

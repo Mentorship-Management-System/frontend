@@ -2,9 +2,12 @@
 
 .tableContainer {
   width: 100%;
-  overflow-x: auto;
 }
-
+.tableBody {
+  width: 100%;
+  overflow-x: auto;
+  // overflow: scroll;
+}
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -59,4 +62,32 @@
 
 .btnTable {
   color: rgb(17, 41, 163);
+}
+@media only screen and (max-width: 450px) {
+  .pagination {
+    button {
+      width: 20vw;
+      height: 8vw;
+      margin: 2%;
+    }
+  }
+}
+
+@media only screen and (max-width: 390px) {
+  .table th,
+  .table td {
+    font-size: 0.9rem;
+  }
+  .table tr {
+    font-size: 0.9rem;
+  }
+  .table th {
+    font-size: 0.9rem;
+  }
+
+  .pagination {
+    button {
+      font-size: 0.9rem;
+    }
+  }
 }

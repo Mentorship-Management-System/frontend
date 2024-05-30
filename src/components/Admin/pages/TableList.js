@@ -53,62 +53,64 @@ function Table({ columns, data }) {
           </Center>
         </Flex>
         {/* <button onClick={() => toggleAllRowsSelected()}>Select All Rows</button> */}
-        <table className={styles.table} {...getTableProps()}>
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>
-                    {column.render("Header")}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell, index) => {
-                    if (index === row.cells.length - 1) {
-                      // If it's the last cell in the row
-                      return (
-                        <React.Fragment key={cell.getCellProps().key}>
-                          <td {...cell.getCellProps()}>
+        <Box className={styles.tableBody}>
+          <table className={styles.table} {...getTableProps()}>
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th {...column.getHeaderProps()}>
+                      {column.render("Header")}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {page.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()}>
+                    {row.cells.map((cell, index) => {
+                      if (index === row.cells.length - 1) {
+                        // If it's the last cell in the row
+                        return (
+                          <React.Fragment key={cell.getCellProps().key}>
+                            <td {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </td>
+                            <td>
+                              <button
+                                className={styles.btnTable}
+                                onClick={() =>
+                                  Navigate(
+                                    `/${segments[1]}/Mentees/${cell.row.values.rollNo}`
+                                  )
+                                }
+                              >
+                                view
+                              </button>
+                            </td>
+                          </React.Fragment>
+                        );
+                      } else {
+                        // For other cells in the row
+                        return (
+                          <td
+                            key={cell.getCellProps().key}
+                            {...cell.getCellProps()}
+                          >
                             {cell.render("Cell")}
                           </td>
-                          <td>
-                            <button
-                              className={styles.btnTable}
-                              onClick={() =>
-                                Navigate(
-                                  `/${segments[1]}/Mentees/${cell.row.values.rollNo}`
-                                )
-                              }
-                            >
-                              view
-                            </button>
-                          </td>
-                        </React.Fragment>
-                      );
-                    } else {
-                      // For other cells in the row
-                      return (
-                        <td
-                          key={cell.getCellProps().key}
-                          {...cell.getCellProps()}
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      );
-                    }
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                        );
+                      }
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </Box>
         <div className={styles.pagination}>
           <button onClick={() => previousPage()} disabled={!canPreviousPage}>
             Previous

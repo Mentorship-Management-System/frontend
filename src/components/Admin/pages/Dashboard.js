@@ -6,14 +6,12 @@ import cartoon1 from "../../../media/graduated.png";
 import cartoon2 from "../../../media/teacher.png";
 import cartoon3 from "../../../media/project.png";
 import cartoon4 from "../../../media/research.png";
-import { Center, Flex, HStack, Heading } from "@chakra-ui/react";
+import { Box, Center, Flex, HStack, Heading } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 
 const data = [
   { title: "Students", count: 580, icon: cartoon1 },
   { title: "Teachers", count: "40+", icon: cartoon2 },
-  { title: "Courses", count: "8", icon: cartoon3 },
-  { title: "Subjects", count: "50+", icon: cartoon4 },
 ];
 
 const TeachersMeetingsChart = () => {
@@ -21,7 +19,8 @@ const TeachersMeetingsChart = () => {
     options: {
       chart: {
         type: "line",
-        height: 350,
+        height: "90%",
+        width: "100%",
         toolbar: {
           show: false,
         },
@@ -51,16 +50,19 @@ const TeachersMeetingsChart = () => {
   };
 
   return (
-    <div>
-      <Heading fontSize="1.3rem">Mentor Mentee Meetings</Heading>
+    <Box w="100%" h="100%">
+      {" "}
+      <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
+        Mentor Mentee Meetings
+      </Heading>
       <Chart
         options={teachersMeetingsData.options}
         series={teachersMeetingsData.series}
         type="line"
-        height={350}
-        width={550}
+        height={teachersMeetingsData.options.chart.height}
+        width={teachersMeetingsData.options.chart.width}
       />
-    </div>
+    </Box>
   );
 };
 
@@ -69,7 +71,8 @@ const BoysGirlsCountChart = () => {
     options: {
       chart: {
         type: "bar",
-        height: 350,
+        height: "90%",
+        width: "100%",
         toolbar: {
           show: false,
         },
@@ -103,27 +106,32 @@ const BoysGirlsCountChart = () => {
     ],
   };
   return (
-    <div>
-      <Heading fontSize="1.3rem">Mentees</Heading>
+    <Box w="100%" h="100%">
+      {" "}
+      <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
+        Mentees
+      </Heading>
       <Chart
         options={boysGirlsCountData.options}
         series={boysGirlsCountData.series}
         type="bar"
-        height={350}
-        width={550}
+        height={boysGirlsCountData.options.chart.height}
+        width={boysGirlsCountData.options.chart.width}
       />
-    </div>
+    </Box>
   );
 };
 
 const Dashboard = () => {
   //hooks
-  const admin = useSelector(state => state.adminAuth.admin.user);
+  const admin = useSelector((state) => state.adminAuth.admin.user);
   console.log(admin);
 
   return (
     <div className={styles.dashboardContainer}>
-      <h1>Welcome {admin.fname} {admin.lname}</h1>
+      <h1>
+        Welcome {admin.fname} {admin.lname}
+      </h1>
       <div className={styles.flexContainer}>
         {data.map((item, index) => (
           <HStack className={styles.dashboardCard} key={index}>
@@ -138,12 +146,12 @@ const Dashboard = () => {
         ))}
       </div>
       <Flex className={styles.charts}>
-        <Center className={styles.chart}>
+        <Box className={styles.chart}>
           <TeachersMeetingsChart className={styles.chartItem} />
-        </Center>
-        <Center className={styles.chart}>
+        </Box>
+        <Box className={styles.chart}>
           <BoysGirlsCountChart className={styles.chartItem} />
-        </Center>
+        </Box>
       </Flex>
     </div>
   );

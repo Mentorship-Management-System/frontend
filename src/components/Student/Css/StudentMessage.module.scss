@@ -43,8 +43,7 @@
 }
 
 .buttons {
-  display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .button {
@@ -53,7 +52,7 @@
   border-radius: 5px;
   color: white;
   cursor: pointer;
-  padding: 6px 12px;
+  height: 3vw;
   transition: background-color 0.3s;
   margin: 0;
 }
@@ -63,7 +62,7 @@
   color: #0d30ac;
   cursor: pointer;
   font-weight: 500;
-  padding: 6px 12px;
+  height: 3vw;
   transition: background-color 0.3s;
   margin-left: 2%;
 
@@ -157,5 +156,90 @@
 
   &:hover {
     background: #007bff;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .card {
+    max-width: 35vw;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .card {
+    max-width: 34vw;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .heading {
+    font-size: 1.3rem;
+  }
+  .cardList {
+    gap: 20px;
+    padding: 1%;
+  }
+  .card {
+    padding: 3%;
+    max-width: 100%;
+  }
+
+  .name {
+    font-size: 1.2em;
+  }
+
+  .message {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    line-height: 20px;
+  }
+  .buttons {
+    margin: 2% auto;
+  }
+
+  .button {
+    height: 8vw;
+    min-width: 20vw;
+    font-size: 0.9rem;
+  }
+  .button1 {
+    height: 8vw;
+    font-size: 0.9rem;
+  }
+
+  .modalContent {
+    padding: 20px;
+    //   text-align: center;
+    width: 80vw;
+    h2 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .textarea {
+    font-size: 1rem;
+  }
+}
+
+@media only screen and (max-width: 390px) {
+  .heading {
+    font-size: 1.3rem;
+  }
+
+  .name {
+    font-size: 1.1em;
+  }
+
+  .message {
+    font-size: 0.9rem;
+  }
+
+  .modalContent {
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+
+  .textarea {
+    font-size: 0.9rem;
   }
 }

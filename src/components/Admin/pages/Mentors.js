@@ -88,13 +88,12 @@ const menteesData = [
 const Mentors = () => {
   //hooks
   const Navigate = useNavigate();
-  const admin = useSelector(state => state.adminAuth.admin.user);
-  const token = useSelector(state => state.adminAuth.admin.token);
+  const admin = useSelector((state) => state.adminAuth.admin.user);
+  const token = useSelector((state) => state.adminAuth.admin.token);
   console.log(admin);
-  
+
   //state variables
   const [mentors, setMentors] = useState([]);
-  const [showList, setShowList] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState({
     year: "",
@@ -106,27 +105,27 @@ const Mentors = () => {
   useEffect(() => {
     const fetchMentors = () => {
       all_mentors(token)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
           setMentors(result.mentors);
           let temp_data = [];
-          result.mentors.map(mentor => {
+          result.mentors.map((mentor) => {
             temp_data.push({
               id: mentor.mentor_id,
               name: mentor.honorifics + " " + mentor.fname + " " + mentor.lname,
               title: mentor.position,
               email: mentor.email,
-            })
-          })
+            });
+          });
           setTableData(temp_data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchMentors();
-  }, [])
+  }, []);
 
   const handleFilterChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
@@ -149,12 +148,11 @@ const Mentors = () => {
       {
         Header: "Email ID",
         accessor: "email",
-      }
+      },
     ],
     []
   );
 
-  
   return (
     <div className={styles.menteesContainer}>
       {/* Heading */}
@@ -176,8 +174,7 @@ const Mentors = () => {
           placeholder="Select programme"
           onChange={(value) => handleFilterChange("branch", value)}
           className={styles.selectBar}
-          h="6vh"
-          w="30%"
+          w={["60%", "70%", "30%", "30%"]}
         >
           <option value="cse">B-Tech</option>
           <option value="ece">M-Tech</option>
@@ -185,48 +182,12 @@ const Mentors = () => {
           <option value="civil">BCA</option>
           {/* Add more options for other branches */}
         </Select>
-        {showList ? (
-          <IoListOutline onClick={() => setShowList(!showList)} />
-        ) : (
-          <CiGrid41 onClick={() => setShowList(!showList)} />
-        )}
         <button className={styles.searchButton}>Search</button>
       </div>
 
-      {/* Cards */}
-      {showList ? (
-        <div className={styles.table}>
-          <TableList columns={columns} data={tableData} />
-        </div>
-      ) : (
-        <div className={styles.cardsContainer}>
-          {mentors.map((mentor) => (
-            <Flex justify="space-between" className={styles.headerCard}>
-              <div className={styles.card} key={mentor.id}>
-                <img
-                  src={mentor.image}
-                  alt={mentor.name}
-                  className={styles.menteeImage}
-                />
-                <div className={styles.menteeInfo}>
-                  <p className={styles.menteeName}>{mentor.honorifics} {mentor.fname} {mentor.lname}</p>
-                  <p className={styles.menteeRole}>{mentor.position}</p>
-                </div>
-              </div>
-              <Button
-                className={styles.button}
-                variant="outline"
-                colorScheme="blue"
-                onClick={() => {
-                  Navigate(`/admin/Mentors/${mentor.mentor_id}`);
-                }}
-              >
-                View
-              </Button>
-            </Flex>
-          ))}
-        </div>
-      )}
+      <div className={styles.table}>
+        <TableList columns={columns} data={tableData} />
+      </div>
     </div>
   );
 };

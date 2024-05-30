@@ -60,4 +60,36 @@
       }
     }
   }
+  @media only screen and (max-width: 480px) {
+    .sidebar {
+      a {
+        height: 12%;
+        .icon {
+          width: 24%;
+          svg {
+            font-size: 1.5rem;
+          }
+        }
+        .option {
+          margin-left: 5%;
+          font-size: 0.95rem;
+        }
+      }
+    }
+    @media only screen and (max-width: 380px) {
+      .sidebar {
+        a {
+          height: 13%;
+          .icon {
+            svg {
+              font-size: 1.3rem;
+            }
+          }
+          .option {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
 }

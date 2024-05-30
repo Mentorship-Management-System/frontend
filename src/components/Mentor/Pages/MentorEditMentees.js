@@ -63,7 +63,7 @@ const ProgressChart = () => {
 const Settings = () => {
   //hooks
   const Navigate = useNavigate();
-  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
   const params = useParams();
 
   //state variables
@@ -75,6 +75,23 @@ const Settings = () => {
   //   const [uploaded, setUploaded] = useState(0);
   //   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 450);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
       ...editedUserData,
@@ -86,18 +103,18 @@ const Settings = () => {
   useEffect(() => {
     const fetchStudent = () => {
       get_student(mentor.token, params.id)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
-          setStudent(result.student)
-          setEditedUserData(result.student)
+          setStudent(result.student);
+          setEditedUserData(result.student);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchStudent();
-  }, [])
+  }, []);
 
   //   const handleResetPasswordClick = () => {
   //     setShowResetPassword(!showResetPassword);
@@ -140,22 +157,27 @@ const Settings = () => {
                   </div>
                 </div>
                 <div className={styles.buttonDiv}>
+                  {!isMobile && (
+                    <>
+                      <Button
+                        _hover={{ backgroundColor: "#0d3ffc" }}
+                        backgroundColor="#0d30ac"
+                        color="white"
+                      >
+                        Message
+                      </Button>
+                      <Button
+                        // _hover={{ backgroundColor: "#0d3ffc" }}
+                        border="1px solid #0d30ac"
+                        color="#0d30ac"
+                        onClick={() => setShowGraph(!showGraph)}
+                      >
+                        View Progress
+                      </Button>
+                    </>
+                  )}
                   <Button
-                    _hover={{ backgroundColor: "#0d3ffc" }}
-                    backgroundColor="#0d30ac"
-                    color="white"
-                  >
-                    Message
-                  </Button>
-                  <Button
-                    // _hover={{ backgroundColor: "#0d3ffc" }}
-                    border="1px solid #0d30ac"
-                    color="#0d30ac"
-                    onClick={() => setShowGraph(!showGraph)}
-                  >
-                    View Progress
-                  </Button>
-                  <Button
+                    className={styles.profileBtns}
                     variant="outline"
                     onClick={() => {
                       Navigate(-1);
@@ -165,6 +187,27 @@ const Settings = () => {
                   </Button>
                 </div>
               </div>
+              {isMobile && (
+                <Flex justify="flex-end">
+                  <Button
+                    className={styles.profileBtns}
+                    _hover={{ backgroundColor: "#0d3ffc" }}
+                    backgroundColor="#0d30ac"
+                    color="white"
+                  >
+                    Message
+                  </Button>
+                  <Button
+                    className={styles.profileBtns}
+                    // _hover={{ backgroundColor: "#0d3ffc" }}
+                    border="1px solid #0d30ac"
+                    color="#0d30ac"
+                    onClick={() => setShowGraph(!showGraph)}
+                  >
+                    View Progress
+                  </Button>
+                </Flex>
+              )}
 
               {showGraph ? (
                 <ProgressChart className={styles.chartItem} />
@@ -287,7 +330,9 @@ const Settings = () => {
                       <input
                         disabled={disabled}
                         value={editedUserData.cgpa || ""}
-                        onChange={(e) => handleFieldChange("cgpa", e.target.value)}
+                        onChange={(e) =>
+                          handleFieldChange("cgpa", e.target.value)
+                        }
                       />
                     </div>
                   </Flex>
@@ -297,7 +342,9 @@ const Settings = () => {
                       <input
                         disabled={disabled}
                         value={editedUserData.dob || ""}
-                        onChange={(e) => handleFieldChange("dob", e.target.value)}
+                        onChange={(e) =>
+                          handleFieldChange("dob", e.target.value)
+                        }
                       />
                     </div>
                   </Flex>

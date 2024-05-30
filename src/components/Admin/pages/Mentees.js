@@ -89,12 +89,11 @@ const menteesData = [
 const Mentees = () => {
   //hooks
   const Navigate = useNavigate();
-  const admin = useSelector(state => state.adminAuth.admin.user);
-  const token = useSelector(state => state.adminAuth.admin.token);
+  const admin = useSelector((state) => state.adminAuth.admin.user);
+  const token = useSelector((state) => state.adminAuth.admin.token);
   console.log(admin);
-  
+
   //state variables
-  const [showList, setShowList] = useState(false);
   const [filters, setFilters] = useState({
     year: "",
     branch: "",
@@ -107,12 +106,12 @@ const Mentees = () => {
   useEffect(() => {
     const fetchMentees = async () => {
       all_students(token)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
           setStudents(result.students);
           let temp_data = [];
-          result.students.map(student => {
+          result.students.map((student) => {
             temp_data.push({
               id: student.student_id,
               name: student.fname + " " + student.lname,
@@ -121,16 +120,16 @@ const Mentees = () => {
               mentor: student.mentor.mentor_name,
               email: student.email,
               contact: student.phone,
-            })
-          })
+            });
+          });
           setTableData(temp_data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchMentees();
-  }, [])
+  }, []);
 
   const columns = React.useMemo(
     () => [
@@ -166,8 +165,6 @@ const Mentees = () => {
     ],
     []
   );
-
-
 
   const data = React.useMemo(
     () => [
@@ -217,8 +214,7 @@ const Mentees = () => {
           placeholder="Select programme"
           onChange={(value) => handleFilterChange("branch", value)}
           className={styles.selectBar}
-          h="6vh"
-          w="30%"
+          w={["60%", "70%", "30%", "30%"]}
         >
           <option value="cse">B-Tech</option>
           <option value="ece">M-Tech</option>
@@ -226,48 +222,12 @@ const Mentees = () => {
           <option value="civil">BCA</option>
           {/* Add more options for other branches */}
         </Select>
-        {showList ? (
-          <IoListOutline onClick={() => setShowList(!showList)} />
-        ) : (
-          <CiGrid41 onClick={() => setShowList(!showList)} />
-        )}
         <button className={styles.searchButton}>Search</button>
       </div>
 
-      {/* Cards */}
-      {showList ? (
-        <div className={styles.table}>
-          <TableList columns={columns} data={tableData} />
-        </div>
-      ) : (
-        <div className={styles.cardsContainer}>
-          {students.map((mentee) => (
-            <Flex justify="space-between" className={styles.headerCard}>
-              <div className={styles.card} key={mentee.id}>
-                <img
-                  src={mentee.image}
-                  alt={mentee.name}
-                  className={styles.menteeImage}
-                />
-                <div className={styles.menteeInfo}>
-                  <p className={styles.menteeName}>{mentee.fname} {mentee.lname}</p>
-                  <p className={styles.menteeRole}>{mentee.enrollment_no}</p>
-                </div>
-              </div>
-              <Button
-                className={styles.button}
-                variant="outline"
-                colorScheme="blue"
-                onClick={() => {
-                  Navigate(`/admin/Mentees/${mentee.enrollment_no}`);
-                }}
-              >
-                View
-              </Button>
-            </Flex>
-          ))}
-        </div>
-      )}
+      <div className={styles.table}>
+        <TableList columns={columns} data={tableData} />
+      </div>
     </div>
   );
 };

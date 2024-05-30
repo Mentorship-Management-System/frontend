@@ -1,6 +1,7 @@
 // StudentCardList.js
 import React, { useState } from "react";
 import styles from "../Css/StudentMessage.module.scss";
+
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
@@ -43,7 +44,7 @@ const StudentMessage = () => {
   return (
     <Box p="3%" position="relative">
       <h1 className={styles.heading}>Message Information</h1>
-      <Flex justify="flex-end">
+      <Flex className={styles.buttons}>
         <Button className={styles.button} onClick={() => setShowModal(true)}>
           Type Message
         </Button>

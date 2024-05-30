@@ -24,7 +24,7 @@ const dummyData = [
   { name: "Dr. Rosy Sharma", menteesAllocated: 1 },
   { name: "Dr. Nityananda Sharma", menteesAllocated: 4 },
 ];
-const StudentTable = ({ students }) => {
+const PassoutMenteeList = ({ students }) => {
   //hooks
   const Navigate = useNavigate();
   const admin = useSelector((state) => state.adminAuth.admin);
@@ -215,78 +215,20 @@ const StudentTable = ({ students }) => {
       </div>
       <div className={classes.table}>
         <div className={classes.buttons}>
-          <Button onClick={() => setShowMentors(!showMentors)}>
-            Select Mentors
-          </Button>
           <div className={classes.button}>
             <Button
               variant="outline"
               border="1px solid #0d30ac"
               disabled={selectedRowKeys.length === 0}
             >
-              Assign Random Numbers
+              Delete Mentees
             </Button>
           </div>
         </div>
         <Table columns={columns} data={tableData} />
       </div>
-      {showMentors && (
-        <div className={classes.popupContainer}>
-          <div className={classes.popup}>
-            <h1 className={classes.header}>Select Mentees</h1>
-            <div className={classes.content}>
-              {mentors.map((mentor, index) => (
-                <div
-                  key={index}
-                  className={classes.nameRow}
-                  onClick={() =>
-                    handleNameClick(
-                      mentor.honorifics +
-                        " " +
-                        mentor.fname +
-                        " " +
-                        mentor.lname
-                    )
-                  }
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedNames.includes(
-                      mentor.honorifics +
-                        " " +
-                        mentor.fname +
-                        " " +
-                        mentor.lname
-                    )}
-                    readOnly
-                  />
-                  <span className={classes.name}>
-                    {mentor.honorifics} {mentor.fname} {mentor.lname}
-                  </span>
-                  <span className={classes.menteesAllocated}>
-                    Mentees allocated: {mentor.assigned_mentees.length}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className={classes.footer}>
-              <Button
-                variant="outline"
-                onClick={() => setShowMentors(!showMentors)}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => console.log("Selected Names:", selectedNames)}
-              >
-                Confirm
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default StudentTable;
+export default PassoutMenteeList;

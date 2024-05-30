@@ -1,7 +1,10 @@
 /* Navbar.module.css */
+.barIcon {
+  display: none !important;
+}
 .rootHeader {
   height: 10vh; /* Use viewport height for responsive height */
-  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -9,25 +12,29 @@
   align-items: center;
   padding: 1.5vw; /* Use viewport width for responsive padding */
   position: relative;
-  .icon {
-    display: none;
+  .header {
+    flex-grow: 1;
+    font-weight: 600;
+    font-size: 2rem;
+    color: #0d30ac;
   }
   .greet {
-    width: 16vw;
+    // width: 16vw;
 
     .greeting {
       font-weight: 600;
       font-size: 1.5rem;
       color: #0d30ac;
+      text-align: right;
     }
 
     .time {
       display: flex;
       flex-direction: row;
-      width: 80%;
-      padding-right: 1vw;
+      width: 100%;
+      // padding-right: 1vw;
       gap: 5px;
-      // justify-content: space-between;
+      justify-content: flex-end;
 
       span {
         color: #0d30ac;
@@ -36,41 +43,35 @@
       }
     }
   }
-  .navbarRight {
-    .notiIcon {
-      cursor: pointer;
-      margin-right: 10px;
-      // font-weight: bold;
-      border-radius: 50%;
-      width: 3vw;
-      height: 3vw;
-      background-color: #0d30ac;
-    }
-    .notiIcon:hover {
-      opacity: 0.8; /* Example of hover effect */
-    }
+}
 
-    .search {
-      display: flex;
-      align-items: center;
-      background-color: rgb(238, 238, 238);
-      border-radius: 8px;
-      padding: 2%;
-      width: 20vw;
-      margin-right: 3%;
-      .searchIcon {
-        cursor: pointer;
-        margin: 0 3%;
+@media only screen and (max-width: 450px) {
+  .barIcon {
+    display: block !important;
+    padding: 0 3%;
+    .icon {
+      color: #0d30ac;
+      font-size: 1.8rem;
+    }
+  }
+  .rootHeader {
+    padding: 3%;
+    height: 15vw;
+    .header {
+      display: none;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    .greet {
+      width: 100%;
+      .greeting {
+        font-size: 1.3rem;
       }
 
-      input {
-        padding: 5px;
-        /* border-radius: 5px; */
-        border: none;
-        outline: none;
-        box-shadow: none;
-        margin-right: 10px;
-        background-color: transparent;
+      .time {
+        span {
+          font-size: 0.7rem;
+        }
       }
     }
   }

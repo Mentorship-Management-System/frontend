@@ -6,7 +6,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const SideBar = ({ handleOptionClick }) => {
+const SideBar = ({ toggleDrawer, handleOptionClick }) => {
   const location = useLocation();
   const segments = location.pathname.split("/");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 430);
@@ -72,6 +72,7 @@ const SideBar = ({ handleOptionClick }) => {
         {sidebarItems.map((item, index) => (
           <Link
             to={`/student/${item.text}`}
+            onClick={toggleDrawer}
             key={index}
             className={segments[2] === item.text ? classes.selectedOption : ""}
           >
