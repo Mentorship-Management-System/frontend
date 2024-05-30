@@ -1,6 +1,6 @@
 // SetMeetingPage.jsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Box,
@@ -24,88 +24,22 @@ import {
 } from "@chakra-ui/react";
 import styles from "../../Mentor/Css/Meetings.module.scss";
 import Model from "./Model";
+import { useSelector } from "react-redux";
+import { get_meetings_by_student_id } from "../../../api/meetingApi";
 
-const MeetingsData = [
-  {
-    id: 1,
-    name: "Weekly Team Meeting",
-    time: "2024-04-01T10:00",
-    description: "Discuss project updates and plan for the week.",
-    completed: false,
-  },
-  {
-    id: 2,
-    name: "Client Presentation",
-    time: "2024-04-05T14:00",
-    description: "Present new product features to the client.",
-    completed: true,
-  },
-  {
-    id: 3,
-    name: "Design Review",
-    time: "2024-04-08T11:00",
-    description: "Review the latest design iterations.",
-    completed: false,
-  },
-  {
-    id: 4,
-    name: "Marketing Strategy Meeting",
-    time: "2024-04-12T09:30",
-    description: "Discuss marketing strategies for the upcoming campaign.",
-    completed: true,
-  },
-  {
-    id: 5,
-    name: "Product Development Meeting",
-    time: "2024-04-16T13:00",
-    description: "Brainstorm ideas for new product features.",
-    completed: true,
-  },
-  {
-    id: 6,
-    name: "Quarterly Review",
-    time: "2024-04-20T15:30",
-    description: "Review company performance for the quarter.",
-    completed: false,
-  },
-  {
-    id: 7,
-    name: "Team Building Activity",
-    time: "2024-04-25T12:00",
-    description: "Plan team-building activities for the month.",
-    completed: false,
-  },
-  {
-    id: 8,
-    name: "Budget Planning Meeting",
-    time: "2024-04-29T10:00",
-    description: "Discuss budget allocations for various departments.",
-    completed: true,
-  },
-  {
-    id: 9,
-    name: "Training Session",
-    time: "2024-05-03T14:30",
-    description: "Provide training on new software tools.",
-    completed: true,
-  },
-  {
-    id: 10,
-    name: "Customer Feedback Session",
-    time: "2024-05-07T11:00",
-    description: "Gather feedback from customers on recent product updates.",
-    completed: true,
-  },
-];
 
 const StudentMeetings = () => {
+  //hooks
+  const student = useSelector(state => state.studentAuth.student);
+
+  //state variables
   const [showModal, setShowModal] = useState(false);
   const [showModal1, setShowModal1] = useState(false);
   const [meetingName, setMeetingName] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingDescription, setMeetingDescription] = useState("");
   const [filter, setFilter] = useState("all");
-  const [meetings, setMeetings] = useState(MeetingsData);
+  const [meetings, setMeetings] = useState([]);
 
   // Function to handle setting a new meeting
   const handleSetMeeting = () => {
@@ -119,15 +53,27 @@ const StudentMeetings = () => {
   const [openmodal, setOpenModal] = useState(null);
   const toggleOpenModal = (e, meetingId) => {
     e.stopPropagation();
-    console.log("gdgdfg");
     setOpenModal(meetingId === openmodal ? null : meetingId);
   };
+
+  //useEffect functions
+  useEffect(() => {
+    get_meetings_by_student_id(student.token, student.user.student_id)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setMeetings(result.meetings);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, [])
 
   const filteredMeetings =
     filter === "all"
       ? meetings
       : meetings.filter((meeting) =>
-          filter === "completed" ? meeting.completed : !meeting.completed
+          filter === "completed" ? meeting.approve : !meeting.completed
         );
 
   return (
@@ -140,7 +86,7 @@ const StudentMeetings = () => {
         <Flex gap="20px">
           <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="all">All Meetings</option>
-            <option value="upcoming">Upcoming Meetings</option>
+            <option value="pending">Pending Meetings</option>
             <option value="completed">Completed Meetings</option>
           </Select>
         </Flex>
@@ -150,32 +96,40 @@ const StudentMeetings = () => {
         {filteredMeetings.map((meeting) => (
           <>
             <Box
-              key={meeting.id}
+              key={meeting.meeting_id}
               className={`${styles.meetingItem} ${
-                meeting.completed ? styles.completed : styles.pending
+                meeting.approve ? styles.completed : styles.pending
               }`}
             >
               <Box className={styles.details}>
                 <Heading className={styles.meetingName} fontSize="1.2rem">
-                  {meeting.name}
+                  {meeting.title}
                 </Heading>
-                <Text className={styles.meetingTime}>{meeting.time}</Text>
+                <Text className={styles.meetingTime}>{meeting.date}</Text>
                 <Text className={styles.meetingDescription}>
                   {meeting.description}
                 </Text>
+                {meeting && meeting.feedback && <Text mt="1">
+                  <b>Your Feeback: </b><i>{meeting.feedback}</i>
+                </Text>}
               </Box>
               <Flex className={styles.modalContainer}>
                 <Heading
                   fontSize="1rem"
-                  color={meeting.completed ? "green" : "#ffc107"}
+                  color={meeting.approve ? "green" : "#ffc107"}
                 >
-                  {meeting.completed ? "Completed" : "Pending"}
+                  {meeting.approve ? "Completed" : "Pending"}
                 </Heading>
 
                 <Model
-                  isOpenModal={meeting.id === openmodal}
-                  toggleOpenModal={(e) => toggleOpenModal(e, meeting.id)}
+                  isOpenModal={meeting.meeting_id === openmodal}
+                  toggleOpenModal={(e) => toggleOpenModal(e, meeting.meeting_id)}
                   meeting={meeting}
+                  meetings={meetings}
+                  setMeetings={setMeetings}
+                  student={student}
+                  setOpenModal={setOpenModal}
+                  openmodal={openmodal}
                 />
               </Flex>
             </Box>
