@@ -8,8 +8,17 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { student_login } from "../../api/studentApi";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { studentAuthActions } from "../../redux/store";
 
 export default function StudentLogin() {
+  //hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  //state variables
   const [name, setName] = useState("");
   const [rollno, setRollno] = useState("");
   const [programme, setProgramme] = useState("");
@@ -52,7 +61,22 @@ export default function StudentLogin() {
     setCurrentPassword(e.target.value);
   };
 
-  const SubmitSignInHandler = () => {};
+  const SubmitSignInHandler = () => {
+    const payload = {
+      tezu_email: email,
+      password
+    }
+    student_login(payload)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        dispatch(studentAuthActions.login({ student: result.result }))
+        navigate("/student/dashboard")
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  };
 
   const SubmitSignUpHandler = () => {};
 

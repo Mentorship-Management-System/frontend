@@ -2,6 +2,20 @@ import axios from "axios"
 
 const url = `${process.env.REACT_APP_BACKEND_URL}/student`;
 
+export const student_login = async (payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/login`,
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
 export const all_students = async (token) => {
     try {
         let options = {

@@ -15,6 +15,7 @@ import {
   Box,
   Text,
 } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const meetings = [
   {
@@ -94,9 +95,15 @@ const TeachersMeetingsChart = () => {
 };
 
 const Dashboard = () => {
+  //hooks
+  const student = useSelector(state => state.studentAuth.student);
+  console.log(student);
+
+  //state variables
+
   return (
     <div className={styles.dashboardContainer}>
-      <h1>Welcome Student</h1>
+      <h1>Welcome {student.user.fname} {student.user.lname}</h1>
       <div className={styles.flexContainer}>
         {data.map((item, index) => (
           <HStack className={styles.dashboardCard} key={index}>

@@ -1,12 +1,37 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import styles from "../../Mentor/Css/Meetings.module.scss";
 
 import { Button, Box, Text, Stack, Flex, Center } from "@chakra-ui/react";
 import { IoMdClose } from "react-icons/io";
+import { update_feedback } from "../../../api/meetingApi";
 
-const Model = ({ isOpenModal, toggleOpenModal, meeting }) => {
-  const approveHandler = () => {
-    toggleOpenModal();
+const Model = ({ isOpenModal, toggleOpenModal, meeting, setOpenModal, openmodal, student, meetings, setMeetings }) => {
+  //state variables
+  const [feedback, setFeedback] = useState("");
+
+  const submitHandler = () => {
+    // toggleOpenModal();
+    const payload = {
+      feedback
+    }
+
+    let new_meeting = { ...meeting, feedback };
+    let temp_meetings = meetings;
+    const index = temp_meetings.findIndex(obj => obj.meeting_id === new_meeting.meeting_id);
+    if (index !== -1) temp_meetings[index] = new_meeting;
+
+    update_feedback(student.token, meeting.meeting_id, payload)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setMeetings(temp_meetings)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setOpenModal(meeting.meeting_id === openmodal ? null : meeting.meeting_id);
+      })
   };
   return (
     <Flex justify="flex-end">
@@ -31,22 +56,29 @@ const Model = ({ isOpenModal, toggleOpenModal, meeting }) => {
             <div className={styles.modalBody}>
               <Stack spacing={4}>
                 <Text>
-                  <strong>Time:</strong> {meeting?.time}
+                  <strong>Date & Time:</strong> {meeting?.date}
+                </Text>
+                <Text>
+                  <strong>Title:</strong> {meeting?.title}
                 </Text>
                 <Text>
                   <strong>Description:</strong> {meeting?.description}
                 </Text>
                 <Text>
-                  <strong>Feedback:</strong>
+                  <strong>Your Feedback:</strong>
                 </Text>
-                <textarea></textarea>
+                <textarea
+                value={meeting.feedback ? meeting.feedback : feedback}
+                onChange={e => setFeedback(e.target.value)}
+                disabled={meeting.feedback ? true : false}
+                ></textarea>
               </Stack>
             </div>
-            <Flex justify="flex-end" gap="10px" mt="3%">
-              <Button colorScheme="blue" onClick={approveHandler}>
-                Approve Meeting
+            {(meeting.feedback === null || meeting.feedback === "" || meeting.feedback === undefined) && <Flex justify="flex-end" gap="10px" mt="3%">
+              <Button colorScheme="blue" onClick={submitHandler}>
+                Submit Feedback
               </Button>
-            </Flex>
+            </Flex>}
           </div>
         </div>
       )}

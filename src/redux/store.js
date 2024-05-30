@@ -49,13 +49,32 @@ const mentorSlice = createSlice({
     }
 })
 
+const studentSlice = createSlice({
+    name: "studentSlice",
+    initialState: initialStudentAuth,
+    reducers: {
+        login(state, actions){
+            state.auth = true;
+            state.student = actions.payload.student;
+            localStorage.setItem('mm_cse_student', JSON.stringify(actions.payload.student));
+        },
+        logout(state, actions){
+            state.auth = false;
+            state.student = null;
+            localStorage.removeItem('mm_cse_student');
+        }
+    }
+})
+
 export const adminAuthActions = adminSlice.actions;
 export const mentorAuthActions = mentorSlice.actions;
+export const studentAuthActions = studentSlice.actions;
 
 const store = configureStore({
     reducer: {
         adminAuth: adminSlice.reducer,
-        mentorAuth: mentorSlice.reducer
+        mentorAuth: mentorSlice.reducer,
+        studentAuth: studentSlice.reducer
     }
 })
 

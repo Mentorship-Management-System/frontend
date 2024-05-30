@@ -21,7 +21,7 @@ export default function Home() {
             </Heading>
             <Box display="flex" mt="5%">
               <Center mr="5%">
-                <NavLink to="/studentlogin">
+                <NavLink to="/student-login">
                   <button className="homeButton">Student login</button>
                 </NavLink>
               </Center>
