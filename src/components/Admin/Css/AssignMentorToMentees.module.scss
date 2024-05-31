@@ -60,7 +60,7 @@
 }
 
 .popup {
-  min-width: 24vw;
+  min-width: 30vw;
   height: 80vh;
   // min-height: 60vh;
   background-color: white;
@@ -85,13 +85,14 @@
 .nameRow {
   display: flex;
   align-items: center;
-  padding: 2%;
-  border-radius: 10px;
+  padding: 2% 0;
+  border-radius: 5px;
   // height: 15vh;
   cursor: pointer;
   input {
-    width: 2vw;
+    width: 1vw;
     height: 1vw;
+    padding-left: 2%;
     // font-size: 2rem;
   }
 }
@@ -108,6 +109,8 @@
   margin-left: 3%;
 }
 .menteesAllocated {
+  // flex-grow: 1;
+
   min-width: 10vw;
 }
 

@@ -32,6 +32,8 @@ export default function SetMeetingModal({
   handelShowModal,
   handleSetMeeting,
   isChatMeeting,
+  meetingDetails,
+  centerModal,
 }) {
   //hooks
   const Navigate = useNavigate();
@@ -39,9 +41,16 @@ export default function SetMeetingModal({
 
   //state variables
   const [students, setStudents] = useState([]);
-  const [meetingName, setMeetingName] = useState("");
-  const [meetingTime, setMeetingTime] = useState("");
-  const [meetingDescription, setMeetingDescription] = useState("");
+  const [meetingName, setMeetingName] = useState(
+    meetingDetails && meetingDetails.title
+  );
+  const [meetingTime, setMeetingTime] = useState(
+    meetingDetails &&
+      meetingDetails.date.split("T")[0] + "T" + meetingDetails.time
+  );
+  const [meetingDescription, setMeetingDescription] = useState(
+    meetingDetails && meetingDetails.description
+  );
   const [showMentees, setShowMentees] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [filters, setFilters] = useState({
@@ -54,6 +63,31 @@ export default function SetMeetingModal({
     (_, index) => 2015 + index
   );
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [isSelectAll, setSelectAll] = useState(false);
+
+  const handleSelectAll = () => {
+    if (!isSelectAll) {
+      // students
+      //   .filter(
+      //     (data) =>
+      //       !selectedStudents.includes(
+      //         data.honorifics + " " + data.fname + " " + data.lname
+      //       )
+      //   )
+      //   .map((mentor) =>
+      //     selectedStudents.push(
+      //       mentor.honorifics + " " + mentor.fname + " " + mentor.lname
+      //     )
+      //   );
+      setSelectedStudents(students);
+      setSelectAll(true);
+    } else {
+      setSelectedStudents([]);
+      setSelectAll(false);
+    }
+  };
+
+  console.log(selectedStudents);
 
   //useEffect functions
   useEffect(() => {
@@ -62,6 +96,14 @@ export default function SetMeetingModal({
         result = result.data;
         console.log(result);
         setStudents(result.students);
+        if (meetingDetails) {
+          const array = meetingDetails.student_ids.split(",");
+          setSelectedStudents(
+            result.students.filter((selected) =>
+              array.includes(selected.student_id)
+            )
+          );
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -81,6 +123,7 @@ export default function SetMeetingModal({
         )
       );
     } else {
+      console.log(student);
       setSelectedStudents([...selectedStudents, student]);
     }
   };
@@ -104,8 +147,12 @@ export default function SetMeetingModal({
   };
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
+    <div className={centerModal && styles.overlay}>
+      <div
+        className={
+          centerModal ? styles.modal : `${styles.modal} ${styles.modal1}`
+        }
+      >
         <div className={styles.modalContent}>
           <Flex className={styles.header}>
             <h1>
@@ -169,7 +216,10 @@ export default function SetMeetingModal({
         </div>
       </div>
       {!isChatMeeting && showMentees && (
-        <div className={styles.popupContainer}>
+        <div
+          className={styles.popupContainer}
+          onClick={() => setShowMentees(false)}
+        >
           <div className={styles.popup}>
             <h1 className={styles.header}>Select Mentees</h1>
             <Flex gap="10px" mb="2%">
@@ -201,6 +251,10 @@ export default function SetMeetingModal({
               </Select>
             </Flex>
             <div className={styles.content}>
+              <div className={styles.nameRow} onClick={handleSelectAll}>
+                <input type="checkbox" checked={isSelectAll} readOnly />
+                <span className={styles.name}>Select All</span>
+              </div>
               {students?.map((item, index) => (
                 <div
                   key={index}

@@ -74,7 +74,7 @@ const SideBar = ({ toggleDrawer, handleOptionClick }) => {
       text: "Profile",
     },
   ];
-  console.log(segments);
+  console.log(segments[2].includes("Passout-mentee"));
   return (
     <div className={classes.rootSidebar}>
       <div className={classes.sidebar}>
@@ -84,7 +84,8 @@ const SideBar = ({ toggleDrawer, handleOptionClick }) => {
             onClick={toggleDrawer}
             key={index}
             className={
-              segments[2] === item.text || segments[2].includes(item.text)
+              segments[2] === item.text ||
+              segments[2].slice(0, -7) === item.text.slice(0, -5)
                 ? classes.selectedOption
                 : ""
             }

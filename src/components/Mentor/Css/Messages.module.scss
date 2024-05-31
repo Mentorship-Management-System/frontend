@@ -18,7 +18,7 @@
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  min-height: 15vw;
+  min-height: 9vw;
   // width: 24vw;
   max-width: 25vw;
   flex-grow: 1;
@@ -48,7 +48,7 @@
 
 .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .button {

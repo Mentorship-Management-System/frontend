@@ -46,7 +46,30 @@ const StudentTable = ({ students }) => {
     (_, index) => 2015 + index
   );
   const [selectedNames, setSelectedNames] = useState([]);
+  const [isSelectAll, setSelectAll] = useState(false);
 
+  const handleSelectAll = () => {
+    if (!isSelectAll) {
+      mentors
+        .filter(
+          (data) =>
+            !selectedNames.includes(
+              data.honorifics + " " + data.fname + " " + data.lname
+            )
+        )
+        .map((mentor) =>
+          selectedNames.push(
+            mentor.honorifics + " " + mentor.fname + " " + mentor.lname
+          )
+        );
+      // setSelectedNames(mentors);
+      setSelectAll(true);
+    } else {
+      setSelectedNames([]);
+      setSelectAll(false);
+    }
+  };
+  console.log(selectedNames);
   //useEffect functions
 
   useEffect(() => {
@@ -231,10 +254,17 @@ const StudentTable = ({ students }) => {
         <Table columns={columns} data={tableData} />
       </div>
       {showMentors && (
-        <div className={classes.popupContainer}>
+        <div
+          className={classes.popupContainer}
+          onClick={() => setShowMentors(false)}
+        >
           <div className={classes.popup}>
             <h1 className={classes.header}>Select Mentees</h1>
             <div className={classes.content}>
+              <div className={classes.nameRow} onClick={handleSelectAll}>
+                <input type="checkbox" checked={isSelectAll} readOnly />
+                <span className={classes.name}>Select All</span>
+              </div>
               {mentors.map((mentor, index) => (
                 <div
                   key={index}
@@ -272,7 +302,11 @@ const StudentTable = ({ students }) => {
             <div className={classes.footer}>
               <Button
                 variant="outline"
-                onClick={() => setShowMentors(!showMentors)}
+                onClick={() => {
+                  setShowMentors(!showMentors);
+                  setSelectedNames([]);
+                  setSelectAll(false);
+                }}
               >
                 Cancel
               </Button>

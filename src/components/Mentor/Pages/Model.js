@@ -42,11 +42,12 @@ const Model = ({
       });
   };
   return (
-    <Flex justify="flex-end">
+    <Flex>
       <Button
         onClick={toggleOpenModal}
-        h={["8vw", "8vw", "3vw", "2.7vw"]}
+        h={["8vw", "8vw", "3vw", "2.2vw"]}
         fontSize={[".9rem", ".9rem", "1rem", "1rem"]}
+        m="0"
       >
         View
       </Button>

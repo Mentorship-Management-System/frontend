@@ -24,7 +24,7 @@
   padding: 3%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
 
   .meetingItem {
     width: 36vw;
@@ -34,17 +34,48 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     position: relative;
     .modalContainer {
+      flex-grow: 1;
       flex-direction: column;
       justify-content: space-between;
       h2 {
         font-size: 1.2rem;
         text-align: right;
       }
+      .editButton {
+        width: 2.2vw;
+        height: 2.2vw;
+        border-radius: 50%;
+        margin-left: 2%;
+        cursor: pointer;
+        &:hover {
+          background-color: rgb(217, 230, 237);
+        }
+      }
+      .editPopup {
+        position: absolute;
+        right: 20%;
+        border: 2px solid #03ac;
+        background-color: white;
+        padding: 2%;
+        border-radius: 8px;
+        p {
+          font-weight: 500;
+          // font-size: 1.2rem;
+        }
+        div {
+          margin-top: 6%;
+          button {
+            height: 2vw;
+            font-size: 0.9rem;
+          }
+        }
+      }
     }
     .details {
+      flex-grow: 2;
       .meetingName {
         font-size: 1.2rem;
       }

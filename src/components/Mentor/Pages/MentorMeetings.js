@@ -11,6 +11,7 @@ import {
   Stack,
   Flex,
   Center,
+  VStack,
 } from "@chakra-ui/react";
 import styles from "../Css/Meetings.module.scss";
 import { MdOutlineFileDownload } from "react-icons/md";
@@ -22,6 +23,7 @@ import {
   create_meeting,
   get_meetings_by_mentor_id,
 } from "../../../api/meetingApi";
+import { MdEdit, MdDelete } from "react-icons/md";
 
 const Meetings = () => {
   //hooks
@@ -33,7 +35,9 @@ const Meetings = () => {
   const [filter, setFilter] = useState("all");
   const [meetings, setMeetings] = useState([]);
   const [openmodal, setOpenModal] = useState(null);
-
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [popupId, setPopupId] = useState();
   //useEffect functions
   useEffect(() => {
     const fetchMeeting = () => {
@@ -73,6 +77,10 @@ const Meetings = () => {
     setShowModal(!showModal);
   };
 
+  const handelShowEditModal = () => {
+    setShowEditPopup(!showEditPopup);
+  };
+
   const filteredMeetings =
     filter === "all"
       ? meetings
@@ -80,6 +88,10 @@ const Meetings = () => {
           filter === "completed" ? meeting.approve : !meeting.approve
         );
   // console.log(openmodal);
+
+  const handleDeleteMeeting = () => {
+    setShowDeletePopup(!showDeletePopup);
+  };
 
   return (
     <Box className={styles.pageContainer}>
@@ -91,7 +103,7 @@ const Meetings = () => {
         <Center cursor="pointer" m="auto 2%">
           <MdOutlineFileDownload size={25} />
         </Center>
-        <Flex gap="20px">
+        <Flex>
           <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="all">All Meetings</option>
             <option value="pending">Pending Meetings</option>
@@ -122,19 +134,73 @@ const Meetings = () => {
               <Heading color={meeting.approve ? "green" : "#ffc107"}>
                 {meeting.approve ? "Completed" : "Pending"}
               </Heading>
-
-              <Model
-                isOpenModal={meeting.meeting_id === openmodal}
-                toggleOpenModal={(e) => toggleOpenModal(e, meeting.meeting_id)}
-                meeting={meeting}
-                meetings={meetings}
-                // setFilter={setFilter}
-                setMeetings={setMeetings}
-                mentor={mentor}
-                setOpenModal={setOpenModal}
-                openmodal={openmodal}
-              />
+              <Flex justify="flex-end" align="center">
+                <Model
+                  isOpenModal={meeting.meeting_id === openmodal}
+                  toggleOpenModal={(e) =>
+                    toggleOpenModal(e, meeting.meeting_id)
+                  }
+                  meeting={meeting}
+                  meetings={meetings}
+                  // setFilter={setFilter}
+                  setMeetings={setMeetings}
+                  mentor={mentor}
+                  setOpenModal={setOpenModal}
+                  openmodal={openmodal}
+                />
+                {!meeting.approve && (
+                  <>
+                    <Center
+                      className={styles.editButton}
+                      onClick={() => {
+                        setShowEditPopup((prev) => !prev);
+                        setPopupId(meeting.meeting_id);
+                      }}
+                    >
+                      <MdEdit size={22} />
+                    </Center>
+                    <Center
+                      className={styles.editButton}
+                      onClick={() => {
+                        setShowDeletePopup((prev) => !prev);
+                        setPopupId(meeting.meeting_id);
+                      }}
+                    >
+                      <MdDelete size={22} />
+                    </Center>
+                  </>
+                )}
+              </Flex>
+              {showDeletePopup && popupId === meeting.meeting_id && (
+                <Box className={styles.editPopup}>
+                  <Text>Are you sure?</Text>
+                  <Text>You can't undo this afterwards</Text>
+                  <Flex justify="flex-end" align="center">
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowDeletePopup(false)}
+                    >
+                      No
+                    </Button>
+                    <Button
+                      colorScheme="facebook"
+                      onClick={handleDeleteMeeting}
+                    >
+                      Yes
+                    </Button>
+                  </Flex>
+                </Box>
+              )}
             </Flex>
+            {showEditPopup && popupId === meeting.meeting_id && (
+              <SetMeetingModal
+                handelShowModal={handelShowEditModal}
+                handleSetMeeting={handleSetMeeting}
+                meetingDetails={meeting}
+                isChatMeeting={false}
+                centerModal={false}
+              />
+            )}
           </Box>
         ))}
       </Box>
@@ -143,7 +209,9 @@ const Meetings = () => {
         <SetMeetingModal
           handelShowModal={handelShowModal}
           handleSetMeeting={handleSetMeeting}
+          meetingDetails={null}
           isChatMeeting={false}
+          centerModal={true}
         />
       )}
     </Box>
