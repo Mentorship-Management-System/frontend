@@ -89,8 +89,7 @@ const menteesData = [
 const Mentees = () => {
   //hooks
   const Navigate = useNavigate();
-  const admin = useSelector((state) => state.adminAuth.admin.user);
-  const token = useSelector((state) => state.adminAuth.admin.token);
+  const admin = useSelector((state) => state.adminAuth.admin);
   console.log(admin);
 
   //state variables
@@ -105,7 +104,7 @@ const Mentees = () => {
   //useEffect functions
   useEffect(() => {
     const fetchMentees = async () => {
-      all_students(token)
+      all_students(admin.token)
         .then((result) => {
           result = result.data;
           console.log(result);
@@ -182,31 +181,6 @@ const Mentees = () => {
     ],
     []
   );
-
-  const data = React.useMemo(
-    () => [
-      {
-        id: 1,
-        name: "John Doe",
-        rollNo: "A001",
-        programme: "B-tech",
-        mentor: "Sanjib k. Deka",
-        email: "john.doe@example.com",
-        contact: "8090980984",
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        rollNo: "A002",
-        programme: "M-tech",
-        mentor: "Dr. Bhogeswar Bora",
-        email: "jane.smith@example.com",
-        contact: "8090980984",
-      },
-      // Add more dummy data as needed
-    ],
-    []
-  );
   const handleFilterChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
   };
@@ -233,17 +207,16 @@ const Mentees = () => {
           className={styles.selectBar}
           w={["60%", "70%", "30%", "30%"]}
         >
-          <option value="cse">B-Tech</option>
-          <option value="ece">M-Tech</option>
-          <option value="mech">MCA</option>
-          <option value="civil">BCA</option>
-          {/* Add more options for other branches */}
+          <option value="Bachelor of Technology">Bachelor of Technology</option>
+          <option value="Master of Technology(CSE)">Master of Technology(CSE)</option>
+          <option value="Master of Technology(IT)">Master of Technology(IT)</option>
+          <option value="Master of Computer Applications">Master of Computer Applications</option>
         </Select>
         <button className={styles.searchButton}>Search</button>
       </div>
 
       <div className={styles.table}>
-        <TableList columns={columns} data={tableData} students={students} />
+        <TableList columns={columns} data={tableData} students={students} admin={admin} setStudents={setStudents} />
       </div>
     </div>
   );
