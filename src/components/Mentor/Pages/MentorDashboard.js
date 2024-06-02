@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { get_count } from "../../../api/adminApi";
+import { get_meetings_by_student_id } from "../../../api/meetingApi";
 
 const meetings = [
   {
@@ -98,18 +99,31 @@ const Dashboard = () => {
 
   //state variables
   const [counts, setCounts] = useState({});
+  const [meetings, setMeetings] = useState([]);
 
   useEffect(() => {
     get_count(mentor.token)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
-        setCounts(result.counts)
+        setCounts(result.counts);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    get_meetings_by_student_id(mentor.token, mentor.user.mentor_id)
+      .then((result) => {
+        result = result.data;
+        console.log(result.meetings, "meeting data");
+        setMeetings(result.meetings);
       })
-  }, [])
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div className={styles.dashboardContainer}>
@@ -152,20 +166,23 @@ const Dashboard = () => {
               Upcoming Meetings
             </Heading>
             <Box flexGrow="3">
-              {meetings.map((meeting) => (
-                <Box key={meeting.id} className={styles.meetingItem}>
-                  <Text className={styles.meetingTitle}>{meeting.title}</Text>
-                  <Text>
-                    {meeting.date} - {meeting.time}
-                  </Text>
-                  <p className={styles.meetingDescription}>
-                    {meeting.description}
-                  </p>
-                  {/* Add more meeting details as needed */}
-                </Box>
-              ))}
+              {meetings
+                .filter((met) => new Date(met.date) > new Date())
+                .slice(0, 2)
+                .map((meeting) => (
+                  <Box key={meeting.id} className={styles.meetingItem}>
+                    <Text className={styles.meetingTitle}>{meeting.title}</Text>
+                    <Text>
+                      {meeting.date.split("T")[0]} - {meeting.time.slice(0, -3)}
+                    </Text>
+                    <p className={styles.meetingDescription}>
+                      {meeting.description}
+                    </p>
+                    {/* Add more meeting details as needed */}
+                  </Box>
+                ))}
             </Box>
-            <Flex className={styles.buttonCont}>
+            <Flex justify="center">
               <Button
                 mt="4"
                 colorScheme="blue"

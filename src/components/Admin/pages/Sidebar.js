@@ -1,5 +1,9 @@
 import classes from "../Css/Sidebar.module.scss";
-import { MdSpaceDashboard, MdChatBubble } from "react-icons/md";
+import {
+  MdSpaceDashboard,
+  MdChatBubble,
+  MdAdminPanelSettings,
+} from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { BiRun, BiMessageAdd } from "react-icons/bi";
 import { FaUserGroup } from "react-icons/fa6";
@@ -73,8 +77,17 @@ const SideBar = ({ toggleDrawer, handleOptionClick }) => {
       ),
       text: "Profile",
     },
+    {
+      icon: (
+        <MdAdminPanelSettings
+          size={25}
+          color={segments[2] === "Admins" && "#0D30AC"}
+        />
+      ),
+      text: "Admins",
+    },
   ];
-  console.log(segments[2].includes("Passout-mentee"));
+  console.log(segments[2]);
   return (
     <div className={classes.rootSidebar}>
       <div className={classes.sidebar}>
@@ -84,8 +97,9 @@ const SideBar = ({ toggleDrawer, handleOptionClick }) => {
             onClick={toggleDrawer}
             key={index}
             className={
-              segments[2] === item.text ||
-              segments[2].slice(0, -7) === item.text.slice(0, -5)
+              segments[2] === item.text
+                ? classes.selectedOption
+                : segments[2].slice(0, -7) === item.text.slice(0, -5)
                 ? classes.selectedOption
                 : ""
             }

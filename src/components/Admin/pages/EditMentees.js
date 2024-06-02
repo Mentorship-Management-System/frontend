@@ -92,7 +92,7 @@ const Settings = () => {
                           style={{ cursor: "pointer" }}
                           className={styles.profileimage}
                           src={
-                            "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
                           }
                           alt=""
                         />
@@ -198,13 +198,18 @@ const Settings = () => {
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Programme</div>
                   <div className={styles.input1}>
-                    <input
+                    <select
                       value={editedUserData.programme || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("programme", e.target.value)
                       }
-                    />
+                    >
+                      <option>Batchelor of Technology (CSE)</option>
+                      <option>Master of Computer Aplication</option>
+                      <option>Master of Technology (CSE)</option>
+                      <option>Master of Technology (IT)</option>
+                    </select>
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
