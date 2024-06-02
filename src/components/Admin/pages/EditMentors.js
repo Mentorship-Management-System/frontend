@@ -1,4 +1,4 @@
-import styles from ".././Css/Settings.module.scss";
+import styles from "../Css/Settings.module.scss";
 import React, { useEffect, useState } from "react";
 // import ResetPassword from "./resetPassword";
 import { Box, Button, Flex } from "@chakra-ui/react";
@@ -116,7 +116,7 @@ const Settings = () => {
                           style={{ cursor: "pointer" }}
                           className={styles.profileimage}
                           src={
-                            "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
                           }
                           alt=""
                         />
@@ -125,7 +125,13 @@ const Settings = () => {
                   </div>
 
                   <div className={styles.profiletxt}>
-                    <h1 className={styles.profilename}>Jhon Doe</h1>
+                    <h1 className={styles.profilename}>
+                      {editedUserData.honorifics +
+                        " " +
+                        editedUserData.fname +
+                        " " +
+                        editedUserData.lname}
+                    </h1>
                     <h2 className={styles.profilesubtext}>
                       photo and personal details of the Mentor
                     </h2>
@@ -302,15 +308,11 @@ const Settings = () => {
                               Navigate(`/admin/Mentees/${item.enrollment_no}`)
                             }
                           >
-                            <span className={styles.name}>
-                              {item.student_id}
-                            </span>
+                            <span>{item.student_id}</span>
                             <span className={styles.name}>
                               {item.fname} {item.lname}
                             </span>
-                            <span className={styles.name}>
-                              {item.enrollment_no}
-                            </span>
+                            <span>{item.enrollment_no}</span>
                           </div>
                         ))}
                     </div>

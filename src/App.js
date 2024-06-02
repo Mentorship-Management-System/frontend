@@ -63,7 +63,7 @@ function App() {
           <Route path="Mentor" element={<StudentMentor />} />
           <Route path="Meetings" element={<StudentMeetings />} />
           <Route path="Profile" element={<StudentProfile />} />
-          <Route path="Message" element={<StudentMessage />} />
+          <Route path="Mentor/Message" element={<StudentMessage />} />
           <Route path="" element={<Navigate to="Dashboard" />} />
         </Route>
       </Routes>
