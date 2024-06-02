@@ -9,7 +9,9 @@ import { MdDelete } from "react-icons/md";
 import { delete_students } from "../../../api/studentApi";
 import { delete_mentors } from "../../../api/mentorApi";
 
+
 function Table({ columns, data, students, mentors, admin, setStudents }) {
+
   const Navigate = useNavigate();
   const location = useLocation();
   const [selectCount, setSelectCount] = useState(0);
@@ -200,6 +202,7 @@ function Table({ columns, data, students, mentors, admin, setStudents }) {
       // Clean up and remove the temporary link element
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+    } else if (admins) {
     }
   };
 
@@ -283,22 +286,24 @@ function Table({ columns, data, students, mentors, admin, setStudents }) {
                             <td {...cell.getCellProps()}>
                               {cell.render("Cell")}
                             </td>
-                            <td>
-                              <button
-                                className={styles.btnTable}
-                                onClick={() =>
-                                  Navigate(
-                                    `/${segments[1]}/${segments[2]}/${
-                                      segments[2] === "Mentees"
-                                        ? cell.row.values.rollNo
-                                        : cell.row.values.id
-                                    }`
-                                  )
-                                }
-                              >
-                                view
-                              </button>
-                            </td>
+                            {segments[2] !== "Admins" && (
+                              <td>
+                                <button
+                                  className={styles.btnTable}
+                                  onClick={() =>
+                                    Navigate(
+                                      `/${segments[1]}/${segments[2]}/${
+                                        segments[2] === "Mentees"
+                                          ? cell.row.values.rollNo
+                                          : cell.row.values.id
+                                      }`
+                                    )
+                                  }
+                                >
+                                  view
+                                </button>
+                              </td>
+                            )}
                           </React.Fragment>
                         );
                       } else {

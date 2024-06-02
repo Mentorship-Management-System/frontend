@@ -130,7 +130,8 @@
             position: relative;
             min-height: 10vh;
             .input1 {
-              input {
+              input,
+              select {
                 width: 22vw;
                 max-width: 26vw;
                 height: 6vh;
@@ -158,6 +159,7 @@
               left: 4%;
               top: -12%;
               background-color: white;
+              z-index: 5;
             }
           }
         }

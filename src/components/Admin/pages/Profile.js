@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 
 const Profile = () => {
   //hooks
-  const admin = useSelector(state => state.adminAuth.admin);
+  const admin = useSelector((state) => state.adminAuth.admin);
 
   //state variables
   const [userData, setUserData] = useState(null);
@@ -38,7 +38,7 @@ const Profile = () => {
   }, []);
 
   const defaultImage =
-    "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=";
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
 
   return (
     <div className={classes.rootProfile}>
@@ -50,7 +50,9 @@ const Profile = () => {
       </div>
       {!isMobile && (
         <p className={classes.name}>
-          {admin && admin.user ? admin.user.fname + " " + admin.user.lname : "Jhon Doe"}
+          {admin && admin.user
+            ? admin.user.fname + " " + admin.user.lname
+            : "Jhon Doe"}
         </p>
       )}
     </div>

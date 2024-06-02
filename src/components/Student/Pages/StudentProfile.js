@@ -55,7 +55,7 @@ const StudentProfile = () => {
 
   const RenderForm = () => {
     // hooks
-    const student = useSelector(state => state.studentAuth.student);
+    const student = useSelector((state) => state.studentAuth.student);
     const formRef = useRef(null);
 
     // state variables
@@ -67,22 +67,23 @@ const StudentProfile = () => {
     // useEffect to fetch SGPA data
     useEffect(() => {
       get_sgpa(student.token, student.user.enrollment_no)
-          .then(result => {
-              result = result.data;
-              console.log(result);
-              setSgpas(result.sgpas);
-          })
-          .catch(error => {
-              console.log(error);
-          });
+        .then((result) => {
+          result = result.data;
+          console.log(result);
+          setSgpas(result.sgpas);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }, []);
 
     // useEffect to update sgpaData when sgpas change
     useEffect(() => {
       const sgpaObject = {};
-      sgpas && sgpas.forEach((sgpa) => {
+      sgpas &&
+        sgpas.forEach((sgpa) => {
           sgpaObject[`semester_${sgpa.semester}`] = sgpa.sgpa;
-      });
+        });
       console.log(sgpaObject);
       setSgpaData(sgpaObject);
       setInitialSgpaData(sgpaObject);
@@ -112,69 +113,70 @@ const StudentProfile = () => {
       const formData = new FormData(formRef.current);
       const data = {};
       formData.forEach((value, key) => {
-          data[key] = Number(value);
+        data[key] = Number(value);
       });
 
-      const payload = Object.keys(data).map(key => {
-        const semester = key.split('_')[1];
+      const payload = Object.keys(data).map((key) => {
+        const semester = key.split("_")[1];
         return {
-            enrollment_no: student.user.enrollment_no,
-            semester: parseInt(semester, 10),
-            sgpa: data[key]
+          enrollment_no: student.user.enrollment_no,
+          semester: parseInt(semester, 10),
+          sgpa: data[key],
         };
       });
 
       console.log(payload);
       save_sgpa(student.token, payload)
-        .then(result => {
-            result = result.data;
-            console.log(result);
-            togglePopup();
-            setSgpas(payload);
+        .then((result) => {
+          result = result.data;
+          console.log(result);
+          togglePopup();
+          setSgpas(payload);
         })
-        .catch(error => {
-            console.log(error);
+        .catch((error) => {
+          console.log(error);
         });
-    }
+    };
 
     // Generate form elements
     const formElements = [];
     for (let i = 1; i <= selectedSemester; i++) {
       formElements.push(
         <div key={i} className={styles.semesterInputs}>
-            <label>Semester {i}</label>
-            <Flex>
-              <input
-                required
-                type="number"
-                placeholder="SGPA"
-                step="0.01"
-                min="0"
-                max="10"
-                name={`semester_${i}`}
-                value={sgpaData[`semester_${i}`] || ''}
-                onChange={handleChange}
-              />
-            </Flex>
+          <label>Semester {i}</label>
+          <Flex>
+            <input
+              required
+              type="number"
+              placeholder="SGPA"
+              step="0.01"
+              min="0"
+              max="10"
+              name={`semester_${i}`}
+              value={sgpaData[`semester_${i}`] || ""}
+              onChange={handleChange}
+            />
+          </Flex>
         </div>
       );
     }
 
     return (
       <form ref={formRef} onSubmit={semesterSumbitHandler}>
-          <Flex flexWrap="wrap" gap={2}>
-              {formElements}
-          </Flex>
-          <div className={styles.formButtons}>
-            <button type="button" onClick={togglePopup}>
-              Close
-            </button>
-            <button type="submit" disabled={!isFormChanged}>Set</button>
-          </div>
+        <Flex flexWrap="wrap" gap={2}>
+          {formElements}
+        </Flex>
+        <div className={styles.formButtons}>
+          <button type="button" onClick={togglePopup}>
+            Close
+          </button>
+          <button type="submit" disabled={!isFormChanged}>
+            Set
+          </button>
+        </div>
       </form>
     );
   };
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -192,15 +194,20 @@ const StudentProfile = () => {
 
   const handleSaveProfile = () => {
     let updated_fields = editedUserData;
-    if(updated_fields.dob !== null && updated_fields.dob !== undefined && updated_fields.dob) updated_fields["dob"] = new Date(updated_fields["dob"]).toISOString();
+    if (
+      updated_fields.dob !== null &&
+      updated_fields.dob !== undefined &&
+      updated_fields.dob
+    )
+      updated_fields["dob"] = new Date(updated_fields["dob"]).toISOString();
     delete updated_fields.type;
     console.log(updated_fields);
-    
+
     updated_student(student.token, student.user.enrollment_no, editedUserData)
       .then((result) => {
         result = result.data;
         console.log(result);
-        dispatch(studentAuthActions.update({ user: editedUserData }))
+        dispatch(studentAuthActions.update({ user: editedUserData }));
       })
       .catch((error) => {
         console.log(error);
@@ -233,10 +240,6 @@ const StudentProfile = () => {
                   <div>
                     <label htmlFor="image">
                       <div>
-                        <IoCameraOutline
-                          color="#4371cb"
-                          className={styles.cameraIcon}
-                        />
                         <img
                           style={{ cursor: "pointer" }}
                           className={styles.profileimage}
@@ -249,13 +252,6 @@ const StudentProfile = () => {
                         />
                       </div>
                     </label>
-                    <input
-                      type="file"
-                      name=""
-                      style={{ display: "none" }}
-                      id="image"
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
                   </div>
 
                   <div className={styles.profiletxt}>
@@ -415,13 +411,18 @@ const StudentProfile = () => {
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Programme</div>
                   <div className={styles.input1}>
-                    <input
+                    <select
                       value={editedUserData.programme || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("programme", e.target.value)
                       }
-                    />
+                    >
+                      <option>Batchelor of Technology (CSE)</option>
+                      <option>Master of Computer Aplication</option>
+                      <option>Master of Technology (CSE)</option>
+                      <option>Master of Technology (IT)</option>
+                    </select>
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>

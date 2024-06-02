@@ -123,6 +123,7 @@ const Messages = () => {
                   )}
                 </i>
               </p>
+              {console.log(message)}
               {message.acknowledged && (
                 <p className={styles.message}>
                   {message.meeting_id === null ? (
