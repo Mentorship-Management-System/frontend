@@ -5,8 +5,14 @@ import { RxCross1 } from "react-icons/rx";
 import styles from ".././Css/ResetPassword.module.scss";
 import { Center } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { student_login } from "../../../api/studentApi";
+import { useSelector } from "react-redux";
 
 const ResetPassword = ({ onSubmit }) => {
+  //hooks
+  const student = useSelector(state => state.studentAuth.student);
+
+  //state variables
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [reenteredPassword, setReenteredPassword] = useState("");
@@ -16,7 +22,28 @@ const ResetPassword = ({ onSubmit }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleResetPassword = async () => {};
+  const handleResetPassword = async () => {
+    if(newPassword !== reenteredPassword){
+      alert("New password does not match!")
+    } else {
+      const payload = {
+        tezu_email: student.user.gsuite_id,
+        password: currentPassword
+      }
+      student_login(payload)
+        .then(result => {
+          if(result && result.data && result.data.success){
+            let student = result.data.result.user;
+            console.log(student);
+          } else {
+            console.log("Cuurent password does not match!");
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+  };
 
   return (
     <motion.div
@@ -93,12 +120,6 @@ const ResetPassword = ({ onSubmit }) => {
       <div className={styles.submitBtn}>
         <button onClick={handleResetPassword}> Submit</button>
       </div>
-      {/* <div className={styles.submitBtn}>
-                <button onClick={handleSubmit}> Done</button>
-            </div> */}
-      {/* <div className={styles.fpLink}>
-        <a href="/password-recovery">Forgot Password</a>
-      </div> */}
 
       {successMessage && <p>{successMessage}</p>}
       {errorMessage && <p>{errorMessage}</p>}
