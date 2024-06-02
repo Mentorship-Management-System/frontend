@@ -9,9 +9,15 @@ import { MdDelete } from "react-icons/md";
 import { delete_students } from "../../../api/studentApi";
 import { delete_mentors } from "../../../api/mentorApi";
 
-
-function Table({ columns, data, students, mentors, admin, setStudents }) {
-
+function Table({
+  columns,
+  data,
+  students,
+  mentors,
+  admin,
+  admins,
+  setStudents,
+}) {
   const Navigate = useNavigate();
   const location = useLocation();
   const [selectCount, setSelectCount] = useState(0);
@@ -208,32 +214,32 @@ function Table({ columns, data, students, mentors, admin, setStudents }) {
 
   const handleDelete = () => {
     const profiles = selectedFlatRows.map((d) => d.original.id);
-    if(profiles && profiles.length > 0){
+    if (profiles && profiles.length > 0) {
       console.log(profiles);
       if (students) {
         console.log("delete students");
-        const payload = { studentIds: profiles }
+        const payload = { studentIds: profiles };
         delete_students(admin.token, payload)
-          .then(result => {
+          .then((result) => {
             result = result.data;
             console.log(result);
-            Navigate(0)
+            Navigate(0);
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
-          })
+          });
       } else if (mentors) {
         console.log("delete mentors");
-        const payload = { mentorIds: profiles }
+        const payload = { mentorIds: profiles };
         delete_mentors(admin.token, payload)
-          .then(result => {
+          .then((result) => {
             result = result.data;
             console.log(result);
-            Navigate(0)
+            Navigate(0);
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
-          })
+          });
       }
     }
   };
