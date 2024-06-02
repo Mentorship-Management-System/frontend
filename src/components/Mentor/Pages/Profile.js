@@ -3,7 +3,7 @@ import classes from "../Css/Profile.module.scss";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
 
   // const user = useAuth(); // Use the authentication state from the context
   const [userData, setUserData] = useState(null);
@@ -27,7 +27,7 @@ const Profile = () => {
   }, []);
 
   const defaultImage =
-    "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=";
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
 
   return (
     <div className={classes.rootProfile}>
@@ -39,7 +39,13 @@ const Profile = () => {
       </div>
       {!isMobile && (
         <p className={classes.name}>
-          {mentor && mentor.user ? mentor.user.honorifics + " " + mentor.user.fname + " " + mentor.user.lname : ""}
+          {mentor && mentor.user
+            ? mentor.user.honorifics +
+              " " +
+              mentor.user.fname +
+              " " +
+              mentor.user.lname
+            : ""}
         </p>
       )}
     </div>

@@ -102,7 +102,7 @@ const StudentMentor = () => {
                       _hover={{ backgroundColor: "#0d3ffc" }}
                       backgroundColor="#0d30ac"
                       color="white"
-                      onClick={() => Navigate("/student/Message")}
+                      onClick={() => Navigate("/student/Mentor/Message")}
                     >
                       Message
                     </Button>

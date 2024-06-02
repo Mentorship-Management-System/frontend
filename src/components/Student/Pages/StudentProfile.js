@@ -9,7 +9,7 @@ import { updated_student } from "../../../api/studentApi";
 
 const StudentProfile = () => {
   //hooks
-  const student = useSelector(state => state.studentAuth.student);
+  const student = useSelector((state) => state.studentAuth.student);
   const Navigate = useNavigate();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -20,14 +20,15 @@ const StudentProfile = () => {
   const [disabled, setDisabled] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedSemester, setSelectedSemester] = useState(null);
+  const [selectedSemester, setSelectedSemester] = useState(1);
 
   useEffect(() => {
     setEditedUserData(student.user);
-  }, [])
+  }, []);
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
+    setSelectedSemester(1);
   };
 
   const handleFieldChange = (fieldName, value) => {
@@ -56,7 +57,7 @@ const StudentProfile = () => {
       formElements.push(
         <div key={i} className={styles.semesterInputs}>
           <label>Semester {i}</label>
-          <div className={styles.inputGroup}>
+          <Flex>
             <input
               type="number"
               placeholder="SGPA"
@@ -64,20 +65,15 @@ const StudentProfile = () => {
               min="0"
               max="10"
             />
-            <input
-              type="number"
-              placeholder="CGPA"
-              step="0.01"
-              min="0"
-              max="10"
-            />
-          </div>
+          </Flex>
         </div>
       );
     }
     return (
       <form>
-        {formElements}
+        <Flex flexWrap="wrap" gap={2}>
+          {formElements}
+        </Flex>
         <div className={styles.formButtons}>
           <button type="button" onClick={togglePopup}>
             Close
@@ -107,17 +103,28 @@ const StudentProfile = () => {
     // console.log(updated_fields);
     delete updated_fields.type;
     updated_student(student.token, student.user.enrollment_no, editedUserData)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
         setClicked(true);
         handleEdit();
-      })
+      });
+  };
+  function formatDate(date) {
+    const d = new Date(date);
+    let month = "" + (d.getMonth() + 1);
+    let day = "" + d.getDate();
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
   }
 
   return (
@@ -141,7 +148,7 @@ const StudentProfile = () => {
                           src={
                             file
                               ? URL.createObjectURL(file)
-                              : "https://picsum.photos/id/870/200/300?grayscale&blur=2"
+                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
                           }
                           alt=""
                         />
@@ -157,7 +164,9 @@ const StudentProfile = () => {
                   </div>
 
                   <div className={styles.profiletxt}>
-                    <h1 className={styles.profilename}>Profile</h1>
+                    <h1 className={styles.profilename}>
+                      {editedUserData.fname + " " + editedUserData.lname}
+                    </h1>
                     <h2 className={styles.profilesubtext}>
                       Update your photo and personal details
                     </h2>
@@ -172,7 +181,7 @@ const StudentProfile = () => {
                       color="#0d30ac"
                       onClick={togglePopup}
                     >
-                      Add CGPA/SGPA
+                      Add SGPA
                     </Button>
                     <button
                       onClick={handleResetPasswordClick}
@@ -192,7 +201,7 @@ const StudentProfile = () => {
                     color="#0d30ac"
                     onClick={togglePopup}
                   >
-                    Add CGPA/SGPA
+                    Add SGPA
                   </Button>
                   <Button
                     color="white"
@@ -209,8 +218,17 @@ const StudentProfile = () => {
                   <div className={styles.popupContent}>
                     <>
                       <label>Select Semester</label>
-                      <select onChange={handleSemesterChange}>
-                        <option value="">--Select--</option>
+                      <select
+                        onChange={handleSemesterChange}
+                        value={selectedSemester || ""}
+                      >
+                        {selectedSemester ? (
+                          <option value={selectedSemester}>
+                            {selectedSemester}
+                          </option>
+                        ) : (
+                          <option value="">--Select--</option>
+                        )}
                         {Array.from({ length: 12 }, (_, index) => (
                           <option key={index + 1} value={index + 1}>
                             {index + 1}
@@ -341,7 +359,9 @@ const StudentProfile = () => {
                     <input
                       disabled={disabled}
                       value={editedUserData.cgpa || ""}
-                      onChange={(e) => handleFieldChange("cgpa", e.target.value)}
+                      onChange={(e) =>
+                        handleFieldChange("cgpa", e.target.value)
+                      }
                     />
                   </div>
                 </Flex>
@@ -350,7 +370,8 @@ const StudentProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={new Date(editedUserData.dob).toLocaleDateString('en-GB').split('/').join('-') || ""}
+                      type="date"
+                      value={formatDate(editedUserData.dob)}
                       onChange={(e) => handleFieldChange("dob", e.target.value)}
                     />
                   </div>

@@ -64,18 +64,18 @@ export default function StudentLogin() {
   const SubmitSignInHandler = () => {
     const payload = {
       tezu_email: email,
-      password
-    }
+      password,
+    };
     student_login(payload)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
-        dispatch(studentAuthActions.login({ student: result.result }))
-        navigate("/student/dashboard")
+        dispatch(studentAuthActions.login({ student: result.result }));
+        navigate("/student/dashboard");
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-      })
+      });
   };
 
   const SubmitSignUpHandler = () => {};
@@ -86,7 +86,7 @@ export default function StudentLogin() {
         {toggle && (
           <Box display="flex" w="60vw" h="60vh" border="2px solid gray">
             <VStack w="30vw" bgColor="white" color="black">
-              <Heading mt="20%" fontSize="2rem">
+              <Heading mt="20%" fontSize="2rem" color="#003285">
                 Login To Your Acount
               </Heading>
               <Input
@@ -128,7 +128,7 @@ export default function StudentLogin() {
             <VStack
               w="30vw"
               justify="center"
-              bgGradient="linear(to-br, #ff9900, #FF7080)"
+              bgGradient="linear(to-br, #003285, #153F78)"
             >
               <Heading textAlign="center" fontSize="2rem" color="white">
                 Haven't Registered Yet?
@@ -139,9 +139,8 @@ export default function StudentLogin() {
                 w="8vw"
                 h="5vh"
                 mt="6%"
-                _hover={{ backgroundColor: "black" }}
-                bgColor="#254060"
-                color="white"
+                bgColor="white"
+                color="#254060"
               >
                 Sign Up
               </Button>
@@ -153,7 +152,7 @@ export default function StudentLogin() {
             <VStack
               w="35vw"
               justify="center"
-              bgGradient="linear(to-br, #ff9900, #FF7080)"
+              bgGradient="linear(to-br, #003285, #153F78)"
             >
               <Heading textAlign="center" fontSize="2rem" color="white">
                 Already Have An Account?
@@ -164,15 +163,14 @@ export default function StudentLogin() {
                 w="8vw"
                 h="5vh"
                 mt="6%"
-                _hover={{ backgroundColor: "black" }}
-                bgColor="#154360"
-                color="white"
+                bgColor="white"
+                color="#254060"
               >
                 Sign In
               </Button>
             </VStack>
             <VStack w="35vw" bgColor="white" color="black">
-              <Heading mt="10%" fontSize="2rem">
+              <Heading mt="10%" fontSize="2rem" color="#003285">
                 Register New Acount
               </Heading>
               <Input

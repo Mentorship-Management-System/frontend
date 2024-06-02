@@ -9,7 +9,7 @@ export default function MentorLogin() {
   //hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   //state variables
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -45,17 +45,16 @@ export default function MentorLogin() {
   const SubmitSignInHandler = () => {
     const payload = {
       email,
-      password
-    }
+      password,
+    };
     console.log(payload);
 
-    mentor_login(payload)
-      .then(result => {
-        result = result.data;
-        console.log(result.mentor);
-        dispatch(mentorAuthActions.login({ mentor: result.result }));
-        navigate("/mentor/dashboard")
-      })
+    mentor_login(payload).then((result) => {
+      result = result.data;
+      console.log(result.mentor);
+      dispatch(mentorAuthActions.login({ mentor: result.result }));
+      navigate("/mentor/dashboard");
+    });
   };
 
   const SubmitSignUpHandler = () => {};
@@ -105,7 +104,7 @@ export default function MentorLogin() {
             <VStack
               w="30vw"
               justify="center"
-              bgGradient="linear(to-br, #ff9900, #FF7080)"
+              bgGradient="linear(to-br, #003285, #153F78)"
             >
               <Heading textAlign="center" fontSize="2rem" color="white">
                 Haven't Registered Yet?
@@ -116,9 +115,8 @@ export default function MentorLogin() {
                 w="8vw"
                 h="5vh"
                 mt="6%"
-                _hover={{ backgroundColor: "black" }}
-                bgColor="#154360"
-                color="white"
+                bgColor="white"
+                color="#254060"
               >
                 Sign Up
               </Button>
@@ -130,7 +128,7 @@ export default function MentorLogin() {
             <VStack
               w="30vw"
               justify="center"
-              bgGradient="linear(to-br, #ff9900, #FF7080)"
+              bgGradient="linear(to-br, #003285, #153F78)"
             >
               <Heading textAlign="center" color="white" fontSize="2rem">
                 Already Have An Account?
@@ -141,9 +139,8 @@ export default function MentorLogin() {
                 w="8vw"
                 h="5vh"
                 mt="6%"
-                _hover={{ backgroundColor: "black" }}
-                bgColor="#154360"
-                color="white"
+                bgColor="white"
+                color="#254060"
               >
                 Sign In
               </Button>
