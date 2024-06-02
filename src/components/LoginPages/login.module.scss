@@ -1,0 +1,24 @@
+.root {
+  height: 100vh;
+  background-image: url("../../media/login.jfif");
+  background-size: cover;
+  backdrop-filter: blur(10px);
+}
+.overlay {
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: 1;
+  backdrop-filter: blur(3px);
+
+  background-color: rgba(0, 0, 0, 0.422);
+}
+.container {
+  width: 60vw;
+  min-height: 30vw;
+  border: 2px solid gray;
+  position: relative;
+  z-index: 2;
+}

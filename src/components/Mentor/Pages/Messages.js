@@ -23,7 +23,10 @@ const Messages = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const result = await get_chat_for_mentor(mentor.token, mentor.user.mentor_id);
+        const result = await get_chat_for_mentor(
+          mentor.token,
+          mentor.user.mentor_id
+        );
         setMessages(result.data.chats);
       } catch (error) {
         console.error(error);
@@ -51,31 +54,31 @@ const Messages = () => {
 
   const handleReply = (index) => {
     setShowReply((prev) => (prev === index ? null : index));
-    setReply("")
+    setReply("");
   };
 
   const handleSendReply = (chat) => {
     const payload = {
-      reply
-    }
+      reply,
+    };
 
     let temp_chats = messages;
-    const index = temp_chats.findIndex(obj => obj.chat_id === chat.chat_id);
+    const index = temp_chats.findIndex((obj) => obj.chat_id === chat.chat_id);
     if (index !== -1) {
       temp_chats[index].acknowledged = 1;
       temp_chats[index].reply_by_mentor = reply;
     }
 
     ack_reply_chat(mentor.token, payload, chat.chat_id)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
-        setMessages(temp_chats)
+        setMessages(temp_chats);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-      })
-  }
+      });
+  };
 
   // Calculate initial card heights (optional for improved performance)
   useEffect(() => {
@@ -93,14 +96,21 @@ const Messages = () => {
       <h1 className={styles.heading}>Message Information</h1>
       <div className={styles.cardList}>
         {messages?.map((message, index) => (
-          <div key={index} className={styles.card} ref={cardHeightRefs.current[index]}>
+          <div
+            key={index}
+            className={styles.card}
+            ref={cardHeightRefs.current[index]}
+          >
             <div>
               <h2 className={styles.name}>
                 {message.student.fname} {message.student.lname}
               </h2>
               <Text mt="-3" mb="3" fontSize="small">
                 {message.student.enrollment_no} |{" "}
-                {new Date(message.date).toISOString().replace("T", " ").slice(0, 16)}
+                {new Date(message.date)
+                  .toISOString()
+                  .replace("T", " ")
+                  .slice(0, 16)}
               </Text>
               <p className={styles.message}>
                 <i>
@@ -113,22 +123,56 @@ const Messages = () => {
                   )}
                 </i>
               </p>
-              {message.acknowledged && <p className={styles.message}>
-                {message.meeting_id === null ? <span><b>You replied -</b> <i>{message.reply_by_mentor}</i></span> : <span><i>Meeting set with <b>{message.student.fname} {message.student.lname} ({message.student.enrollment_no})</b></i></span>}
-              </p>}
+              {message.acknowledged && (
+                <p className={styles.message}>
+                  {message.meeting_id === null ? (
+                    <span>
+                      <b>You replied -</b> <i>{message.reply_by_mentor}</i>
+                    </span>
+                  ) : (
+                    <span>
+                      <i>
+                        Meeting set with{" "}
+                        <b>
+                          {message.student.fname} {message.student.lname} (
+                          {message.student.enrollment_no})
+                        </b>
+                      </i>
+                    </span>
+                  )}
+                </p>
+              )}
             </div>
-            {!message.acknowledged && <div className={styles.buttons}>
-              <button className={styles.button1} onClick={() => handleReply(index)}>
-                {showReply === index ? "Cancel" : "Reply"}
-              </button>
-              {showReply === index && <button className={styles.button} onClick={() => handleSendReply(message)}>Send</button>}
-              {showReply !== index && <button className={styles.button} onClick={handleShowModal}>
-                Set Meeting
-              </button>}
-            </div>}
+            {!message.acknowledged && (
+              <div className={styles.buttons}>
+                <button
+                  className={styles.button1}
+                  onClick={() => handleReply(index)}
+                >
+                  {showReply === index ? "Cancel" : "Reply"}
+                </button>
+                {showReply === index && (
+                  <button
+                    className={styles.button}
+                    onClick={() => handleSendReply(message)}
+                  >
+                    Send
+                  </button>
+                )}
+                {showReply !== index && (
+                  <button className={styles.button} onClick={handleShowModal}>
+                    Set Meeting
+                  </button>
+                )}
+              </div>
+            )}
             {!message.acknowledged && showReply === index && (
               <Box mt="5">
-                <Input type="text" value={reply} onChange={(e) => setReply(e.target.value)} />
+                <Input
+                  type="text"
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                />
               </Box>
             )}
           </div>
@@ -156,4 +200,3 @@ const Messages = () => {
 };
 
 export default Messages;
-

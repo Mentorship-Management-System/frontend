@@ -71,6 +71,7 @@ const StudentMessage = () => {
         <Button
           backgroundColor="#0d30ac"
           color="white"
+          _hover={{ backgroundColor: "#0d31cc" }}
           className={styles.button}
           onClick={() => setShowModal(true)}
         >

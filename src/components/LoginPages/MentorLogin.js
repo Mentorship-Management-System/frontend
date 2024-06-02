@@ -1,10 +1,18 @@
-import { Box, Button, Center, Heading, Input, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Input,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { mentor_login } from "../../api/mentorApi";
 import { mentorAuthActions } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
-
+import classes from "./login.module.scss";
 export default function MentorLogin() {
   //hooks
   const dispatch = useDispatch();
@@ -60,9 +68,10 @@ export default function MentorLogin() {
   const SubmitSignUpHandler = () => {};
   return (
     <div>
-      <Center h="100vh">
+      <Center className={classes.root}>
+        <div className={classes.overlay}></div>
         {toggle && (
-          <Box display="flex" w="60vw" h="60vh" border="2px solid gray">
+          <Flex className={classes.container}>
             <VStack w="30vw" bgColor="white" color="black">
               <Heading mt="20%" fontSize="2rem">
                 Login To Your Account
@@ -121,10 +130,10 @@ export default function MentorLogin() {
                 Sign Up
               </Button>
             </VStack>
-          </Box>
+          </Flex>
         )}
         {!toggle && (
-          <Box display="flex" w="60vw" h="65vh" border="2px solid gray">
+          <Flex className={classes.container}>
             <VStack
               w="30vw"
               justify="center"
@@ -216,12 +225,12 @@ export default function MentorLogin() {
                 h="5vh"
                 variant="outline"
                 borderColor="gray"
-                mt="6%"
+                mt="3%"
               >
                 Sign Up
               </Button>
             </VStack>
-          </Box>
+          </Flex>
         )}
       </Center>
     </div>

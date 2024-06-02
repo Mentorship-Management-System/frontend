@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../Css/Mentees.module.scss"; // Import SCSS module for styling
-import { Button, Flex, Heading, Select } from "@chakra-ui/react";
+import { Button, Center, Flex, Heading, Select } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
@@ -134,6 +134,23 @@ const Mentees = () => {
   const columns = React.useMemo(
     () => [
       // Let's make a column for selection
+      {
+        id: "selection",
+        // The header can use the table's getToggleAllRowsSelectedProps method
+        // to render a checkbox
+        Header: ({ getToggleAllRowsSelectedProps }) => (
+          <Center>
+            <input type="checkbox" {...getToggleAllRowsSelectedProps()} />
+          </Center>
+        ),
+        // The cell can use the individual row's getToggleRowSelectedProps method
+        // to the render a checkbox
+        Cell: ({ row }) => (
+          <Center>
+            <input type="checkbox" {...row.getToggleRowSelectedProps()} />
+          </Center>
+        ),
+      },
       {
         Header: "ID",
         accessor: "id",
