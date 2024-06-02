@@ -5,8 +5,16 @@ import { RxCross1 } from "react-icons/rx";
 import styles from ".././Css/ResetPassword.module.scss";
 import { Center } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { student_login } from "../../../api/studentApi";
+import { useSelector } from "react-redux";
+import { reset_password } from "../../../api/adminApi";
 
 const ResetPassword = ({ onSubmit }) => {
+  //hooks
+  const student = useSelector(state => state.studentAuth.student);
+  console.log(student);
+
+  //state variables
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [reenteredPassword, setReenteredPassword] = useState("");
@@ -16,7 +24,39 @@ const ResetPassword = ({ onSubmit }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleResetPassword = async () => {};
+  const handleResetPassword = async () => {
+    if(newPassword !== reenteredPassword){
+      alert("New password does not match!")
+    } else {
+      const payload = {
+        tezu_email: student.user.gsuite_id,
+        password: currentPassword
+      }
+      student_login(payload)
+        .then(result => {
+          if(result && result.data && result.data.success){
+            // console.log(student);
+            let creds = {email: payload.tezu_email, newPassword}
+            reset_password(student.token, creds)
+              .then(response => {
+                response = response.data;
+                console.log(response);
+                alert(response.message);
+                onSubmit();
+              })
+              .catch(err => {
+                console.log(err);
+              })
+            console.log(creds);
+          } else {
+            alert("Current password does not match!");
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+  };
 
   return (
     <motion.div
@@ -93,12 +133,6 @@ const ResetPassword = ({ onSubmit }) => {
       <div className={styles.submitBtn}>
         <button onClick={handleResetPassword}> Submit</button>
       </div>
-      {/* <div className={styles.submitBtn}>
-                <button onClick={handleSubmit}> Done</button>
-            </div> */}
-      {/* <div className={styles.fpLink}>
-        <a href="/password-recovery">Forgot Password</a>
-      </div> */}
 
       {successMessage && <p>{successMessage}</p>}
       {errorMessage && <p>{errorMessage}</p>}
