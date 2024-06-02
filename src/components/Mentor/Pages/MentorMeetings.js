@@ -81,6 +81,10 @@ const Meetings = () => {
         );
   // console.log(openmodal);
 
+  const handleDownloadMeetings = () => {
+    console.log("Download meetings");
+  }
+
   return (
     <Box className={styles.pageContainer}>
       <Box className={styles.pageHeader}>
@@ -89,7 +93,7 @@ const Meetings = () => {
       {/* Add filter selector */}
       <Flex className={styles.buttons}>
         <Center cursor="pointer" m="auto 2%">
-          <MdOutlineFileDownload size={25} />
+          <MdOutlineFileDownload size={25} onClick={handleDownloadMeetings} />
         </Center>
         <Flex gap="20px">
           <Select value={filter} onChange={(e) => setFilter(e.target.value)}>

@@ -11,11 +11,14 @@ import { useState, useEffect, useContext } from "react";
 // import { AuthContext, useAuth } from "../components/data_fetch/authProvider"; // Import the AuthProvider
 // import { db } from "../firebase";
 import classes from "../Css/Profile.module.scss";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
-  // const user = useAuth(); // Use the authentication state from the context
+  //hooks
+  const admin = useSelector(state => state.adminAuth.admin);
+
+  //state variables
   const [userData, setUserData] = useState(null);
-  //   const { user } = useContext(AuthContext);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 430);
 
   //   console.log(userData);
@@ -47,7 +50,7 @@ const Profile = () => {
       </div>
       {!isMobile && (
         <p className={classes.name}>
-          {userData ? userData.username : "Jhon Doe"}
+          {admin && admin.user ? admin.user.fname + " " + admin.user.lname : "Jhon Doe"}
         </p>
       )}
     </div>

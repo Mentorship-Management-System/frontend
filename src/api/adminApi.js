@@ -15,3 +15,19 @@ export const admin_login = async (payload) => {
         return error;
     }
 }
+
+export const get_count = async (token) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/counts`,
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

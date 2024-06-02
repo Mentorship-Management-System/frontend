@@ -1,6 +1,6 @@
 // DashboardComponent.js
 import Chart from "react-apexcharts";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../Admin/Css/Dashboard.module.scss"; // Import CSS Modules for styling
 import cartoon1 from "../../../media/graduated.png";
 import cartoon2 from "../../../media/teacher.png";
@@ -16,6 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
+import { get_count } from "../../../api/adminApi";
 
 const meetings = [
   {
@@ -95,23 +96,46 @@ const Dashboard = () => {
   const mentor = useSelector((state) => state.mentorAuth.mentor);
   console.log(mentor);
 
+  //state variables
+  const [counts, setCounts] = useState({});
+
+  useEffect(() => {
+    get_count(mentor.token)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setCounts(result.counts)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, [])
+
   return (
     <div className={styles.dashboardContainer}>
       <h1>
         Welcome {mentor.user.fname} {mentor.user.lname}
       </h1>
       <div className={styles.flexContainer}>
-        {data.map((item, index) => (
-          <HStack className={styles.dashboardCard} key={index}>
-            <div className={styles.flexContent}>
-              <p>{item.title}</p>
-              <h3>{item.count}</h3>
-            </div>
-            <Center className={styles.imageContainer}>
-              <img src={item.icon} alt={item.title} />
-            </Center>
-          </HStack>
-        ))}
+        <HStack className={styles.dashboardCard}>
+          <div className={styles.flexContent}>
+            <p>Mentees</p>
+            <h3>{counts.studentCount}</h3>
+          </div>
+          <Center className={styles.imageContainer}>
+            <img src={cartoon1} alt={"Mentees"} />
+          </Center>
+        </HStack>
+
+        <HStack className={styles.dashboardCard}>
+          <div className={styles.flexContent}>
+            <p>Mentors</p>
+            <h3>{counts.mentorCount}</h3>
+          </div>
+          <Center className={styles.imageContainer}>
+            <img src={cartoon2} alt={"Mentors"} />
+          </Center>
+        </HStack>
       </div>
       <Flex className={styles.charts}>
         <Box className={styles.chart}>

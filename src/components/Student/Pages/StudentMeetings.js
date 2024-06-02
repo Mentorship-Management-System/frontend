@@ -105,7 +105,7 @@ const StudentMeetings = () => {
                 <Heading className={styles.meetingName} fontSize="1.2rem">
                   {meeting.title}
                 </Heading>
-                <Text className={styles.meetingTime}>{meeting.date}</Text>
+                <Text className={styles.meetingTime}>{new Date(meeting.date).toISOString().slice(0, 16).replace('T', ', ')}</Text>
                 <Text className={styles.meetingDescription}>
                   {meeting.description}
                 </Text>

@@ -1,7 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import classes from "../Css/Profile.module.scss";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
+  const mentor = useSelector(state => state.mentorAuth.mentor);
+
   // const user = useAuth(); // Use the authentication state from the context
   const [userData, setUserData] = useState(null);
   //   const { user } = useContext(AuthContext);
@@ -36,7 +39,7 @@ const Profile = () => {
       </div>
       {!isMobile && (
         <p className={classes.name}>
-          {userData ? userData.username : "Jhon Doe"}
+          {mentor && mentor.user ? mentor.user.honorifics + " " + mentor.user.fname + " " + mentor.user.lname : ""}
         </p>
       )}
     </div>
