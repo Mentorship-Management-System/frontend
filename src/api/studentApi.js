@@ -113,3 +113,20 @@ export const save_sgpa = async (token, payload) => {
         return error;
     }
 }
+
+export const delete_students = async (token, payload) => {
+    try {
+        let options = {
+            method: "DELETE",
+            url: `${url}/delete-students-profile`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
