@@ -80,3 +80,36 @@ export const updated_student = async (token, rollno, payload) => {
         return error;
     }
 }
+
+export const get_sgpa = async (token, enrollment_no) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/sgpa/${enrollment_no}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const save_sgpa = async (token, payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/save-sgpa`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

@@ -73,7 +73,7 @@ const StudentMeetings = () => {
     filter === "all"
       ? meetings
       : meetings.filter((meeting) =>
-          filter === "completed" ? meeting.approve : !meeting.completed
+          filter === "completed" ? meeting.approve : !meeting.approve
         );
 
   return (

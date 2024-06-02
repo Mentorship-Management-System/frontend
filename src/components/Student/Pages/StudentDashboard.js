@@ -18,6 +18,7 @@ import {
 import { useSelector } from "react-redux";
 import { get_count } from "../../../api/adminApi";
 import { get_meetings_by_student_id } from "../../../api/meetingApi";
+import { get_sgpa } from "../../../api/studentApi";
 
 const meetings = [
   {
@@ -42,6 +43,20 @@ const data = [
 ];
 
 const TeachersMeetingsChart = () => {
+  const student = useSelector((state) => state.studentAuth.student);
+  const [sgpas, setSgpas] = useState([]);
+  useEffect(() => {
+    get_sgpa(student.token, student.user.enrollment_no)
+      .then((result) => {
+        result = result.data;
+        console.log("sgpas", result.sgpas);
+        setSgpas(result.sgpas);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const teachersMeetingsData = {
     options: {
       chart: {
@@ -53,15 +68,7 @@ const TeachersMeetingsChart = () => {
         },
       },
       xaxis: {
-        categories: [
-          "1st Sem",
-          "2st Sem",
-          "3st Sem",
-          "4st Sem",
-          "5st Sem",
-          "6st Sem",
-          "7st Sem",
-        ],
+        categories: sgpas.map((obj) => obj.semester),
       },
       colors: ["#26B7ED"],
       stroke: {
@@ -70,12 +77,9 @@ const TeachersMeetingsChart = () => {
     },
     series: [
       {
-        name: "CGPA",
-        data: [8.1, 7.5, 7.7, 7.5, 7.6, 7.8, 8],
-      },
-      {
         name: "SGPA",
-        data: [8.1, 7.6, 8.4, 6.9, 7.8, 7.8, 8.6],
+        // data: [8.1, 7.6, 8.4, 6.9, 7.8, 7.8, 8.6],
+        data: sgpas.map((obj) => obj.sgpa),
       },
     ],
   };
@@ -83,7 +87,7 @@ const TeachersMeetingsChart = () => {
   return (
     <Box w="100%" h="90%">
       <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
-        CGPA/SGPA Graph{" "}
+        SGPA Graph{" "}
       </Heading>
       <Chart
         options={teachersMeetingsData.options}
@@ -99,7 +103,6 @@ const TeachersMeetingsChart = () => {
 const Dashboard = () => {
   //hooks
   const student = useSelector((state) => state.studentAuth.student);
-  console.log(student);
 
   //state variables
   const [count, setCount] = useState(null);
