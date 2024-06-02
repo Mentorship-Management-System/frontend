@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 const Settings = () => {
   //hooks
-  const admin = useSelector(state => state.adminAuth.admin);
+  const admin = useSelector((state) => state.adminAuth.admin);
 
   //state variables
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -20,7 +20,7 @@ const Settings = () => {
   //useEffect functions
   useEffect(() => {
     setEditedUserData(admin.user);
-  }, [])
+  }, []);
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -58,7 +58,7 @@ const Settings = () => {
                           src={
                             file
                               ? URL.createObjectURL(file)
-                              : "https://picsum.photos/id/870/200/300?grayscale&blur=2"
+                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
                           }
                           alt=""
                         />
@@ -110,7 +110,6 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                
 
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Last Name</div>
@@ -136,7 +135,6 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                
               </div>
               <div className={styles.referral}>
                 <div className={styles.cnclbtn}>

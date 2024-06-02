@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Select, Input, Button, Center, Heading } from "@chakra-ui/react";
+import {
+  Select,
+  Input,
+  Button,
+  Center,
+  Heading,
+  Box,
+  Text,
+  Flex,
+} from "@chakra-ui/react";
 import Table from "./Table";
 import classes from "../Css/AssignMentorToMentees.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +49,8 @@ const PassoutMenteeList = ({ students }) => {
     branch: "",
     searchText: "",
   });
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: currentYear - 2014 },
@@ -172,6 +183,8 @@ const PassoutMenteeList = ({ students }) => {
     []
   );
 
+  const handleDeleteMentees = () => {};
+
   return (
     <div className={classes.header}>
       <Heading className={classes.heading}>Mentees</Heading>
@@ -219,11 +232,29 @@ const PassoutMenteeList = ({ students }) => {
             <Button
               variant="outline"
               border="1px solid #0d30ac"
-              disabled={selectedRowKeys.length === 0}
+              // disabled={selectedRowKeys.length === 0}
+              onClick={() => setShowDeletePopup(true)}
             >
               Delete Mentees
             </Button>
           </div>
+          {showDeletePopup && (
+            <Box className={classes.editPopup}>
+              <Text>Are you sure?</Text>
+              <Text>You can't undo this afterwards</Text>
+              <Flex justify="flex-end" align="center">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeletePopup(false)}
+                >
+                  No
+                </Button>
+                <Button colorScheme="facebook" onClick={handleDeleteMentees}>
+                  Confirm
+                </Button>
+              </Flex>
+            </Box>
+          )}
         </div>
         <Table columns={columns} data={tableData} />
       </div>

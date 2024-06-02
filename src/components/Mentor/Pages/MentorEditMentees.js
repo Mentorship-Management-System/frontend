@@ -141,7 +141,7 @@ const Settings = () => {
                           src={
                             file
                               ? URL.createObjectURL(file)
-                              : "https://picsum.photos/id/870/200/300?grayscale&blur=2"
+                              : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
                           }
                           alt=""
                         />
@@ -150,7 +150,9 @@ const Settings = () => {
                   </div>
 
                   <div className={styles.profiletxt}>
-                    <h1 className={styles.profilename}>Mike Daniel</h1>
+                    <h1 className={styles.profilename}>
+                      {editedUserData.fname + " " + editedUserData.lname}
+                    </h1>
                     <h2 className={styles.profilesubtext}>
                       Personal details of the Mentee
                     </h2>
@@ -159,13 +161,6 @@ const Settings = () => {
                 <div className={styles.buttonDiv}>
                   {!isMobile && (
                     <>
-                      <Button
-                        _hover={{ backgroundColor: "#0d3ffc" }}
-                        backgroundColor="#0d30ac"
-                        color="white"
-                      >
-                        Message
-                      </Button>
                       <Button
                         // _hover={{ backgroundColor: "#0d3ffc" }}
                         border="1px solid #0d30ac"
@@ -189,14 +184,6 @@ const Settings = () => {
               </div>
               {isMobile && (
                 <Flex justify="flex-end">
-                  <Button
-                    className={styles.profileBtns}
-                    _hover={{ backgroundColor: "#0d3ffc" }}
-                    backgroundColor="#0d30ac"
-                    color="white"
-                  >
-                    Message
-                  </Button>
                   <Button
                     className={styles.profileBtns}
                     // _hover={{ backgroundColor: "#0d3ffc" }}

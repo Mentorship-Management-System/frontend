@@ -11,8 +11,8 @@ import { useSelector } from "react-redux";
 const Settings = () => {
   //hooks
   const Navigate = useNavigate();
-  const admin = useSelector(state => state.adminAuth.admin.user);
-  const token = useSelector(state => state.adminAuth.admin.token);
+  const admin = useSelector((state) => state.adminAuth.admin.user);
+  const token = useSelector((state) => state.adminAuth.admin.token);
   const params = useParams();
 
   //state variables
@@ -23,7 +23,7 @@ const Settings = () => {
   const [uploaded, setUploaded] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  
+
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
       ...editedUserData,
@@ -35,18 +35,18 @@ const Settings = () => {
   useEffect(() => {
     const fetchStudent = () => {
       get_student(token, params.id)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
-          setStudent(result.student)
-          setEditedUserData(result.student)
+          setStudent(result.student);
+          setEditedUserData(result.student);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchStudent();
-  }, [])
+  }, []);
 
   const handleResetPasswordClick = () => {
     setShowResetPassword(!showResetPassword);
@@ -64,18 +64,18 @@ const Settings = () => {
     delete updated_fields.mentor_phone;
 
     updated_student(token, params.id, updated_fields)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
-        setEditedUserData(result.student)
+        setEditedUserData(result.student);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
-        handleEdit()
-      })
-  }
+        handleEdit();
+      });
+  };
 
   return (
     <div className={styles.cont}>
@@ -88,33 +88,22 @@ const Settings = () => {
                   <div>
                     <label htmlFor="image">
                       <div>
-                        <IoCameraOutline
-                          color="#4371cb"
-                          className={styles.cameraIcon}
-                        />
                         <img
                           style={{ cursor: "pointer" }}
                           className={styles.profileimage}
                           src={
-                            file
-                              ? URL.createObjectURL(file)
-                              : "https://picsum.photos/id/870/200/300?grayscale&blur=2"
+                            "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
                           }
                           alt=""
                         />
                       </div>
                     </label>
-                    <input
-                      type="file"
-                      name=""
-                      style={{ display: "none" }}
-                      id="image"
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
                   </div>
 
                   <div className={styles.profiletxt}>
-                    <h1 className={styles.profilename}>{editedUserData.fname} {editedUserData.lname}</h1>
+                    <h1 className={styles.profilename}>
+                      {editedUserData.fname} {editedUserData.lname}
+                    </h1>
                     <h2 className={styles.profilesubtext}>
                       Personal details of the Mentee
                     </h2>
@@ -248,7 +237,9 @@ const Settings = () => {
                     <input
                       disabled={disabled}
                       value={editedUserData.cgpa || ""}
-                      onChange={(e) => handleFieldChange("cgpa", e.target.value)}
+                      onChange={(e) =>
+                        handleFieldChange("cgpa", e.target.value)
+                      }
                     />
                   </div>
                 </Flex>
@@ -262,14 +253,19 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                
+
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Mentor</div>
                   <div className={styles.input1}>
                     <input
                       disabled={true}
-                      value={editedUserData.mentor && editedUserData.mentor.name || ""}
-                      onChange={(e) => handleFieldChange("mentor", e.target.value)}
+                      value={
+                        (editedUserData.mentor && editedUserData.mentor.name) ||
+                        ""
+                      }
+                      onChange={(e) =>
+                        handleFieldChange("mentor", e.target.value)
+                      }
                     />
                   </div>
                 </Flex>

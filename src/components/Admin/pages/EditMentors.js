@@ -24,7 +24,7 @@ const dummyData = [
 const Settings = () => {
   //hooks
   const Navigate = useNavigate();
-  const admin = useSelector(state => state.adminAuth.admin);
+  const admin = useSelector((state) => state.adminAuth.admin);
   const params = useParams();
 
   //state variables
@@ -41,32 +41,32 @@ const Settings = () => {
   useEffect(() => {
     const fetchMentor = () => {
       get_mentor(admin.token, params.id)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
-          setEditedUserData(result.mentor)
+          setEditedUserData(result.mentor);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchMentor();
-  }, [])
+  }, []);
 
   useEffect(() => {
     const fetchStudents = () => {
       get_students_by_mentor_id(admin.token, params.id)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
-          setStudents(result.students)
+          setStudents(result.students);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }
+        });
+    };
     fetchStudents();
-  }, [])
+  }, []);
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -88,18 +88,18 @@ const Settings = () => {
     console.log(updated_fields);
 
     update_mentor(admin.token, params.id, updated_fields)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
-        setEditedUserData(result.mentor)
+        setEditedUserData(result.mentor);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
-        handleEdit()
-      })
-  }
+        handleEdit();
+      });
+  };
 
   return (
     <div className={styles.cont}>
@@ -112,29 +112,16 @@ const Settings = () => {
                   <div>
                     <label htmlFor="image">
                       <div>
-                        <IoCameraOutline
-                          color="#4371cb"
-                          className={styles.cameraIcon}
-                        />
                         <img
                           style={{ cursor: "pointer" }}
                           className={styles.profileimage}
                           src={
-                            file
-                              ? URL.createObjectURL(file)
-                              : "https://picsum.photos/id/870/200/300?grayscale&blur=2"
+                            "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
                           }
                           alt=""
                         />
                       </div>
                     </label>
-                    <input
-                      type="file"
-                      name=""
-                      style={{ display: "none" }}
-                      id="image"
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
                   </div>
 
                   <div className={styles.profiletxt}>
@@ -211,7 +198,7 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                
+
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Position</div>
                   <div className={styles.input1}>
@@ -249,7 +236,7 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                
+
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Contact Number</div>
                   <div className={styles.input1}>
@@ -262,7 +249,7 @@ const Settings = () => {
                     />
                   </div>
                 </Flex>
-                
+
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Extension</div>
                   <div className={styles.input1}>
@@ -306,13 +293,26 @@ const Settings = () => {
                   <div className={styles.popup}>
                     <h1 className={styles.header}>Mentee List</h1>
                     <div className={styles.content}>
-                      {students && students.map((item, index) => (
-                        <div key={index} className={styles.nameRow} onClick={() => Navigate(`/admin/Mentees/${item.enrollment_no}`)}>
-                          <span className={styles.name}>{item.student_id}</span>
-                          <span className={styles.name}>{item.fname} {item.lname}</span>
-                          <span className={styles.name}>{item.enrollment_no}</span>
-                        </div>
-                      ))}
+                      {students &&
+                        students.map((item, index) => (
+                          <div
+                            key={index}
+                            className={styles.nameRow}
+                            onClick={() =>
+                              Navigate(`/admin/Mentees/${item.enrollment_no}`)
+                            }
+                          >
+                            <span className={styles.name}>
+                              {item.student_id}
+                            </span>
+                            <span className={styles.name}>
+                              {item.fname} {item.lname}
+                            </span>
+                            <span className={styles.name}>
+                              {item.enrollment_no}
+                            </span>
+                          </div>
+                        ))}
                     </div>
                     <Flex justify="flex-end">
                       <Button onClick={() => setShowMentees(!showMentees)}>

@@ -210,7 +210,7 @@ export default function SetMeetingModal({
               </Button>
             )}
             <Button colorScheme="blue" onClick={setMeeting}>
-              Set
+              {centerModal ? "Set" : "Confirm"}
             </Button>
           </Flex>
         </div>
