@@ -6,8 +6,10 @@ import { MdOutlineFileDownload } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { MdDelete } from "react-icons/md";
+import { delete_students } from "../../../api/studentApi";
+import { delete_mentors } from "../../../api/mentorApi";
 
-function Table({ columns, data, students, mentors }) {
+function Table({ columns, data, students, mentors, admin, setStudents }) {
   const Navigate = useNavigate();
   const location = useLocation();
   const [selectCount, setSelectCount] = useState(0);
@@ -202,10 +204,34 @@ function Table({ columns, data, students, mentors }) {
   };
 
   const handleDelete = () => {
-    const arr = selectedFlatRows.map((d) => d.original.id);
-    console.log(arr);
-    if (students) {
-    } else if (mentors) {
+    const profiles = selectedFlatRows.map((d) => d.original.id);
+    if(profiles && profiles.length > 0){
+      console.log(profiles);
+      if (students) {
+        console.log("delete students");
+        const payload = { studentIds: profiles }
+        delete_students(admin.token, payload)
+          .then(result => {
+            result = result.data;
+            console.log(result);
+            Navigate(0)
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      } else if (mentors) {
+        console.log("delete mentors");
+        const payload = { mentorIds: profiles }
+        delete_mentors(admin.token, payload)
+          .then(result => {
+            result = result.data;
+            console.log(result);
+            Navigate(0)
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
     }
   };
 
