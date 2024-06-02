@@ -105,7 +105,7 @@ const Settings = () => {
                       value={editedUserData.fname || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
+                        handleFieldChange("fname", e.target.value)
                       }
                     />
                   </div>
@@ -118,7 +118,7 @@ const Settings = () => {
                       disabled={disabled}
                       value={editedUserData.lname || ""}
                       onChange={(e) =>
-                        handleFieldChange("name", e.target.value)
+                        handleFieldChange("lname", e.target.value)
                       }
                     />
                   </div>
