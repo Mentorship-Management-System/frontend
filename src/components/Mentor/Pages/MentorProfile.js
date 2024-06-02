@@ -38,10 +38,6 @@ const MentorProfile = () => {
                   <div>
                     <label htmlFor="image">
                       <div>
-                        <IoCameraOutline
-                          color="#4371cb"
-                          className={styles.cameraIcon}
-                        />
                         <img
                           style={{ cursor: "pointer" }}
                           className={styles.profileimage}
@@ -54,13 +50,6 @@ const MentorProfile = () => {
                         />
                       </div>
                     </label>
-                    <input
-                      type="file"
-                      name=""
-                      style={{ display: "none" }}
-                      id="image"
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
                   </div>
 
                   <div className={styles.profiletxt}>

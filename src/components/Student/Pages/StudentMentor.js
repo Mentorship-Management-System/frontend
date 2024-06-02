@@ -79,7 +79,7 @@ const StudentMentor = () => {
                           src={
                             file
                               ? URL.createObjectURL(file)
-                              : "https://picsum.photos/id/870/200/300?grayscale&blur=2"
+                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
                           }
                           alt=""
                         />
