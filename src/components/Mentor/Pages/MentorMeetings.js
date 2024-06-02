@@ -92,6 +92,9 @@ const Meetings = () => {
   const handleDeleteMeeting = () => {
     setShowDeletePopup(!showDeletePopup);
   };
+  const handleDownloadMeetings = () => {
+    console.log("Download meetings");
+  };
 
   return (
     <Box className={styles.pageContainer}>
@@ -101,7 +104,7 @@ const Meetings = () => {
       {/* Add filter selector */}
       <Flex className={styles.buttons}>
         <Center cursor="pointer" m="auto 2%">
-          <MdOutlineFileDownload size={25} />
+          <MdOutlineFileDownload size={25} onClick={handleDownloadMeetings} />
         </Center>
         <Flex>
           <Select value={filter} onChange={(e) => setFilter(e.target.value)}>

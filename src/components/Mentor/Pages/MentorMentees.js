@@ -162,6 +162,10 @@ const Mentees = () => {
     fetchStudents();
   }, []);
 
+  const handleDownloadMeetings = () => {
+    console.log("Download meetings");
+  }
+
   return (
     <div className={styles.menteesContainer}>
       {/* Heading */}
@@ -195,7 +199,7 @@ const Mentees = () => {
       </div>
 
       <div className={styles.table}>
-        <TableList columns={columns} data={tableData} />
+        <TableList columns={columns} data={tableData} students={students} />
       </div>
     </div>
   );

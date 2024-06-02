@@ -5,6 +5,7 @@ import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { updated_student } from "../../../api/studentApi";
 
 const StudentProfile = () => {
   //hooks
@@ -20,6 +21,10 @@ const StudentProfile = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState(null);
+
+  useEffect(() => {
+    setEditedUserData(student.user);
+  }, [])
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -96,6 +101,24 @@ const StudentProfile = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const handleSaveProfile = () => {
+    let updated_fields = editedUserData;
+    // console.log(updated_fields);
+    delete updated_fields.type;
+    updated_student(student.token, student.user.enrollment_no, editedUserData)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setClicked(true);
+        handleEdit();
+      })
+  }
 
   return (
     <div className={styles.cont}>
@@ -206,7 +229,7 @@ const StudentProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={student.user.student_id || ""}
+                      value={editedUserData.student_id || ""}
                       onChange={(e) => console.log("Dont Touch")}
                     />
                   </div>
@@ -215,7 +238,7 @@ const StudentProfile = () => {
                   <div className={styles.label1}>First Name</div>
                   <div className={styles.input1}>
                     <input
-                      value={student.user.fname || ""}
+                      value={editedUserData.fname || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("fname", e.target.value)
@@ -229,7 +252,7 @@ const StudentProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={student.user.lname || ""}
+                      value={editedUserData.lname || ""}
                       onChange={(e) =>
                         handleFieldChange("lname", e.target.value)
                       }
@@ -241,7 +264,7 @@ const StudentProfile = () => {
                   <div className={styles.label1}>Enrollment Number</div>
                   <div className={styles.input1}>
                     <input
-                      value={student.user.enrollment_no || ""}
+                      value={editedUserData.enrollment_no || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("enrollment_no", e.target.value)
@@ -254,7 +277,7 @@ const StudentProfile = () => {
                   <div className={styles.label1}>Personal Email</div>
                   <div className={styles.input1}>
                     <input
-                      value={student.user.email || ""}
+                      value={editedUserData.email || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("email", e.target.value)
@@ -267,7 +290,7 @@ const StudentProfile = () => {
                   <div className={styles.label1}>G-Suite ID</div>
                   <div className={styles.input1}>
                     <input
-                      value={student.user.gsuite_id || ""}
+                      value={editedUserData.gsuite_id || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("gsuite_id", e.target.value)
@@ -280,7 +303,7 @@ const StudentProfile = () => {
                   <div className={styles.label1}>Programme</div>
                   <div className={styles.input1}>
                     <input
-                      value={student.user.programme || ""}
+                      value={editedUserData.programme || ""}
                       disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("programme", e.target.value)
@@ -293,7 +316,7 @@ const StudentProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={student.user.phone || ""}
+                      value={editedUserData.phone || ""}
                       onChange={(e) =>
                         handleFieldChange("phone", e.target.value)
                       }
@@ -305,7 +328,7 @@ const StudentProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={student.user.gender || ""}
+                      value={editedUserData.gender || ""}
                       onChange={(e) =>
                         handleFieldChange("gender", e.target.value)
                       }
@@ -317,7 +340,7 @@ const StudentProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={student.user.cgpa || ""}
+                      value={editedUserData.cgpa || ""}
                       onChange={(e) => handleFieldChange("cgpa", e.target.value)}
                     />
                   </div>
@@ -327,7 +350,7 @@ const StudentProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={student.user.dob || ""}
+                      value={new Date(editedUserData.dob).toLocaleDateString('en-GB').split('/').join('-') || ""}
                       onChange={(e) => handleFieldChange("dob", e.target.value)}
                     />
                   </div>
@@ -340,7 +363,7 @@ const StudentProfile = () => {
                   </button>
                 </div>
                 <div className={styles.sbmtbtn}>
-                  <button disabled={disabled} onClick={() => setClicked(true)}>
+                  <button disabled={disabled} onClick={handleSaveProfile}>
                     Save
                   </button>
                 </div>

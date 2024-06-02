@@ -6,8 +6,14 @@ import Profile from "./Student/Pages/Profile";
 import Navbar from "./Navbar";
 import SideBar from "./Student/Pages/Sidebar";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { studentAuthActions } from "../redux/store";
 
 function MentorHome(props) {
+  //hooks
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,7 +34,10 @@ function MentorHome(props) {
     };
   }, []);
 
-  const handleLogOut = () => {};
+  const handleLogOut = () => {
+    dispatch(studentAuthActions.logout());
+    navigate("/")
+  };
   return (
     <div>
       <div className={classes.root}>

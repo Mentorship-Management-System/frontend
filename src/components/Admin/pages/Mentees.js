@@ -226,7 +226,7 @@ const Mentees = () => {
       </div>
 
       <div className={styles.table}>
-        <TableList columns={columns} data={tableData} />
+        <TableList columns={columns} data={tableData} students={students} />
       </div>
     </div>
   );
