@@ -31,3 +31,20 @@ export const get_count = async (token) => {
         return error;
     }
 }
+
+export const reset_password = async (token, payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/reset-password`,
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

@@ -28,6 +28,10 @@ const adminSlice = createSlice({
             state.auth = false;
             state.admin = null;
             localStorage.removeItem('mm_cse_admin');
+        },
+        update(state, actions){
+            state.admin.user = actions.payload.user;
+            localStorage.setItem('mm_cse_admin', JSON.stringify(state.admin));
         }
     }
 })
@@ -45,6 +49,10 @@ const mentorSlice = createSlice({
             state.auth = false;
             state.mentor = null;
             localStorage.removeItem('mm_cse_mentor');
+        },
+        update(state, actions){
+            state.mentor.user = actions.payload.user;
+            localStorage.setItem('mm_cse_mentor', JSON.stringify(state.mentor));
         }
     }
 })
@@ -62,6 +70,10 @@ const studentSlice = createSlice({
             state.auth = false;
             state.student = null;
             localStorage.removeItem('mm_cse_student');
+        },
+        update(state, actions){
+            state.student.user = actions.payload.user;
+            localStorage.setItem('mm_cse_student', JSON.stringify(state.student));
         }
     }
 })

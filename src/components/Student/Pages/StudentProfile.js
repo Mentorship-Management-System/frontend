@@ -1,16 +1,18 @@
 import styles from "../../Admin/Css/Settings.module.scss";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updated_student } from "../../../api/studentApi";
+import { get_sgpa, save_sgpa, updated_student } from "../../../api/studentApi";
+import { studentAuthActions } from "../../../redux/store";
 
 const StudentProfile = () => {
   //hooks
   const student = useSelector((state) => state.studentAuth.student);
   const Navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
@@ -39,6 +41,7 @@ const StudentProfile = () => {
   };
 
   const handleResetPasswordClick = () => {
+    console.log("modal");
     setShowResetPassword(!showResetPassword);
   };
 
@@ -50,39 +53,128 @@ const StudentProfile = () => {
     setSelectedSemester(parseInt(event.target.value));
   };
 
-  const renderForm = () => {
-    if (selectedSemester === null) return null;
+  const RenderForm = () => {
+    // hooks
+    const student = useSelector(state => state.studentAuth.student);
+    const formRef = useRef(null);
+
+    // state variables
+    const [sgpas, setSgpas] = useState([]);
+    const [sgpaData, setSgpaData] = useState({});
+    const [isFormChanged, setIsFormChanged] = useState(false);
+    const [initialSgpaData, setInitialSgpaData] = useState({});
+
+    // useEffect to fetch SGPA data
+    useEffect(() => {
+      get_sgpa(student.token, student.user.enrollment_no)
+          .then(result => {
+              result = result.data;
+              console.log(result);
+              setSgpas(result.sgpas);
+          })
+          .catch(error => {
+              console.log(error);
+          });
+    }, []);
+
+    // useEffect to update sgpaData when sgpas change
+    useEffect(() => {
+      const sgpaObject = {};
+      sgpas && sgpas.forEach((sgpa) => {
+          sgpaObject[`semester_${sgpa.semester}`] = sgpa.sgpa;
+      });
+      console.log(sgpaObject);
+      setSgpaData(sgpaObject);
+      setInitialSgpaData(sgpaObject);
+    }, [sgpas]);
+
+    // useEffect to track form changes
+    useEffect(() => {
+      // Convert object to string and compare with initial state
+      const initialDataString = JSON.stringify(sgpaData);
+      const currentDataString = JSON.stringify(initialSgpaData);
+      setIsFormChanged(initialDataString !== currentDataString);
+    }, [sgpaData, initialSgpaData]);
+
+    // handleChange function to update sgpaData
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setSgpaData({
+        ...sgpaData,
+        [name]: value,
+      });
+    };
+
+    // Form submission handler
+    const semesterSumbitHandler = (e) => {
+      e.preventDefault();
+      console.log("form handler");
+      const formData = new FormData(formRef.current);
+      const data = {};
+      formData.forEach((value, key) => {
+          data[key] = Number(value);
+      });
+
+      const payload = Object.keys(data).map(key => {
+        const semester = key.split('_')[1];
+        return {
+            enrollment_no: student.user.enrollment_no,
+            semester: parseInt(semester, 10),
+            sgpa: data[key]
+        };
+      });
+
+      console.log(payload);
+      save_sgpa(student.token, payload)
+        .then(result => {
+            result = result.data;
+            console.log(result);
+            togglePopup();
+            setSgpas(payload);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
+    // Generate form elements
     const formElements = [];
     for (let i = 1; i <= selectedSemester; i++) {
       formElements.push(
         <div key={i} className={styles.semesterInputs}>
-          <label>Semester {i}</label>
-          <Flex>
-            <input
-              type="number"
-              placeholder="SGPA"
-              step="0.01"
-              min="0"
-              max="10"
-            />
-          </Flex>
+            <label>Semester {i}</label>
+            <Flex>
+              <input
+                required
+                type="number"
+                placeholder="SGPA"
+                step="0.01"
+                min="0"
+                max="10"
+                name={`semester_${i}`}
+                value={sgpaData[`semester_${i}`] || ''}
+                onChange={handleChange}
+              />
+            </Flex>
         </div>
       );
     }
+
     return (
-      <form>
-        <Flex flexWrap="wrap" gap={2}>
-          {formElements}
-        </Flex>
-        <div className={styles.formButtons}>
-          <button type="button" onClick={togglePopup}>
-            Close
-          </button>
-          <button type="submit">Set</button>
-        </div>
+      <form ref={formRef} onSubmit={semesterSumbitHandler}>
+          <Flex flexWrap="wrap" gap={2}>
+              {formElements}
+          </Flex>
+          <div className={styles.formButtons}>
+            <button type="button" onClick={togglePopup}>
+              Close
+            </button>
+            <button type="submit" disabled={!isFormChanged}>Set</button>
+          </div>
       </form>
     );
   };
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -100,12 +192,15 @@ const StudentProfile = () => {
 
   const handleSaveProfile = () => {
     let updated_fields = editedUserData;
-    // console.log(updated_fields);
+    if(updated_fields.dob !== null && updated_fields.dob !== undefined && updated_fields.dob) updated_fields["dob"] = new Date(updated_fields["dob"]).toISOString();
     delete updated_fields.type;
+    console.log(updated_fields);
+    
     updated_student(student.token, student.user.enrollment_no, editedUserData)
       .then((result) => {
         result = result.data;
         console.log(result);
+        dispatch(studentAuthActions.update({ user: editedUserData }))
       })
       .catch((error) => {
         console.log(error);
@@ -235,7 +330,7 @@ const StudentProfile = () => {
                           </option>
                         ))}
                       </select>
-                      {selectedSemester !== null && renderForm()}
+                      {selectedSemester !== null && <RenderForm />}
                     </>
                   </div>
                 </div>

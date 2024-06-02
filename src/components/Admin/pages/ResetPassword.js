@@ -7,10 +7,12 @@ import { Center } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { student_login } from "../../../api/studentApi";
 import { useSelector } from "react-redux";
+import { reset_password } from "../../../api/adminApi";
 
 const ResetPassword = ({ onSubmit }) => {
   //hooks
   const student = useSelector(state => state.studentAuth.student);
+  console.log(student);
 
   //state variables
   const [currentPassword, setCurrentPassword] = useState("");
@@ -33,10 +35,21 @@ const ResetPassword = ({ onSubmit }) => {
       student_login(payload)
         .then(result => {
           if(result && result.data && result.data.success){
-            let student = result.data.result.user;
-            console.log(student);
+            // console.log(student);
+            let creds = {email: payload.tezu_email, newPassword}
+            reset_password(student.token, creds)
+              .then(response => {
+                response = response.data;
+                console.log(response);
+                alert(response.message);
+                onSubmit();
+              })
+              .catch(err => {
+                console.log(err);
+              })
+            console.log(creds);
           } else {
-            console.log("Cuurent password does not match!");
+            alert("Current password does not match!");
           }
         })
         .catch(error => {
