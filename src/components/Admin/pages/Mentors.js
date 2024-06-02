@@ -88,9 +88,7 @@ const menteesData = [
 const Mentors = () => {
   //hooks
   const Navigate = useNavigate();
-  const admin = useSelector((state) => state.adminAuth.admin.user);
-  const token = useSelector((state) => state.adminAuth.admin.token);
-  console.log(admin);
+  const admin = useSelector((state) => state.adminAuth.admin);
 
   //state variables
   const [mentors, setMentors] = useState([]);
@@ -104,7 +102,7 @@ const Mentors = () => {
   //useEffect functions
   useEffect(() => {
     const fetchMentors = () => {
-      all_mentors(token)
+      all_mentors(admin.token)
         .then((result) => {
           result = result.data;
           console.log(result);
@@ -203,7 +201,7 @@ const Mentors = () => {
       </div>
 
       <div className={styles.table}>
-        <TableList columns={columns} data={tableData} mentors={mentors} />
+        <TableList columns={columns} data={tableData} mentors={mentors} admin={admin} />
       </div>
     </div>
   );
