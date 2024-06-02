@@ -3,7 +3,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: space-around;
+  // justify-content: space-around;
   padding: 20px;
 }
 .heading {
@@ -155,7 +155,7 @@
   border: 1px solid #0d30ac;
 
   &:hover {
-    background: #007bff;
+    background: rgb(242, 242, 242);
   }
 }
 
