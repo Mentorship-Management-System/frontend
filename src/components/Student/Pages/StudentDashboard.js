@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { get_count } from "../../../api/adminApi";
+import { get_meetings_by_student_id } from "../../../api/meetingApi";
 
 const meetings = [
   {
@@ -102,19 +103,31 @@ const Dashboard = () => {
 
   //state variables
   const [count, setCount] = useState(null);
+  const [meetings, setMeetings] = useState([]);
 
   //useEffect functions
   useEffect(() => {
     get_count(student.token)
-      .then(result => {
+      .then((result) => {
         result = result.data;
-        console.log(result);
+        console.log(result.counts, "data");
         setCount(result.counts);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    get_meetings_by_student_id(student.token, student.user.student_id)
+      .then((result) => {
+        result = result.data;
+        setMeetings(result.meetings);
       })
-  }, [])
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div className={styles.dashboardContainer}>
@@ -155,27 +168,32 @@ const Dashboard = () => {
             >
               Upcoming Meetings
             </Heading>
-            <Box flexGrow="3">
-              {meetings.map((meeting) => (
-                <Box key={meeting.id} className={styles.meetingItem}>
-                  <Text className={styles.meetingTitle}>{meeting.title}</Text>
-                  <Text>
-                    {meeting.date} - {meeting.time}
-                  </Text>
-                  <p className={styles.meetingDescription}>
-                    {meeting.description}
-                  </p>
-                  {/* Add more meeting details as needed */}
-                </Box>
-              ))}
+            <Box flexGrow="1">
+              {meetings
+                .filter((met) => new Date(met.date) > new Date())
+                .slice(0, 2)
+                .map((meeting) => (
+                  <Box key={meeting.id} className={styles.meetingItem}>
+                    <Text className={styles.meetingTitle}>{meeting.title}</Text>
+                    <Text>
+                      {meeting.date.split("T")[0]} - {meeting.time.slice(0, -3)}
+                    </Text>
+                    <p className={styles.meetingDescription}>
+                      {meeting.description}
+                    </p>
+                    {/* Add more meeting details as needed */}
+                  </Box>
+                ))}
             </Box>
-            <Button
-              mt="4"
-              colorScheme="blue"
-              onClick={() => (window.location.href = "/mentor/Meetings")}
-            >
-              View All
-            </Button>
+            <Flex justify="center">
+              <Button
+                mt="4"
+                colorScheme="blue"
+                onClick={() => (window.location.href = "/mentor/Meetings")}
+              >
+                View All
+              </Button>
+            </Flex>
           </Box>
         </Center>
       </Flex>

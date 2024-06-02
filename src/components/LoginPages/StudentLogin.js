@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   HStack,
   Heading,
   Input,
@@ -12,6 +13,7 @@ import { student_login } from "../../api/studentApi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { studentAuthActions } from "../../redux/store";
+import classes from "./login.module.scss";
 
 export default function StudentLogin() {
   //hooks
@@ -82,9 +84,10 @@ export default function StudentLogin() {
 
   return (
     <div>
-      <Center h="100vh">
+      <Center className={classes.root}>
+        <div className={classes.overlay}></div>
         {toggle && (
-          <Box display="flex" w="60vw" h="60vh" border="2px solid gray">
+          <Flex className={classes.container}>
             <VStack w="30vw" bgColor="white" color="black">
               <Heading mt="20%" fontSize="2rem" color="#003285">
                 Login To Your Acount
@@ -145,10 +148,10 @@ export default function StudentLogin() {
                 Sign Up
               </Button>
             </VStack>
-          </Box>
+          </Flex>
         )}
         {!toggle && (
-          <Box display="flex" w="60vw" h="70vh" border="2px solid gray">
+          <Flex className={classes.container}>
             <VStack
               w="35vw"
               justify="center"
@@ -279,13 +282,14 @@ export default function StudentLogin() {
                 w="8vw"
                 h="5vh"
                 mt="3%"
+                mb="8%"
                 variant="outline"
                 borderColor="gray"
               >
                 Sign Up
               </Button>
             </VStack>
-          </Box>
+          </Flex>
         )}
       </Center>
     </div>

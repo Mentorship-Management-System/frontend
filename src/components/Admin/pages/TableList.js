@@ -5,15 +5,16 @@ import { Box, Button, Center, Flex, Text } from "@chakra-ui/react";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
+import { MdDelete } from "react-icons/md";
 
 function Table({ columns, data, students, mentors }) {
   const Navigate = useNavigate();
   const location = useLocation();
+  const [selectCount, setSelectCount] = useState(0);
 
   const segments = location.pathname.split("/");
   const initiallySelectedRows = React.useMemo(() => new Set(), []);
   // Use the state and functions returned from useTable to build your UI
-  console.log(data);
   const table = useTable(
     {
       columns,
@@ -35,6 +36,7 @@ function Table({ columns, data, students, mentors }) {
     headerGroups,
     page, // Instead of 'rows', we'll use 'page' for the current page of data
     prepareRow,
+    selectedFlatRows,
     state: { pageIndex },
     previousPage,
     nextPage,
@@ -42,6 +44,21 @@ function Table({ columns, data, students, mentors }) {
     canNextPage,
     pageOptions,
   } = table;
+
+  useEffect(() => {
+    setSelectCount(selectedFlatRows.length);
+  }, [selectedFlatRows]);
+
+  // console.log(
+  //   selectedFlatRows &&
+  //     JSON.stringify(
+  //       {
+  //         values: selectedFlatRows.map((d) => d.original.id),
+  //       },
+  //       null,
+  //       2
+  //     )
+  // );
 
   const handleDownloadMentees = () => {
     if (students) {
@@ -184,16 +201,35 @@ function Table({ columns, data, students, mentors }) {
     }
   };
 
-  // Render the UI for your table
+  const handleDelete = () => {
+    const arr = selectedFlatRows.map((d) => d.original.id);
+    console.log(arr);
+    if (students) {
+    } else if (mentors) {
+    }
+  };
+
   return (
     <>
       {/* {selectCount} */}
       <div className={styles.tableContainer}>
-        <Flex justify="flex-end">
-          <Center cursor="pointer">
-            <MdOutlineFileDownload size={25} onClick={handleDownloadMentees} />
-          </Center>
+        <Flex justify="space-between">
+          <Box m="1% 0" fontSize="1.1rem">
+            Rows Selected: <strong>{selectCount}</strong>
+          </Box>
+          <Flex gap={5}>
+            <Center cursor="pointer">
+              <MdDelete size={25} onClick={handleDelete} />
+            </Center>
+            <Center cursor="pointer">
+              <MdOutlineFileDownload
+                size={25}
+                onClick={handleDownloadMentees}
+              />
+            </Center>
+          </Flex>
         </Flex>
+
         {/* <button onClick={() => toggleAllRowsSelected()}>Select All Rows</button> */}
         <Box className={styles.tableBody}>
           <table className={styles.table} {...getTableProps()}>

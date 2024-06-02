@@ -99,7 +99,7 @@ const StudentMentor = () => {
                 <div className={styles.buttonDiv}>
                   {!isMobile && (
                     <Button
-                      _hover={{ backgroundColor: "#0d3ffc" }}
+                      _hover={{ backgroundColor: "#0d31cc" }}
                       backgroundColor="#0d30ac"
                       color="white"
                       onClick={() => Navigate("/student/Mentor/Message")}
@@ -122,7 +122,7 @@ const StudentMentor = () => {
                 <Flex justify="flex-end">
                   <Button
                     className={styles.profileBtns}
-                    _hover={{ backgroundColor: "#0d3ffc" }}
+                    _hover={{ backgroundColor: "#0d31cc" }}
                     backgroundColor="#0d30ac"
                     color="white"
                     onClick={() => Navigate("/student/Message")}

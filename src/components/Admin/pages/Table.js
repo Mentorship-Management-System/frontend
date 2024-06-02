@@ -8,6 +8,7 @@ function Table({ columns, data }) {
   const [selectCount, setSelectCount] = useState(0);
   const initiallySelectedRows = React.useMemo(() => new Set(), []);
   // Use the state and functions returned from useTable to build your UI
+
   const table = useTable(
     {
       columns,

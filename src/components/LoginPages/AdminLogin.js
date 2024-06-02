@@ -4,6 +4,7 @@ import { admin_login } from "../../api/adminApi";
 import { useDispatch } from "react-redux";
 import { adminAuthActions } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
+import classes from "./login.module.scss";
 
 export default function AdminLogin() {
   //state variables
@@ -42,11 +43,15 @@ export default function AdminLogin() {
 
   return (
     <div>
-      <Center h="100vh">
+      <Center className={classes.root}>
+        <div className={classes.overlay}></div>
+
         <Box
           display="flex"
           justifyContent="center"
           alignItems="center"
+          pos="relative"
+          zIndex="16"
           w="50vw"
           h="60vh"
         >

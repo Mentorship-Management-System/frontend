@@ -61,14 +61,16 @@
       background-color: white;
       padding: 2%;
       border-radius: 8px;
-      // width: 28vw;
+      min-width: 26vw;
       .timelineContainer {
         height: 100%;
-        // width: 100%;
+        width: 100%;
         padding: 20px;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
         background-color: #f7fafc;
+        display: flex;
+        flex-direction: column;
         .timelineHeading {
           margin-bottom: 20px;
         }
