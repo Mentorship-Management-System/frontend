@@ -96,6 +96,7 @@ const Mentees = () => {
   const [filters, setFilters] = useState({
     year: "",
     branch: "",
+    roll: "",
     searchText: "",
   });
   const [students, setStudents] = useState([]);
@@ -208,15 +209,43 @@ const Mentees = () => {
           w={["60%", "70%", "30%", "30%"]}
         >
           <option value="Bachelor of Technology">Bachelor of Technology</option>
-          <option value="Master of Technology(CSE)">Master of Technology(CSE)</option>
-          <option value="Master of Technology(IT)">Master of Technology(IT)</option>
-          <option value="Master of Computer Applications">Master of Computer Applications</option>
+          <option value="Master of Technology(CSE)">
+            Master of Technology(CSE)
+          </option>
+          <option value="Master of Technology(IT)">
+            Master of Technology(IT)
+          </option>
+          <option value="Master of Computer Applications">
+            Master of Computer Applications
+          </option>
+        </Select>
+        <Select
+          placeholder="Enrollment Year"
+          value={filters.year}
+          onChange={(value) => handleFilterChange("year", value)}
+          className={styles.selectBar}
+          w={["60%", "70%", "30%", "30%"]}
+        >
+          {Array.from(
+            { length: new Date().getFullYear() - 1999 },
+            (_, i) => 2000 + i
+          ).map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
         </Select>
         <button className={styles.searchButton}>Search</button>
       </div>
 
       <div className={styles.table}>
-        <TableList columns={columns} data={tableData} students={students} admin={admin} setStudents={setStudents} />
+        <TableList
+          columns={columns}
+          data={tableData}
+          students={students}
+          admin={admin}
+          setStudents={setStudents}
+        />
       </div>
     </div>
   );

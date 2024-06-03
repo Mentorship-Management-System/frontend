@@ -63,6 +63,26 @@
 .btnTable {
   color: rgb(17, 41, 163);
 }
+
+.editPopup {
+  position: absolute;
+  right: 10%;
+  border: 2px solid #03ac;
+  background-color: white;
+  padding: 1%;
+  border-radius: 8px;
+  p {
+    font-weight: 500;
+    // font-size: 1.2rem;
+  }
+  div {
+    margin-top: 6%;
+    button {
+      height: 2vw;
+      font-size: 0.9rem;
+    }
+  }
+}
 @media only screen and (max-width: 450px) {
   .pagination {
     button {

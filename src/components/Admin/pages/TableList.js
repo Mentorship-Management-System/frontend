@@ -1,8 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useTable, usePagination, useRowSelect } from "react-table";
 import styles from "../Css/Table.module.scss"; // Import SCSS file
-import { Box, Button, Center, Flex, Text } from "@chakra-ui/react";
-import { MdOutlineFileDownload } from "react-icons/md";
+import {
+  ChakraProvider,
+  Button,
+  Modal,
+  Box,
+  Center,
+  Flex,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
+  useDisclosure,
+  Text,
+} from "@chakra-ui/react";
+import { MdOutlineFileDownload, MdOutlineFileUpload } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { MdDelete } from "react-icons/md";
@@ -21,10 +39,27 @@ function Table({
   const Navigate = useNavigate();
   const location = useLocation();
   const [selectCount, setSelectCount] = useState(0);
-
   const segments = location.pathname.split("/");
   const initiallySelectedRows = React.useMemo(() => new Set(), []);
   // Use the state and functions returned from useTable to build your UI
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleUpload = () => {
+    if (file) {
+      // Handle the file upload logic here
+      console.log("File uploaded:", file);
+      onClose();
+    } else {
+      alert("Please select a file to upload.");
+    }
+  };
   const table = useTable(
     {
       columns,
@@ -58,17 +93,6 @@ function Table({
   useEffect(() => {
     setSelectCount(selectedFlatRows.length);
   }, [selectedFlatRows]);
-
-  // console.log(
-  //   selectedFlatRows &&
-  //     JSON.stringify(
-  //       {
-  //         values: selectedFlatRows.map((d) => d.original.id),
-  //       },
-  //       null,
-  //       2
-  //     )
-  // );
 
   const handleDownloadMentees = () => {
     if (students) {
@@ -248,14 +272,21 @@ function Table({
     <>
       {/* {selectCount} */}
       <div className={styles.tableContainer}>
-        <Flex justify="space-between">
+        <Flex justify="space-between" position="relative">
           <Box m="1% 0" fontSize="1.1rem">
             Rows Selected: <strong>{selectCount}</strong>
           </Box>
           <Flex gap={5}>
-            <Center cursor="pointer">
-              <MdDelete size={25} onClick={handleDelete} />
-            </Center>
+            {segments[1] === "admin" && segments[2] === "Mentees" && (
+              <Center cursor="pointer" onClick={onOpen}>
+                <MdOutlineFileUpload size={25} />
+              </Center>
+            )}
+            {segments[1] === "admin" && (
+              <Center cursor="pointer">
+                <MdDelete size={25} onClick={() => setShowDeletePopup(true)} />
+              </Center>
+            )}
             {!admins && (
               <Center cursor="pointer">
                 <MdOutlineFileDownload
@@ -265,6 +296,23 @@ function Table({
               </Center>
             )}
           </Flex>
+          {showDeletePopup && (
+            <Box className={styles.editPopup}>
+              <Text>Are you sure?</Text>
+              <Text>You can't undo this afterwards</Text>
+              <Flex justify="flex-end" align="center">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeletePopup(false)}
+                >
+                  No
+                </Button>
+                <Button colorScheme="facebook" onClick={handleDelete}>
+                  Yes
+                </Button>
+              </Flex>
+            </Box>
+          )}
         </Flex>
 
         {/* <button onClick={() => toggleAllRowsSelected()}>Select All Rows</button> */}
@@ -343,6 +391,35 @@ function Table({
             Next
           </button>{" "}
         </div>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Upload Mentees</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <FormControl>
+                <FormLabel htmlFor="file">
+                  Select an Excel file (.xlsx)
+                </FormLabel>
+                <Input
+                  type="file"
+                  id="file"
+                  accept=".xlsx"
+                  onChange={handleFileChange}
+                />
+              </FormControl>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={handleUpload}>
+                Upload
+              </Button>
+              <Button variant="ghost" onClick={onClose}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
     </>
   );

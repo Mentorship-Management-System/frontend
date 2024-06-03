@@ -185,23 +185,21 @@ const Mentors = () => {
           placeholder="Search by title..."
           className={styles.searchBar}
         />
-        <Select
-          placeholder="Select programme"
-          onChange={(value) => handleFilterChange("branch", value)}
-          className={styles.selectBar}
-          w={["60%", "70%", "30%", "30%"]}
-        >
-          <option value="cse">B-Tech</option>
-          <option value="ece">M-Tech</option>
-          <option value="mech">MCA</option>
-          <option value="civil">BCA</option>
-          {/* Add more options for other branches */}
-        </Select>
+        <input
+          type="text"
+          placeholder="Search by Id..."
+          className={styles.searchBar}
+        />
         <button className={styles.searchButton}>Search</button>
       </div>
 
       <div className={styles.table}>
-        <TableList columns={columns} data={tableData} mentors={mentors} admin={admin} />
+        <TableList
+          columns={columns}
+          data={tableData}
+          mentors={mentors}
+          admin={admin}
+        />
       </div>
     </div>
   );
