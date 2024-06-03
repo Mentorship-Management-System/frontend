@@ -25,7 +25,6 @@ import StudentMentor from "./components/Student/Pages/StudentMentor";
 import StudentDashboard from "./components/Student/Pages/StudentDashboard";
 import Messages from "./components/Mentor/Pages/Messages";
 import StudentMessage from "./components/Student/Pages/StudentMessage";
-import PassoutMenteeList from "./components/Admin/pages/PassoutMenteeList";
 import Admin from "./components/Admin/pages/Admin";
 
 function App() {
@@ -46,7 +45,6 @@ function App() {
             path="Mentor-mentee list"
             element={<AssignMentorsToMentees />}
           />
-          <Route path="Passout-mentee list" element={<PassoutMenteeList />} />
           <Route path="Profile" element={<Settings />} />
           <Route path="Admins" element={<Admin />} />
           <Route path="" element={<Navigate to="Dashboard" />} />

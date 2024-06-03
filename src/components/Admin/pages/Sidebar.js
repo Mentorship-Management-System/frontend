@@ -70,15 +70,6 @@ const SideBar = ({ toggleDrawer, handleOptionClick }) => {
     },
     {
       icon: (
-        <BiMessageAdd
-          size={25}
-          color={segments[2] === "Passout-mentee%20list" && "#0D30AC"}
-        />
-      ),
-      text: "Passout-mentee list",
-    },
-    {
-      icon: (
         <IoMdSettings
           size={25}
           color={segments[2] === "Profile" && "#0D30AC"}
