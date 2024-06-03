@@ -128,7 +128,7 @@ const Meetings = () => {
           >
             <Box className={styles.details}>
               <Heading className={styles.meetingName}>{meeting.title}</Heading>
-              <Text className={styles.meetingTime}>{meeting.time}</Text>
+              <Text className={styles.meetingTime}>{(meeting.date).split("T")[0]} | {(meeting.date).split("T")[1].substring(0, 5)}</Text>
               <Text className={styles.meetingDescription}>
                 {meeting.description}
               </Text>

@@ -26,6 +26,7 @@ import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import TableList from "./TableList";
 import { useSelector } from "react-redux";
+import { get_all_admins } from "../../../api/adminApi";
 // import { all_admins } from "../../../api/mentorApi";
 // Dummy data
 const adminsData = [
@@ -60,12 +61,10 @@ const adminsData = [
 const Admin = () => {
   //hooks
   const Navigate = useNavigate();
-  const admin = useSelector((state) => state.adminAuth.admin.user);
-  const token = useSelector((state) => state.adminAuth.admin.token);
-  console.log(admin);
+  const admin = useSelector((state) => state.adminAuth.admin);
 
   //state variables
-  const [mentors, setMentors] = useState([]);
+  const [admins, setAdmins] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState({
     year: "",
@@ -102,29 +101,31 @@ const Admin = () => {
   };
 
   //useEffect functions
-  //   useEffect(() => {
-  //     const fetchMentors = () => {
-  //       all_admins(token)
-  //         .then((result) => {
-  //           result = result.data;
-  //           console.log(result);
-  //           setMentors(result.admins);
-  //           let temp_data = [];
-  //           result.admins.map((admin) => {
-  //             temp_data.push({
-  //               id: admin.admin_id,
-  //               name: admin.fname + " " + admin.lname,
-  //               email: admin.email,
-  //             });
-  //           });
-  //           setTableData(temp_data);
-  //         })
-  //         .catch((error) => {
-  //           console.log(error);
-  //         });
-  //     };
-  //     fetchMentors();
-  //   }, []);
+    useEffect(() => {
+      get_all_admins(admin.token)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          setAdmins(result.admins);
+
+          let temp_data = [];
+          result.admins.map((adm) => {
+            if(adm.admin_id !== admin.user.admin_id){
+              temp_data.push({
+                id: adm.admin_id,
+                fname: adm.fname,
+                lname: adm.lname,
+                email: adm.email,
+              });
+            }
+          });
+          setTableData(temp_data);
+
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }, []);
 
   const columns = React.useMemo(
     () => [
@@ -181,7 +182,7 @@ const Admin = () => {
         </Button>
       </Flex>
       <div className={styles.table}>
-        <TableList columns={columns} data={adminsData} admins={adminsData} />
+        <TableList columns={columns} data={tableData} admins={admins} admin={admin} />
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

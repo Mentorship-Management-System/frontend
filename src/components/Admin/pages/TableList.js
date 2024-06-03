@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 import { MdDelete } from "react-icons/md";
 import { delete_students } from "../../../api/studentApi";
 import { delete_mentors } from "../../../api/mentorApi";
+import { delete_admins } from "../../../api/adminApi";
 
 function Table({
   columns,
@@ -239,7 +240,19 @@ function Table({
           })
           .catch((error) => {
             console.log(error);
-          });
+          })
+      } else if(admins){
+        console.log("Delete admins");
+        const payload = { adminIds: profiles }
+        delete_admins(admin.token, payload)
+          .then(result => {
+            result = result.data;
+            console.log(result);
+            Navigate(0)
+          })
+          .catch(error => {
+            console.log(error);
+          })
       }
     }
   };

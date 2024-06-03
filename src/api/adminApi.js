@@ -16,6 +16,22 @@ export const admin_login = async (payload) => {
     }
 }
 
+export const get_all_admins = async (token) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/all`,
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
 export const get_count = async (token) => {
     try {
         let options = {
@@ -39,6 +55,23 @@ export const reset_password = async (token, payload) => {
             url: `${url}/reset-password`,
             headers: {
                 "Authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const delete_admins = async (token, payload) => {
+    try {
+        let options = {
+            method: "DELETE",
+            url: `${url}/delete-admins-profile`,
+            headers: {
+                "authorization": `Bearer ${token}`
             },
             data: payload
         }
