@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   create_meeting,
+  delete_meeting,
   get_meetings_by_mentor_id,
 } from "../../../api/meetingApi";
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -38,6 +39,7 @@ const Meetings = () => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [popupId, setPopupId] = useState();
+  const [toEditMeeting, setToEditMeeting] = useState(null);
   //useEffect functions
   useEffect(() => {
     const fetchMeeting = () => {
@@ -90,7 +92,19 @@ const Meetings = () => {
   // console.log(openmodal);
 
   const handleDeleteMeeting = () => {
-    setShowDeletePopup(!showDeletePopup);
+    console.log(popupId);
+    delete_meeting(mentor.token, popupId)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setMeetings(prev => prev.filter(meeting => meeting.meeting_id !== popupId))
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setShowDeletePopup(!showDeletePopup);
+      })
   };
   const handleDownloadMeetings = () => {
     console.log("Download meetings");
@@ -128,7 +142,7 @@ const Meetings = () => {
           >
             <Box className={styles.details}>
               <Heading className={styles.meetingName}>{meeting.title}</Heading>
-              <Text className={styles.meetingTime}>{(meeting.date).split("T")[0]} | {(meeting.date).split("T")[1].substring(0, 5)}</Text>
+              <Text className={styles.meetingTime}>{(meeting.date).split("T")[0]} | {meeting && meeting.time && (meeting.time).substring(0, 5)}</Text>
               <Text className={styles.meetingDescription}>
                 {meeting.description}
               </Text>
@@ -158,6 +172,7 @@ const Meetings = () => {
                       onClick={() => {
                         setShowEditPopup((prev) => !prev);
                         setPopupId(meeting.meeting_id);
+                        setToEditMeeting(meeting);
                       }}
                     >
                       <MdEdit size={22} />
@@ -202,6 +217,10 @@ const Meetings = () => {
                 meetingDetails={meeting}
                 isChatMeeting={false}
                 centerModal={false}
+                meeting_id={popupId}
+                isEditMeeting={true}
+                setShowModal={setShowModal}
+                setMeetings={setMeetings}
               />
             )}
           </Box>

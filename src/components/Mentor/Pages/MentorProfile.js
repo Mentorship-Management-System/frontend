@@ -3,14 +3,33 @@ import React, { useEffect, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
+import { useSelector } from "react-redux";
+import { get_mentor, update_mentor } from "../../../api/mentorApi";
 
 const MentorProfile = () => {
+  //hooks
+  const mentor = useSelector(state => state.mentorAuth.mentor);
+  console.log(mentor.user);
+
+  //state variables
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
   const [file, setFile] = useState(null);
   const [uploaded, setUploaded] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    get_mentor(mentor.token, mentor.user.mentor_id)
+      .then((result) => {
+        result = result.data;
+        console.log(result);
+        setEditedUserData(result.mentor);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [])
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -25,6 +44,25 @@ const MentorProfile = () => {
 
   const handleEdit = () => {
     setDisabled((prev) => !prev);
+  };
+
+  const handleSaveEdit = () => {
+    let updated_fields = editedUserData;
+    delete updated_fields.type;
+    console.log(updated_fields);
+
+    update_mentor(mentor.token, mentor.user.mentor_id, updated_fields)
+      .then((result) => {
+        result = result.data;
+        console.log(result);
+        setEditedUserData(result.mentor);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        handleEdit();
+      });
   };
 
   return (
@@ -72,7 +110,7 @@ const MentorProfile = () => {
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.username || ""}
+                      value={editedUserData.mentor_id || ""}
                       onChange={(e) => console.log("Dont Touch")}
                     />
                   </div>
@@ -81,35 +119,47 @@ const MentorProfile = () => {
                   <div className={styles.label1}>First Name</div>
                   <div className={styles.input1}>
                     <input
-                      value={editedUserData.username || ""}
+                      value={editedUserData.honorifics || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
+                        handleFieldChange("honorifics", e.target.value)
                       }
                     />
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Role</div>
+                  <div className={styles.label1}>First Name</div>
                   <div className={styles.input1}>
                     <input
-                      value={editedUserData.role || ""}
+                      value={editedUserData.fname || ""}
                       disabled={disabled}
                       onChange={(e) =>
-                        handleFieldChange("username", e.target.value)
+                        handleFieldChange("fname", e.target.value)
+                      }
+                    />
+                  </div>
+                </Flex>
+                <Flex className={styles.doublecontent}>
+                  <div className={styles.label1}>Last Name</div>
+                  <div className={styles.input1}>
+                    <input
+                      value={editedUserData.lname || ""}
+                      disabled={disabled}
+                      onChange={(e) =>
+                        handleFieldChange("lname", e.target.value)
                       }
                     />
                   </div>
                 </Flex>
 
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Last Name</div>
+                  <div className={styles.label1}>Position</div>
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.name || ""}
+                      value={editedUserData.position || ""}
                       onChange={(e) =>
-                        handleFieldChange("name", e.target.value)
+                        handleFieldChange("position", e.target.value)
                       }
                     />
                   </div>
@@ -127,25 +177,13 @@ const MentorProfile = () => {
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Department</div>
-                  <div className={styles.input1}>
-                    <input
-                      value={editedUserData.department || ""}
-                      disabled={disabled}
-                      onChange={(e) =>
-                        handleFieldChange("email", e.target.value)
-                      }
-                    />
-                  </div>
-                </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Contact.No</div>
+                  <div className={styles.label1}>Phone Number</div>
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.contactNo || ""}
+                      value={editedUserData.phone || ""}
                       onChange={(e) =>
-                        handleFieldChange("contactNo", e.target.value)
+                        handleFieldChange("phone", e.target.value)
                       }
                     />
                   </div>
@@ -163,25 +201,18 @@ const MentorProfile = () => {
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>DOB</div>
+                  <div className={styles.label1}>Extension Number</div>
                   <div className={styles.input1}>
                     <input
                       disabled={disabled}
-                      value={editedUserData.DOB || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
+                      value={editedUserData.extension || ""}
+                      onChange={(e) =>
+                        handleFieldChange("extension", e.target.value)
+                      }
                     />
                   </div>
                 </Flex>
-                <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>Age</div>
-                  <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
-                      value={editedUserData.age || ""}
-                      onChange={(e) => handleFieldChange("age", e.target.value)}
-                    />
-                  </div>
-                </Flex>
+                
               </div>
               <div className={styles.referral}>
                 <div className={styles.cnclbtn}>
@@ -190,7 +221,7 @@ const MentorProfile = () => {
                   </button>
                 </div>
                 <div className={styles.sbmtbtn}>
-                  <button disabled={disabled} onClick={() => setClicked(true)}>
+                  <button disabled={disabled} onClick={() => handleSaveEdit()}>
                     Save
                   </button>
                 </div>
@@ -201,7 +232,7 @@ const MentorProfile = () => {
       </Box>
       {showResetPassword && (
         <div className={styles.resetPass}>
-          <ResetPassword onSubmit={handleResetPasswordClick} />
+          <ResetPassword onSubmit={handleResetPasswordClick} isStudent={false} isMentor={true} isAdmin={false} user={mentor} />
         </div>
       )}
     </div>

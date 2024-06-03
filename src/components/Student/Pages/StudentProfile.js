@@ -5,7 +5,7 @@ import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { get_sgpa, save_sgpa, updated_student } from "../../../api/studentApi";
+import { get_sgpa, get_student, save_sgpa, updated_student } from "../../../api/studentApi";
 import { studentAuthActions } from "../../../redux/store";
 
 const StudentProfile = () => {
@@ -24,8 +24,21 @@ const StudentProfile = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState(1);
 
+  // useEffect(() => {
+  //   setEditedUserData(student.user);
+  // }, []);
+
   useEffect(() => {
-    setEditedUserData(student.user);
+    get_student(student.token, student.user.enrollment_no)
+      .then((result) => {
+        result = result.data;
+        console.log(result);
+        // setStudent(result.student);
+        setEditedUserData(result.student);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const togglePopup = () => {
@@ -198,22 +211,26 @@ const StudentProfile = () => {
       updated_fields.dob !== null &&
       updated_fields.dob !== undefined &&
       updated_fields.dob
-    )
+    ){
       updated_fields["dob"] = new Date(updated_fields["dob"]).toISOString();
+    }
     delete updated_fields.type;
+    delete updated_fields.mentor;
+    delete updated_fields.mentor_email;
+    delete updated_fields.mentor_name;
+    delete updated_fields.mentor_phone;
     console.log(updated_fields);
 
-    updated_student(student.token, student.user.enrollment_no, editedUserData)
+    updated_student(student.token, student.user.enrollment_no, updated_fields)
       .then((result) => {
         result = result.data;
         console.log(result);
-        dispatch(studentAuthActions.update({ user: editedUserData }));
+        setEditedUserData(result.student);
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => {
-        setClicked(true);
         handleEdit();
       });
   };
@@ -418,7 +435,7 @@ const StudentProfile = () => {
                         handleFieldChange("programme", e.target.value)
                       }
                     >
-                      <option>Batchelor of Technology (CSE)</option>
+                      <option>Batchelor of Technology</option>
                       <option>Master of Computer Aplication</option>
                       <option>Master of Technology (CSE)</option>
                       <option>Master of Technology (IT)</option>
@@ -491,7 +508,7 @@ const StudentProfile = () => {
       </Box>
       {showResetPassword && (
         <div className={styles.resetPass}>
-          <ResetPassword onSubmit={handleResetPasswordClick} />
+          <ResetPassword onSubmit={handleResetPasswordClick} isStudent={true} isMentor={false} isAdmin={false} user={student} />
         </div>
       )}
     </div>

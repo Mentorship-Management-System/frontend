@@ -143,7 +143,7 @@ const Settings = () => {
       </Box>
       {showResetPassword && (
         <div className={styles.resetPass}>
-          <ResetPassword onSubmit={handleResetPasswordClick} />
+          <ResetPassword onSubmit={handleResetPasswordClick} isStudent={false} isMentor={false} isAdmin={true} user={admin} />
         </div>
       )}
     </div>
