@@ -58,6 +58,13 @@ const Settings = () => {
 
   const handleSaveEdit = () => {
     let updated_fields = editedUserData;
+    if (
+      updated_fields.dob !== null &&
+      updated_fields.dob !== undefined &&
+      updated_fields.dob
+    ){
+      updated_fields["dob"] = new Date(updated_fields["dob"]).toISOString();
+    }
     delete updated_fields.mentor;
     delete updated_fields.mentor_email;
     delete updated_fields.mentor_name;

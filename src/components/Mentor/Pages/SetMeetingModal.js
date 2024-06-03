@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { get_students_by_mentor_id } from "../../../api/studentApi";
 import { set_meeting_message } from "../../../api/chatApi";
+import { update_meeting } from "../../../api/meetingApi";
 const dummyData = [
   { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
   { name: "Sujay Das", roll: "csb20079", programme: "B-tech" },
@@ -36,7 +37,11 @@ export default function SetMeetingModal({
   meetingDetails,
   centerModal,
   meetingChat,
-  handleSetChatMeeting
+  handleSetChatMeeting,
+  meeting_id,
+  isEditMeeting,
+  setShowModal,
+  setMeetings
 }) {
   //hooks
   const Navigate = useNavigate();
@@ -48,8 +53,7 @@ export default function SetMeetingModal({
     meetingDetails && meetingDetails.title
   );
   const [meetingTime, setMeetingTime] = useState(
-    meetingDetails &&
-      meetingDetails.date.split("T")[0] + "T" + meetingDetails.time
+    meetingDetails && meetingDetails.date.split("T")[0] + "T" + meetingDetails.time
   );
   const [meetingDescription, setMeetingDescription] = useState(
     meetingDetails && meetingDetails.description
@@ -70,18 +74,6 @@ export default function SetMeetingModal({
 
   const handleSelectAll = () => {
     if (!isSelectAll) {
-      // students
-      //   .filter(
-      //     (data) =>
-      //       !selectedStudents.includes(
-      //         data.honorifics + " " + data.fname + " " + data.lname
-      //       )
-      //   )
-      //   .map((mentor) =>
-      //     selectedStudents.push(
-      //       mentor.honorifics + " " + mentor.fname + " " + mentor.lname
-      //     )
-      //   );
       setSelectedStudents(students);
       setSelectAll(true);
     } else {
@@ -139,7 +131,28 @@ export default function SetMeetingModal({
       }
       console.log(new_chat_meeting);
       handleSetChatMeeting(new_chat_meeting);
-    } else {
+    } else if(isEditMeeting){
+      console.log("Edit meeting");
+      const date_time = meetingTime.split("T");
+      let modified_meeting = {
+        title: meetingName,
+        description: meetingDescription,
+        date: meetingTime,
+        time: date_time[1],
+        mentor_id: mentor.user.mentor_id,
+        student_ids: selectedStudents.map(({ student_id }) => student_id),
+      }
+      console.log(modified_meeting);
+      update_meeting(mentor.token, meetingDetails.meeting_id, modified_meeting)
+        .then(result => {
+          result = result.data;
+          console.log(result);
+          Navigate(0);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    }else {
       console.log("Setting normal meeting");
       const date_time = meetingTime.split("T");
       let new_meeting = {
@@ -176,7 +189,7 @@ export default function SetMeetingModal({
                 <label>Meeting Name</label>
                 <Input
                   type="text"
-                  value={meetingName}
+                  value={meetingName || ""}
                   onChange={(e) => setMeetingName(e.target.value)}
                 />
               </div>}
@@ -184,7 +197,7 @@ export default function SetMeetingModal({
                 <label>Meeting Time</label>
                 <Input
                   type="datetime-local"
-                  value={meetingTime}
+                  value={meetingTime || ""}
                   onChange={(e) => setMeetingTime(e.target.value)}
                 />
               </div>
@@ -192,7 +205,7 @@ export default function SetMeetingModal({
                 <label>Meeting Description</label>
                 <Input
                   type="text"
-                  value={meetingDescription}
+                  value={meetingDescription || ""}
                   onChange={(e) => setMeetingDescription(e.target.value)}
                 />
               </div>}

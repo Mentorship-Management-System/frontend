@@ -7,9 +7,10 @@ import { Center } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { student_login } from "../../../api/studentApi";
 import { useSelector } from "react-redux";
-import { reset_password } from "../../../api/adminApi";
+import { admin_login, reset_password } from "../../../api/adminApi";
+import { mentor_login } from "../../../api/mentorApi";
 
-const ResetPassword = ({ onSubmit }) => {
+const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
   //hooks
   const student = useSelector(state => state.studentAuth.student);
   console.log(student);
@@ -28,33 +29,93 @@ const ResetPassword = ({ onSubmit }) => {
     if(newPassword !== reenteredPassword){
       alert("New password does not match!")
     } else {
-      const payload = {
-        tezu_email: student.user.gsuite_id,
-        password: currentPassword
+      if(isStudent){
+        const payload = {
+          tezu_email: user.user.gsuite_id,
+          password: currentPassword
+        }
+        student_login(payload)
+          .then(result => {
+            if(result && result.data && result.data.success){
+              // console.log(student);
+              let creds = {email: payload.tezu_email, newPassword}
+              reset_password(user.token, creds)
+                .then(response => {
+                  response = response.data;
+                  console.log(response);
+                  alert(response.message);
+                  onSubmit();
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+              console.log(creds);
+            } else {
+              alert("Current password does not match!");
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      } else if (isMentor) {
+        console.log("reset mentor");
+        const payload = {
+          email: user.user.email,
+          password: currentPassword
+        }
+        mentor_login(payload)
+          .then(result => {
+            if(result && result.data && result.data.success){
+              // console.log(student);
+              let creds = {email: payload.email, newPassword}
+              reset_password(user.token, creds)
+                .then(response => {
+                  response = response.data;
+                  console.log(response);
+                  alert(response.message);
+                  onSubmit();
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+              console.log(creds);
+            } else {
+              alert("Current password does not match!");
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      } else if (isAdmin) {
+        console.log("reset admin");
+        const payload = {
+          email: user.user.email,
+          password: currentPassword
+        }
+        admin_login(payload)
+          .then(result => {
+            if(result && result.data && result.data.success){
+              // console.log(student);
+              let creds = {email: payload.email, newPassword}
+              reset_password(user.token, creds)
+                .then(response => {
+                  response = response.data;
+                  console.log(response);
+                  alert(response.message);
+                  onSubmit();
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+              console.log(creds);
+            } else {
+              alert("Current password does not match!");
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
       }
-      student_login(payload)
-        .then(result => {
-          if(result && result.data && result.data.success){
-            // console.log(student);
-            let creds = {email: payload.tezu_email, newPassword}
-            reset_password(student.token, creds)
-              .then(response => {
-                response = response.data;
-                console.log(response);
-                alert(response.message);
-                onSubmit();
-              })
-              .catch(err => {
-                console.log(err);
-              })
-            console.log(creds);
-          } else {
-            alert("Current password does not match!");
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        })
     }
   };
 

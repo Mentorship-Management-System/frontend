@@ -83,3 +83,36 @@ export const update_feedback = async (token, meeting_id, payload) => {
         return error;
     }
 }
+
+export const delete_meeting = async (token, meeting_id) => {
+    try {
+        let options = {
+            method: "DELETE",
+            url: `${url}/${meeting_id}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const update_meeting = async (token, meeting_id, payload) => {
+    try {
+        let options = {
+            method: "PUT",
+            url: `${url}/${meeting_id}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
