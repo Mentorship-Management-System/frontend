@@ -1,6 +1,26 @@
 import React, { useEffect, useState } from "react";
 import styles from "../Css/Mentees.module.scss"; // Import SCSS module for styling
-import { Button, Center, Flex, Heading, Select } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+
 import { useNavigate } from "react-router-dom";
 import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
@@ -52,6 +72,34 @@ const Admin = () => {
     branch: "",
     searchText: "",
   });
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  console.log(formData);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      alert("Password didnot match");
+      return;
+    }
+    // Add your form submission logic here
+    console.log(formData);
+    onClose();
+  };
 
   //useEffect functions
   //   useEffect(() => {
@@ -122,10 +170,105 @@ const Admin = () => {
     <div className={styles.menteesContainer}>
       {/* Heading */}
       <Heading className={styles.header}>Admins</Heading>
-
+      <Flex justify="flex-end" mb="2%">
+        <Button
+          backgroundColor="#03ac"
+          color="white"
+          _hover={{ backgroundColor: "#03ab" }}
+          onClick={onOpen}
+        >
+          Add New Admin
+        </Button>
+      </Flex>
       <div className={styles.table}>
         <TableList columns={columns} data={adminsData} admins={adminsData} />
       </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add New Admin</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={handleSubmit}>
+              <Flex className={styles.nameInputs}>
+                <FormControl id="firstName" isRequired>
+                  <FormLabel>First Name</FormLabel>
+                  <Input
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                  />
+                </FormControl>
+                <FormControl id="lastName" isRequired>
+                  <FormLabel>Last Name</FormLabel>
+                  <Input
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                  />
+                </FormControl>
+              </Flex>
+              <FormControl id="email" isRequired>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </FormControl>
+              <FormControl id="password" isRequired>
+                <FormLabel>Password</FormLabel>
+                <InputGroup>
+                  <Input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleInputChange}
+                  />
+                  <InputRightElement h={"full"}>
+                    <Center
+                      onClick={() =>
+                        setShowPassword((showPassword) => !showPassword)
+                      }
+                    >
+                      {showPassword ? <IoMdEye /> : <IoMdEyeOff />}
+                    </Center>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <FormControl id="confirmPassword" isRequired>
+                <FormLabel>Confirm Password</FormLabel>
+                <InputGroup>
+                  <Input
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                  />
+                  <InputRightElement h={"full"}>
+                    <Center
+                      onClick={() =>
+                        setShowConfirmPassword(
+                          (showConfirmPassword) => !showConfirmPassword
+                        )
+                      }
+                    >
+                      {showConfirmPassword ? <IoMdEye /> : <IoMdEyeOff />}
+                    </Center>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} type="submit">
+                  Submit
+                </Button>
+                <Button onClick={onClose}>Cancel</Button>
+              </ModalFooter>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
