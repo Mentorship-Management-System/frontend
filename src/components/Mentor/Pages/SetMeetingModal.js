@@ -15,6 +15,7 @@ import styles from "../Css/Meetings.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { get_students_by_mentor_id } from "../../../api/studentApi";
+import { set_meeting_message } from "../../../api/chatApi";
 const dummyData = [
   { name: "Sanjay Das", roll: "csb20079", programme: "B-tech" },
   { name: "Sujay Das", roll: "csb20079", programme: "B-tech" },
@@ -34,6 +35,8 @@ export default function SetMeetingModal({
   isChatMeeting,
   meetingDetails,
   centerModal,
+  meetingChat,
+  handleSetChatMeeting
 }) {
   //hooks
   const Navigate = useNavigate();
@@ -131,6 +134,11 @@ export default function SetMeetingModal({
   const setMeeting = () => {
     if (isChatMeeting) {
       console.log("Setting meeting for chat");
+      let new_chat_meeting = {
+        meeting_date: meetingTime
+      }
+      console.log(new_chat_meeting);
+      handleSetChatMeeting(new_chat_meeting);
     } else {
       console.log("Setting normal meeting");
       const date_time = meetingTime.split("T");
@@ -156,7 +164,7 @@ export default function SetMeetingModal({
         <div className={styles.modalContent}>
           <Flex className={styles.header}>
             <h1>
-              <strong>Set New Meeting</strong>
+              <strong>Set {isChatMeeting ? "New Chat" : "New"} Meeting</strong>
             </h1>
             <Center onClick={handelShowModal}>
               <IoMdClose />
@@ -164,14 +172,14 @@ export default function SetMeetingModal({
           </Flex>
           <div className={styles.modalBody}>
             <Stack spacing={4}>
-              <div>
+              {!isChatMeeting && <div>
                 <label>Meeting Name</label>
                 <Input
                   type="text"
                   value={meetingName}
                   onChange={(e) => setMeetingName(e.target.value)}
                 />
-              </div>
+              </div>}
               <div>
                 <label>Meeting Time</label>
                 <Input
@@ -180,14 +188,14 @@ export default function SetMeetingModal({
                   onChange={(e) => setMeetingTime(e.target.value)}
                 />
               </div>
-              <div>
+              {!isChatMeeting && <div>
                 <label>Meeting Description</label>
                 <Input
                   type="text"
                   value={meetingDescription}
                   onChange={(e) => setMeetingDescription(e.target.value)}
                 />
-              </div>
+              </div>}
             </Stack>
             {selectedStudents.length !== 0 && (
               <Text mt={4}>

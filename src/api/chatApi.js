@@ -69,3 +69,20 @@ export const send_chat_by_student = async (token, payload) => {
         return error;
     }
 }
+
+export const set_meeting_message = async (token, payload, chat_id) => {
+    try {
+        let options = {
+            method: "PUT",
+            url: `${url}/acknowledge/add_meeting/${chat_id}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

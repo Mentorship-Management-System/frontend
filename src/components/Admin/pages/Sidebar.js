@@ -52,6 +52,15 @@ const SideBar = ({ toggleDrawer, handleOptionClick }) => {
     },
     {
       icon: (
+        <MdAdminPanelSettings
+          size={25}
+          color={segments[2] === "Admins" && "#0D30AC"}
+        />
+      ),
+      text: "Admins",
+    },
+    {
+      icon: (
         <BiMessageAdd
           size={25}
           color={segments[2] === "Mentor-mentee%20list" && "#0D30AC"}
@@ -77,15 +86,7 @@ const SideBar = ({ toggleDrawer, handleOptionClick }) => {
       ),
       text: "Profile",
     },
-    {
-      icon: (
-        <MdAdminPanelSettings
-          size={25}
-          color={segments[2] === "Admins" && "#0D30AC"}
-        />
-      ),
-      text: "Admins",
-    },
+    
   ];
   console.log(segments[2]);
   return (

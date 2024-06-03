@@ -4,7 +4,7 @@ import { Box, Button, Input, Text } from "@chakra-ui/react";
 import SetMeetingModal from "./SetMeetingModal";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { ack_reply_chat, get_chat_for_mentor } from "../../../api/chatApi";
+import { ack_reply_chat, get_chat_for_mentor, set_meeting_message } from "../../../api/chatApi";
 
 const Messages = () => {
   // Hooks
@@ -18,6 +18,7 @@ const Messages = () => {
   const [showModal, setShowModal] = useState(false);
   const [messages, setMessages] = useState([]);
   const cardHeightRefs = useRef([]); // Array of refs for card heights
+  const [meetingChat, setMeetingChat] = useState(null);
 
   // useEffect functions
   useEffect(() => {
@@ -48,8 +49,9 @@ const Messages = () => {
     setShowModal(!showModal);
   };
 
-  const handleShowModal = () => {
+  const handleShowModal = (message) => {
     setShowModal(!showModal);
+    setMeetingChat(message);
   };
 
   const handleReply = (index) => {
@@ -58,27 +60,57 @@ const Messages = () => {
   };
 
   const handleSendReply = (chat) => {
-    const payload = {
-      reply,
-    };
+    if(reply && reply !== null && reply !== undefined){
+      const payload = {
+        reply
+      };
 
-    let temp_chats = messages;
-    const index = temp_chats.findIndex((obj) => obj.chat_id === chat.chat_id);
-    if (index !== -1) {
-      temp_chats[index].acknowledged = 1;
-      temp_chats[index].reply_by_mentor = reply;
+      let temp_chats = messages;
+      const index = temp_chats.findIndex((obj) => obj.chat_id === chat.chat_id);
+      if (index !== -1) {
+        temp_chats[index].acknowledged = 1;
+        temp_chats[index].reply_by_mentor = reply;
+      }
+
+      ack_reply_chat(mentor.token, payload, chat.chat_id)
+        .then((result) => {
+          result = result.data;
+          console.log(result);
+          setMessages(temp_chats);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("Your reply message cannot be empty.")
     }
-
-    ack_reply_chat(mentor.token, payload, chat.chat_id)
-      .then((result) => {
-        result = result.data;
-        console.log(result);
-        setMessages(temp_chats);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
+
+  const handleSetChatMeeting = (payload) => {
+    console.log(payload);
+    console.log(meetingChat);
+    
+    set_meeting_message(mentor.token, payload, meetingChat.chat_id)
+      .then(result => {
+        result = result.data;
+        alert(result.message);
+        // console.log(result.meeting);
+        const index = messages.findIndex(message => message.chat_id === meetingChat.chat_id);
+        // console.log(index);
+        let temp_chats = messages;
+        temp_chats[index] = {
+          ...meetingChat,
+          acknowledged: 1,
+          meeting_id: (result.meetings.find(meeting => meeting.chat_id === meetingChat.chat_id)).meeting_id
+        }
+        setMessages(temp_chats);
+        setShowModal(false);
+        setMeetingChat(null);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
 
   // Calculate initial card heights (optional for improved performance)
   useEffect(() => {
@@ -123,8 +155,7 @@ const Messages = () => {
                   )}
                 </i>
               </p>
-              {console.log(message)}
-              {message.acknowledged && (
+              {message.acknowledged ? (
                 <p className={styles.message}>
                   {message.meeting_id === null ? (
                     <span>
@@ -142,7 +173,7 @@ const Messages = () => {
                     </span>
                   )}
                 </p>
-              )}
+              ): ""}
             </div>
             {!message.acknowledged && (
               <div className={styles.buttons}>
@@ -161,7 +192,7 @@ const Messages = () => {
                   </button>
                 )}
                 {showReply !== index && (
-                  <button className={styles.button} onClick={handleShowModal}>
+                  <button className={styles.button} onClick={() => handleShowModal(message)}>
                     Set Meeting
                   </button>
                 )}
@@ -194,6 +225,8 @@ const Messages = () => {
           handelShowModal={handleShowModal}
           handleSetMeeting={handleSetMeeting}
           isChatMeeting={true}
+          meetingChat={meetingChat}
+          handleSetChatMeeting={handleSetChatMeeting}
         />
       )}
     </Box>
