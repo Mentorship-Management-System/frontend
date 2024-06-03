@@ -256,12 +256,14 @@ function Table({
             <Center cursor="pointer">
               <MdDelete size={25} onClick={handleDelete} />
             </Center>
-            <Center cursor="pointer">
-              <MdOutlineFileDownload
-                size={25}
-                onClick={handleDownloadMentees}
-              />
-            </Center>
+            {!admins && (
+              <Center cursor="pointer">
+                <MdOutlineFileDownload
+                  size={25}
+                  onClick={handleDownloadMentees}
+                />
+              </Center>
+            )}
           </Flex>
         </Flex>
 
