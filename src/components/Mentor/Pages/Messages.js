@@ -4,7 +4,11 @@ import { Box, Button, Input, Text } from "@chakra-ui/react";
 import SetMeetingModal from "./SetMeetingModal";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { ack_reply_chat, get_chat_for_mentor, set_meeting_message } from "../../../api/chatApi";
+import {
+  ack_reply_chat,
+  get_chat_for_mentor,
+  set_meeting_message,
+} from "../../../api/chatApi";
 
 const Messages = () => {
   // Hooks
@@ -60,9 +64,9 @@ const Messages = () => {
   };
 
   const handleSendReply = (chat) => {
-    if(reply && reply !== null && reply !== undefined){
+    if (reply && reply !== null && reply !== undefined) {
       const payload = {
-        reply
+        reply,
       };
 
       let temp_chats = messages;
@@ -82,35 +86,39 @@ const Messages = () => {
           console.log(error);
         });
     } else {
-      alert("Your reply message cannot be empty.")
+      alert("Your reply message cannot be empty.");
     }
   };
 
   const handleSetChatMeeting = (payload) => {
     console.log(payload);
     console.log(meetingChat);
-    
+
     set_meeting_message(mentor.token, payload, meetingChat.chat_id)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         alert(result.message);
         // console.log(result.meeting);
-        const index = messages.findIndex(message => message.chat_id === meetingChat.chat_id);
+        const index = messages.findIndex(
+          (message) => message.chat_id === meetingChat.chat_id
+        );
         // console.log(index);
         let temp_chats = messages;
         temp_chats[index] = {
           ...meetingChat,
           acknowledged: 1,
-          meeting_id: (result.meetings.find(meeting => meeting.chat_id === meetingChat.chat_id)).meeting_id
-        }
+          meeting_id: result.meetings.find(
+            (meeting) => meeting.chat_id === meetingChat.chat_id
+          ).meeting_id,
+        };
         setMessages(temp_chats);
         setShowModal(false);
         setMeetingChat(null);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-      })
-  }
+      });
+  };
 
   // Calculate initial card heights (optional for improved performance)
   useEffect(() => {
@@ -173,7 +181,9 @@ const Messages = () => {
                     </span>
                   )}
                 </p>
-              ): ""}
+              ) : (
+                ""
+              )}
             </div>
             {!message.acknowledged && (
               <div className={styles.buttons}>
@@ -192,7 +202,10 @@ const Messages = () => {
                   </button>
                 )}
                 {showReply !== index && (
-                  <button className={styles.button} onClick={() => handleShowModal(message)}>
+                  <button
+                    className={styles.button}
+                    onClick={() => handleShowModal(message)}
+                  >
                     Set Meeting
                   </button>
                 )}
@@ -225,6 +238,7 @@ const Messages = () => {
           handelShowModal={handleShowModal}
           handleSetMeeting={handleSetMeeting}
           isChatMeeting={true}
+          centerModal={true}
           meetingChat={meetingChat}
           handleSetChatMeeting={handleSetChatMeeting}
         />

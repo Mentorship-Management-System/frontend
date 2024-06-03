@@ -299,22 +299,23 @@ const Settings = () => {
                   <div className={styles.popup}>
                     <h1 className={styles.header}>Mentee List</h1>
                     <div className={styles.content}>
-                      {students &&
-                        students.map((item, index) => (
-                          <div
-                            key={index}
-                            className={styles.nameRow}
-                            onClick={() =>
-                              Navigate(`/admin/Mentees/${item.enrollment_no}`)
-                            }
-                          >
-                            <span>{item.student_id}</span>
-                            <span className={styles.name}>
-                              {item.fname} {item.lname}
-                            </span>
-                            <span>{item.enrollment_no}</span>
-                          </div>
-                        ))}
+                      {students && students.length > 0
+                        ? students.map((item, index) => (
+                            <div
+                              key={index}
+                              className={styles.nameRow}
+                              onClick={() =>
+                                Navigate(`/admin/Mentees/${item.enrollment_no}`)
+                              }
+                            >
+                              <span>{item.student_id}</span>
+                              <span className={styles.name}>
+                                {item.fname} {item.lname}
+                              </span>
+                              <span>{item.enrollment_no}</span>
+                            </div>
+                          ))
+                        : "No Mentees assigned"}
                     </div>
                     <Flex justify="flex-end">
                       <Button onClick={() => setShowMentees(!showMentees)}>

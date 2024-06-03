@@ -37,10 +37,6 @@ const ProgressChart = () => {
     },
     series: [
       {
-        name: "CGPA",
-        data: [8.1, 7.5, 7.7, 7.5, 7.6, 7.8, 8],
-      },
-      {
         name: "SGPA",
         data: [8.1, 7.6, 8.4, 6.9, 7.8, 7.8, 8.6],
       },
@@ -49,7 +45,7 @@ const ProgressChart = () => {
 
   return (
     <div>
-      <Heading fontSize="1.3rem">CGPA/SGPA Graph </Heading>
+      <Heading fontSize="1.3rem">SGPA Graph </Heading>
       <Chart
         options={teachersMeetingsData.options}
         series={teachersMeetingsData.series}
