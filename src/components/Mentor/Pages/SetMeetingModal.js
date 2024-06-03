@@ -41,7 +41,7 @@ export default function SetMeetingModal({
   meeting_id,
   isEditMeeting,
   setShowModal,
-  setMeetings
+  setMeetings,
 }) {
   //hooks
   const Navigate = useNavigate();
@@ -53,7 +53,8 @@ export default function SetMeetingModal({
     meetingDetails && meetingDetails.title
   );
   const [meetingTime, setMeetingTime] = useState(
-    meetingDetails && meetingDetails.date.split("T")[0] + "T" + meetingDetails.time
+    meetingDetails &&
+      meetingDetails.date.split("T")[0] + "T" + meetingDetails.time
   );
   const [meetingDescription, setMeetingDescription] = useState(
     meetingDetails && meetingDetails.description
@@ -127,11 +128,11 @@ export default function SetMeetingModal({
     if (isChatMeeting) {
       console.log("Setting meeting for chat");
       let new_chat_meeting = {
-        meeting_date: meetingTime
-      }
+        meeting_date: meetingTime,
+      };
       console.log(new_chat_meeting);
       handleSetChatMeeting(new_chat_meeting);
-    } else if(isEditMeeting){
+    } else if (isEditMeeting) {
       console.log("Edit meeting");
       const date_time = meetingTime.split("T");
       let modified_meeting = {
@@ -141,18 +142,18 @@ export default function SetMeetingModal({
         time: date_time[1],
         mentor_id: mentor.user.mentor_id,
         student_ids: selectedStudents.map(({ student_id }) => student_id),
-      }
+      };
       console.log(modified_meeting);
       update_meeting(mentor.token, meetingDetails.meeting_id, modified_meeting)
-        .then(result => {
+        .then((result) => {
           result = result.data;
           console.log(result);
           Navigate(0);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
-        })
-    }else {
+        });
+    } else {
       console.log("Setting normal meeting");
       const date_time = meetingTime.split("T");
       let new_meeting = {
@@ -177,7 +178,13 @@ export default function SetMeetingModal({
         <div className={styles.modalContent}>
           <Flex className={styles.header}>
             <h1>
-              <strong>Set {isChatMeeting ? "New Chat" : "New"} Meeting</strong>
+              <strong>
+                {!centerModal
+                  ? "Edit Meeting"
+                  : isChatMeeting
+                  ? "New Chat Meeting"
+                  : "Set New Meeting"}
+              </strong>
             </h1>
             <Center onClick={handelShowModal}>
               <IoMdClose />
@@ -185,14 +192,16 @@ export default function SetMeetingModal({
           </Flex>
           <div className={styles.modalBody}>
             <Stack spacing={4}>
-              {!isChatMeeting && <div>
-                <label>Meeting Name</label>
-                <Input
-                  type="text"
-                  value={meetingName || ""}
-                  onChange={(e) => setMeetingName(e.target.value)}
-                />
-              </div>}
+              {!isChatMeeting && (
+                <div>
+                  <label>Meeting Name</label>
+                  <Input
+                    type="text"
+                    value={meetingName || ""}
+                    onChange={(e) => setMeetingName(e.target.value)}
+                  />
+                </div>
+              )}
               <div>
                 <label>Meeting Time</label>
                 <Input
@@ -201,14 +210,16 @@ export default function SetMeetingModal({
                   onChange={(e) => setMeetingTime(e.target.value)}
                 />
               </div>
-              {!isChatMeeting && <div>
-                <label>Meeting Description</label>
-                <Input
-                  type="text"
-                  value={meetingDescription || ""}
-                  onChange={(e) => setMeetingDescription(e.target.value)}
-                />
-              </div>}
+              {!isChatMeeting && (
+                <div>
+                  <label>Meeting Description</label>
+                  <Input
+                    type="text"
+                    value={meetingDescription || ""}
+                    onChange={(e) => setMeetingDescription(e.target.value)}
+                  />
+                </div>
+              )}
             </Stack>
             {selectedStudents.length !== 0 && (
               <Text mt={4}>

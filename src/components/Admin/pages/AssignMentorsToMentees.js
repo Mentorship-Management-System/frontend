@@ -247,19 +247,16 @@ const StudentTable = ({ students }) => {
               border="1px solid #0d30ac"
               disabled={selectedRowKeys.length === 0}
             >
-              Assign Random Numbers
+              Assign Mentors
             </Button>
           </div>
         </div>
         <Table columns={columns} data={tableData} />
       </div>
       {showMentors && (
-        <div
-          className={classes.popupContainer}
-          onClick={() => setShowMentors(false)}
-        >
+        <div className={classes.popupContainer}>
           <div className={classes.popup}>
-            <h1 className={classes.header}>Select Mentees</h1>
+            <h1 className={classes.header}>Select Mentors</h1>
             <div className={classes.content}>
               <div className={classes.nameRow} onClick={handleSelectAll}>
                 <input type="checkbox" checked={isSelectAll} readOnly />

@@ -125,6 +125,10 @@ const Dashboard = () => {
       });
   }, []);
 
+  const filteredMeetings = meetings
+    .filter((met) => new Date(met.date) > new Date())
+    .slice(0, 2);
+
   return (
     <div className={styles.dashboardContainer}>
       <h1>
@@ -166,10 +170,10 @@ const Dashboard = () => {
               Upcoming Meetings
             </Heading>
             <Box flexGrow="3">
-              {meetings
-                .filter((met) => new Date(met.date) > new Date())
-                .slice(0, 2)
-                .map((meeting) => (
+              {filteredMeetings.length === 0 ? (
+                <Text>No upcomming meetings available</Text>
+              ) : (
+                filteredMeetings.map((meeting) => (
                   <Box key={meeting.id} className={styles.meetingItem}>
                     <Text className={styles.meetingTitle}>{meeting.title}</Text>
                     <Text>
@@ -180,7 +184,8 @@ const Dashboard = () => {
                     </p>
                     {/* Add more meeting details as needed */}
                   </Box>
-                ))}
+                ))
+              )}
             </Box>
             <Flex justify="center">
               <Button
