@@ -159,7 +159,7 @@ export default function StudentLogin() {
           <Flex className={classes.container}>
             {!showForgot ? (
               <Flex className={classes.insideContainer}>
-                <Heading>Student Login</Heading>
+                <Heading className={classes.heading}>Student Login</Heading>
                 <Box className={classes.inputContainer}>
                   <Input
                     type="email"
@@ -216,7 +216,7 @@ export default function StudentLogin() {
                 >
                   <RxCross2 />
                 </Center>
-                <Heading>Forgot Password</Heading>
+                <Heading className={classes.heading}>Forgot Password</Heading>
                 <Box className={classes.inputContainer}>
                   <Input
                     type="email"
