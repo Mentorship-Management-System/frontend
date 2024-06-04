@@ -147,3 +147,35 @@ export const upload_students = async (token, payload) => {
         return error;
     }
 }
+
+export const get_students_count_by_year = async (token, mentorId) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/count-by-year/${mentorId}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const all_count_by_year = async (token) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/all-count-by-year`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

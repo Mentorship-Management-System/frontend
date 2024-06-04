@@ -9,14 +9,31 @@ import cartoon4 from "../../../media/research.png";
 import { Box, Center, Flex, HStack, Heading } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { get_count } from "../../../api/adminApi";
+import { all_count_by_year } from "../../../api/studentApi";
 
 const data = [
   { title: "Students", count: 580, icon: cartoon1 },
   { title: "Teachers", count: "40+", icon: cartoon2 },
 ];
 
-const TeachersMeetingsChart = () => {
-  const teachersMeetingsData = {
+const YearWiseStudentCount = () => {
+  const admin = useSelector(state => state.adminAuth.admin);
+
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    all_count_by_year(admin.token)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setStats(result.count)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, [])
+
+  const yearWiseStudentData = {
     options: {
       chart: {
         type: "line",
@@ -27,15 +44,7 @@ const TeachersMeetingsChart = () => {
         },
       },
       xaxis: {
-        categories: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
+        categories: stats.map((obj) => obj.enrollment_year),
       },
       colors: ["#26B7ED"],
       stroke: {
@@ -44,8 +53,8 @@ const TeachersMeetingsChart = () => {
     },
     series: [
       {
-        name: "Teachers Meetings",
-        data: [1, 6, 5, 7, 4, 6, 4],
+        name: "No of students",
+        data: stats.map((obj) => obj.student_count),
       },
     ],
   };
@@ -54,14 +63,14 @@ const TeachersMeetingsChart = () => {
     <Box w="100%" h="100%">
       {" "}
       <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
-        Mentor Mentee Meetings
+        Year wise students count
       </Heading>
       <Chart
-        options={teachersMeetingsData.options}
-        series={teachersMeetingsData.series}
+        options={yearWiseStudentData.options}
+        series={yearWiseStudentData.series}
         type="line"
-        height={teachersMeetingsData.options.chart.height}
-        width={teachersMeetingsData.options.chart.width}
+        height={yearWiseStudentData.options.chart.height}
+        width={yearWiseStudentData.options.chart.width}
       />
     </Box>
   );
@@ -171,7 +180,7 @@ const Dashboard = () => {
       </div>
       <Flex className={styles.charts}>
         <Box className={styles.chart}>
-          <TeachersMeetingsChart className={styles.chartItem} />
+          <YearWiseStudentCount className={styles.chartItem} />
         </Box>
         <Box className={styles.chart}>
           <BoysGirlsCountChart className={styles.chartItem} />
