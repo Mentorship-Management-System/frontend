@@ -219,10 +219,13 @@ const MentorProfile = () => {
                 </Flex>
               </div>
               <Flex className={styles.switch}>
-                <Text>Available Status</Text>
+                <Text>Is available as mentor?</Text>
                 <Switch
-                  isChecked={isAvailable}
-                  onChange={(e) => setIsAvailable(e.target.checked)}
+                  disabled={disabled}
+                  isChecked={Boolean(editedUserData.isAvailableAsMentor)}
+                  onChange={(e) => {
+                    handleFieldChange("isAvailableAsMentor", Number(Boolean(!editedUserData.isAvailableAsMentor)));
+                  }}
                   color="navy"
                 />
               </Flex>
