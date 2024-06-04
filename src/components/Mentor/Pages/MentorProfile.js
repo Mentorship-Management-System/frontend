@@ -1,6 +1,6 @@
 import styles from "../../Admin/Css/Settings.module.scss";
 import React, { useEffect, useState } from "react";
-import { Box, Flex, Switch, Text } from "@chakra-ui/react";
+import { Box, Flex, Spinner, Switch, Text, useToast } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
 import { useSelector } from "react-redux";
@@ -10,6 +10,7 @@ const MentorProfile = () => {
   //hooks
   const mentor = useSelector((state) => state.mentorAuth.mentor);
   console.log(mentor.user);
+  const toast = useToast();
 
   //state variables
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -19,6 +20,7 @@ const MentorProfile = () => {
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [isAvailable, setIsAvailable] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     get_mentor(mentor.token, mentor.user.mentor_id)
@@ -52,16 +54,36 @@ const MentorProfile = () => {
     delete updated_fields.type;
     console.log(updated_fields);
 
+    setLoading(true);
     update_mentor(mentor.token, mentor.user.mentor_id, updated_fields)
       .then((result) => {
-        result = result.data;
-        console.log(result);
-        setEditedUserData(result.mentor);
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          setEditedUserData(result.mentor);
+          toast({
+            title: 'Success',
+            description: "Profile updated successfully.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: "Error updating profile.",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => {
+        setLoading(false);
         handleEdit();
       });
   };
@@ -94,7 +116,7 @@ const MentorProfile = () => {
                   <div className={styles.profiletxt}>
                     <h1 className={styles.profilename}>Profile</h1>
                     <h2 className={styles.profilesubtext}>
-                      Update photo and personal details
+                      Update personal details
                     </h2>
                   </div>
                 </div>
@@ -237,7 +259,7 @@ const MentorProfile = () => {
                 </div>
                 <div className={styles.sbmtbtn}>
                   <button disabled={disabled} onClick={() => handleSaveEdit()}>
-                    Save
+                    {loading ? <Spinner /> : "Save"}
                   </button>
                 </div>
               </div>

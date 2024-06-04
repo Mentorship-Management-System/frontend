@@ -116,3 +116,34 @@ export const update_meeting = async (token, meeting_id, payload) => {
         return error;
     }
 }
+export const all_month_wise_meeting = async (token) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/all-month-wise-count`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const month_wise_meeting = async (token, mentor_id) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/month-wise-count/${mentor_id}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

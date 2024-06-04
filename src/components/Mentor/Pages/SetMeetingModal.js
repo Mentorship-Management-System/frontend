@@ -11,6 +11,7 @@ import {
   Flex,
   Center,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import styles from "../Css/Meetings.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -48,8 +49,10 @@ export default function SetMeetingModal({
   //hooks
   const Navigate = useNavigate();
   const mentor = useSelector((state) => state.mentorAuth.mentor);
+  const toast = useToast();
 
   //state variables
+  const [editMeetingLoading, setEditMeetingLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [meetingName, setMeetingName] = useState(
     meetingDetails && meetingDetails.title
@@ -146,15 +149,37 @@ export default function SetMeetingModal({
         student_ids: selectedStudents.map(({ student_id }) => student_id),
       };
       console.log(modified_meeting);
+      setEditMeetingLoading(true)
       update_meeting(mentor.token, meetingDetails.meeting_id, modified_meeting)
         .then((result) => {
-          result = result.data;
-          console.log(result);
-          Navigate(0);
+          if(result.data){
+            result = result.data;
+            console.log(result);
+            toast({
+              title: 'Success',
+              description: result.message || "Meeting updated successfully.",
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            })
+            Navigate(0);
+          } else {
+            console.log(result.response);
+            toast({
+              title: result.response.statusText,
+              description: result.response.data.error || "Error updating meeting.",
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            })
+          }
         })
         .catch((error) => {
           console.log(error);
-        });
+        })
+        .finally(() => {
+          setEditMeetingLoading(false);
+        })
     } else {
       console.log("Setting normal meeting");
       const date_time = meetingTime.split("T");
@@ -244,7 +269,7 @@ export default function SetMeetingModal({
               </Button>
             )}
             <Button colorScheme="blue" onClick={setMeeting}>
-              {centerModal ? "Set" : "Confirm"} {replyMeetLoading && <Spinner />}
+              {centerModal ? "Set" : "Confirm"} {replyMeetLoading && <Spinner />} {editMeetingLoading && <Spinner />}
             </Button>
           </Flex>
         </div>

@@ -8,9 +8,10 @@ import {
   VStack,
   Center,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom"; // Assuming you're using react-router for navigation
+import { Link, useNavigate } from "react-router-dom"; // Assuming you're using react-router for navigation
 
 const ErrorPage = () => {
+  const navigate = useNavigate();
   return (
     <Center h="100vh" textAlign="center">
       <Box>
@@ -27,10 +28,9 @@ const ErrorPage = () => {
             _hover={{ backgroundColor: "#03ac" }}
             color="white"
             variant="solid"
-            as={Link}
-            to="/"
+            onClick={() => navigate(-1)}
           >
-            Go to Home
+            Go back
           </Button>
         </VStack>
       </Box>

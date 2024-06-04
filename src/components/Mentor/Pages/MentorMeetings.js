@@ -12,6 +12,7 @@ import {
   Flex,
   Center,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import styles from "../Css/Meetings.module.scss";
 import { MdOutlineFileDownload } from "react-icons/md";
@@ -32,6 +33,7 @@ const Meetings = () => {
   //hooks
   const Navigate = useNavigate();
   const mentor = useSelector((state) => state.mentorAuth.mentor);
+  const toast = useToast();
 
   //state variables
   const [showModal, setShowModal] = useState(false);
@@ -79,9 +81,27 @@ const Meetings = () => {
     console.log(new_meeting);
     create_meeting(mentor.token, new_meeting)
       .then((result) => {
-        result = result.data;
-        console.log(result);
-        setMeetings(result.meetings);
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          setMeetings(result.meetings);
+          toast({
+            title: 'Success',
+            description: "Meeting created successfully.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: result.response.data.error || "Error creating meeting.",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -109,11 +129,29 @@ const Meetings = () => {
     console.log(popupId);
     delete_meeting(mentor.token, popupId)
       .then((result) => {
-        result = result.data;
-        console.log(result);
-        setMeetings((prev) =>
-          prev.filter((meeting) => meeting.meeting_id !== popupId)
-        );
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          setMeetings((prev) =>
+            prev.filter((meeting) => meeting.meeting_id !== popupId)
+          );
+          toast({
+            title: 'Success',
+            description: "Meeting deleted successfully.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: "Error deleting meeting.",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);

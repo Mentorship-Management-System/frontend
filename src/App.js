@@ -27,17 +27,26 @@ import Messages from "./components/Mentor/Pages/Messages";
 import StudentMessage from "./components/Student/Pages/StudentMessage";
 import Admin from "./components/Admin/pages/Admin";
 import ErrorPage from "./components/ErrorPage";
+import { useSelector } from "react-redux";
 
 function App() {
+  const adminAuth = useSelector(state => state.adminAuth.auth);
+  const studentAuth = useSelector(state => state.studentAuth.auth);
+  const mentorAuth = useSelector(state => state.mentorAuth.auth);
+
+  console.log({
+    adminAuth, studentAuth, mentorAuth
+  });
+
   return (
     <div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/not-found" element={<ErrorPage />} />
-        <Route path="student-login" element={<StudentLogin />} />
-        <Route path="mentor-login" element={<MentorLogin />} />
-        <Route path="admin-login" element={<AdminLogin />} />
-        <Route path="admin" element={<AdminHome />}>
+        <Route path="student-login" element={studentAuth ? <Navigate to="/student/Dashboard" /> : <StudentLogin />} />
+        <Route path="mentor-login" element={mentorAuth ? <Navigate to="/mentor/Dashboard" /> : <MentorLogin />} />
+        <Route path="admin-login" element={adminAuth ? <Navigate to="/admin/Dashboard" /> : <AdminLogin />} />
+        {adminAuth && <Route path="admin" element={<AdminHome />}>
           <Route path="Dashboard" element={<Dashboard />} />
           <Route path="Mentees" element={<Mentees />} />
           <Route path="Mentees/:id" element={<EditMentees />} />
@@ -47,8 +56,8 @@ function App() {
           <Route path="Profile" element={<Settings />} />
           <Route path="Admins" element={<Admin />} />
           <Route path="" element={<Navigate to="Dashboard" />} />
-        </Route>
-        <Route path="mentor" element={<MentorHome />}>
+        </Route>}
+        {mentorAuth && <Route path="mentor" element={<MentorHome />}>
           <Route path="Dashboard" element={<MentorDashboard />} />
           <Route path="Mentees" element={<MentorMentees />} />
           <Route path="Mentees/:id" element={<MentorEditMentees />} />
@@ -56,15 +65,16 @@ function App() {
           <Route path="Messages" element={<Messages />} />
           <Route path="Profile" element={<MentorProfile />} />
           <Route path="" element={<Navigate to="Dashboard" />} />
-        </Route>
-        <Route path="student" element={<StudentHome />}>
+        </Route>}
+        {studentAuth && <Route path="student" element={<StudentHome />}>
           <Route path="Dashboard" element={<StudentDashboard />} />
           <Route path="Mentor" element={<StudentMentor />} />
           <Route path="Meetings" element={<StudentMeetings />} />
           <Route path="Profile" element={<StudentProfile />} />
           <Route path="Mentor/Message" element={<StudentMessage />} />
           <Route path="" element={<Navigate to="Dashboard" />} />
-        </Route>
+        </Route>}
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>
   );
