@@ -4,6 +4,7 @@ import { Box, Flex, Spinner, useToast } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "./ResetPassword";
 import { useSelector } from "react-redux";
+import { get_admin, update_admin } from "../../../api/adminApi";
 
 const Settings = () => {
   //hooks
@@ -20,10 +21,22 @@ const Settings = () => {
 
   const [loading, setLoading] = useState(false);
 
-  //useEffect functions
   useEffect(() => {
-    setEditedUserData(admin.user);
+    get_admin(admin.token, admin.user.admin_id)
+      .then((result) => {
+        result = result.data;
+        console.log(result);
+        setEditedUserData(result.admin);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
+
+  //useEffect functions
+  // useEffect(() => {
+  //   setEditedUserData(admin.user);
+  // }, []);
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -38,6 +51,45 @@ const Settings = () => {
 
   const handleEdit = () => {
     setDisabled((prev) => !prev);
+  };
+
+  const handleSaveEdit = () => {
+    let updated_fields = editedUserData;
+    delete updated_fields.type;
+    console.log(updated_fields);
+
+    setLoading(true);
+    update_admin(admin.token, admin.user.admin_id, updated_fields)
+      .then((result) => {
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          setEditedUserData(result.admin);
+          toast({
+            title: 'Success',
+            description: "Profile updated successfully.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: "Error updating profile.",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+        handleEdit();
+      });
   };
 
   return (
@@ -84,7 +136,8 @@ const Settings = () => {
                   <div className={styles.label1}>ID</div>
                   <div className={styles.input1}>
                     <input
-                      disabled={disabled}
+                      disabled={true}
+                      style={{ cursor: "not-allowed" }}
                       value={editedUserData.admin_id || ""}
                       onChange={(e) => console.log("Dont Touch")}
                     />
@@ -120,7 +173,8 @@ const Settings = () => {
                   <div className={styles.input1}>
                     <input
                       value={editedUserData.email || ""}
-                      disabled={disabled}
+                      disabled={true}
+                      style={{ cursor: "not-allowed" }}
                       onChange={(e) =>
                         handleFieldChange("email", e.target.value)
                       }
@@ -128,18 +182,18 @@ const Settings = () => {
                   </div>
                 </Flex>
               </div>
-              {/* <div className={styles.referral}>
+              <div className={styles.referral}>
                 <div className={styles.cnclbtn}>
                   <button onClick={handleEdit}>
                     {disabled ? "Edit" : "Cancel"}{" "}
                   </button>
                 </div>
                 <div className={styles.sbmtbtn}>
-                  <button disabled={disabled} onClick={() => setClicked(true)}>
+                  <button disabled={disabled} onClick={() => handleSaveEdit()}>
                     {loading ? <Spinner /> : "Save"}
                   </button>
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
         </div>

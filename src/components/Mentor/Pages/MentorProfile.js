@@ -132,7 +132,8 @@ const MentorProfile = () => {
                   <div className={styles.label1}>User ID</div>
                   <div className={styles.input1}>
                     <input
-                      disabled={disabled}
+                      disabled={true}
+                      style={{ cursor: "not-allowed" }}
                       value={editedUserData.mentor_id || ""}
                       onChange={(e) => console.log("Dont Touch")}
                     />
