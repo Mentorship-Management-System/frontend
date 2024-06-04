@@ -53,8 +53,9 @@ function Table({ columns, data }) {
           <Box m="1% 0" fontSize="1.1rem">
             Rows Selected: <strong>{selectCount}</strong>
           </Box>
-          <Center cursor="pointer">
+          <Center cursor="pointer" className={styles.tooltip}>
             <MdOutlineFileDownload size={25} />
+            <span className={styles.tooltiptext}>Download</span>
           </Center>
         </Flex>
         {/* <button onClick={() => toggleAllRowsSelected()}>Select All Rows</button> */}

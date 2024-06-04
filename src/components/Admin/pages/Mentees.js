@@ -95,11 +95,13 @@ const Mentees = () => {
   //state variables
   const [filters, setFilters] = useState({
     year: "",
-    branch: "",
+    programme: "",
     roll: "",
-    searchText: "",
+    name: "",
   });
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+
   const [tableData, setTableData] = useState([]);
 
   //useEffect functions
@@ -110,6 +112,7 @@ const Mentees = () => {
           result = result.data;
           console.log(result);
           setStudents(result.students);
+          setFilteredStudents(result.students);
           let temp_data = [];
           result.students.map((student) => {
             temp_data.push({
@@ -185,6 +188,37 @@ const Mentees = () => {
   const handleFilterChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
   };
+
+  const handleFilter = () => {
+    let filteredArray = [];
+    console.log(filters);
+    filteredArray = students.filter((student) => {
+      const fullName = `${student.fname} ${student.lname}`.toLowerCase();
+      return (
+        (!filters.name || fullName.includes(filters.name.toLowerCase())) &&
+        (!filters.roll ||
+          student.enrollment_no.includes(filters.roll.toUpperCase())) &&
+        (!filters.year || student.enrollment_year == filters.year) &&
+        (!filters.programme || student.programme === filters.programme)
+      );
+    });
+    setFilteredStudents(filteredArray);
+
+    let temp_data = [];
+    filteredArray.map((student) =>
+      temp_data.push({
+        id: student.student_id,
+        name: student.fname + " " + student.lname,
+        rollNo: student.enrollment_no,
+        programme: student.programme,
+        email: student.email,
+        contact: student.phone,
+      })
+    );
+    setTableData(temp_data);
+
+    // console.log(temp_data);
+  };
   return (
     <div className={styles.menteesContainer}>
       {/* Heading */}
@@ -196,24 +230,28 @@ const Mentees = () => {
           type="text"
           placeholder="Search by name..."
           className={styles.searchBar}
+          onChange={(value) => handleFilterChange("name", value.target.value)}
         />
         <input
           type="text"
           placeholder="Search by roll no..."
           className={styles.searchBar}
+          onChange={(value) => handleFilterChange("roll", value.target.value)}
         />
         <Select
           placeholder="Select programme"
-          onChange={(value) => handleFilterChange("branch", value)}
+          onChange={(value) =>
+            handleFilterChange("programme", value.target.value)
+          }
           className={styles.selectBar}
           w={["60%", "70%", "30%", "30%"]}
         >
           <option value="Bachelor of Technology">Bachelor of Technology</option>
-          <option value="Master of Technology(CSE)">
-            Master of Technology(CSE)
+          <option value="Master of Technology (CSE)">
+            Master of Technology (CSE)
           </option>
-          <option value="Master of Technology(IT)">
-            Master of Technology(IT)
+          <option value="Master of Technology (IT)">
+            Master of Technology (IT)
           </option>
           <option value="Master of Computer Applications">
             Master of Computer Applications
@@ -222,7 +260,7 @@ const Mentees = () => {
         <Select
           placeholder="Enrollment Year"
           value={filters.year}
-          onChange={(value) => handleFilterChange("year", value)}
+          onChange={(value) => handleFilterChange("year", value.target.value)}
           className={styles.selectBar}
           w={["60%", "70%", "30%", "30%"]}
         >
@@ -235,14 +273,16 @@ const Mentees = () => {
             </option>
           ))}
         </Select>
-        <button className={styles.searchButton}>Search</button>
+        <button className={styles.searchButton} onClick={handleFilter}>
+          Search
+        </button>
       </div>
 
       <div className={styles.table}>
         <TableList
           columns={columns}
           data={tableData}
-          students={students}
+          students={filteredStudents}
           admin={admin}
           setStudents={setStudents}
         />

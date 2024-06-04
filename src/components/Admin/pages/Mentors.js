@@ -92,11 +92,13 @@ const Mentors = () => {
 
   //state variables
   const [mentors, setMentors] = useState([]);
+  const [filteredMentors, setFilteredMentors] = useState([]);
+
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState({
-    year: "",
-    branch: "",
-    searchText: "",
+    name: "",
+    title: "",
+    id: "",
   });
 
   //useEffect functions
@@ -107,6 +109,7 @@ const Mentors = () => {
           result = result.data;
           console.log(result);
           setMentors(result.mentors);
+          setFilteredMentors(result.mentors);
           let temp_data = [];
           result.mentors.map((mentor) => {
             temp_data.push({
@@ -168,6 +171,33 @@ const Mentors = () => {
     []
   );
 
+  const handleFilter = () => {
+    let filteredArray = [];
+    console.log(filters);
+    filteredArray = mentors.filter((mentor) => {
+      const fullName = `${mentor.fname} ${mentor.lname}`.toLowerCase();
+      return (
+        (!filters.name || fullName.includes(filters.name.toLowerCase())) &&
+        (!filters.title || mentor.position.includes(filters.title)) &&
+        (!filters.id || mentor.mentor_id === filters.id)
+      );
+    });
+    setFilteredMentors(filteredArray);
+
+    let temp_data = [];
+    filteredArray.map((mentor) => {
+      temp_data.push({
+        id: mentor.mentor_id,
+        name: mentor.honorifics + " " + mentor.fname + " " + mentor.lname,
+        title: mentor.position,
+        email: mentor.email,
+      });
+    });
+    setTableData(temp_data);
+
+    // console.log(temp_data);
+  };
+
   return (
     <div className={styles.menteesContainer}>
       {/* Heading */}
@@ -179,25 +209,30 @@ const Mentors = () => {
           type="text"
           placeholder="Search by name..."
           className={styles.searchBar}
+          onChange={(value) => handleFilterChange("name", value.target.value)}
         />
         <input
           type="text"
           placeholder="Search by title..."
           className={styles.searchBar}
+          onChange={(value) => handleFilterChange("title", value.target.value)}
         />
         <input
           type="text"
           placeholder="Search by Id..."
           className={styles.searchBar}
+          onChange={(value) => handleFilterChange("id", value.target.value)}
         />
-        <button className={styles.searchButton}>Search</button>
+        <button className={styles.searchButton} onClick={handleFilter}>
+          Search
+        </button>
       </div>
 
       <div className={styles.table}>
         <TableList
           columns={columns}
           data={tableData}
-          mentors={mentors}
+          mentors={filteredMentors}
           admin={admin}
         />
       </div>

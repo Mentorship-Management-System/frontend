@@ -24,7 +24,7 @@ const dummyData = [
   { name: "Dr. Rosy Sharma", menteesAllocated: 1 },
   { name: "Dr. Nityananda Sharma", menteesAllocated: 4 },
 ];
-const StudentTable = ({ students }) => {
+const StudentTable = () => {
   //hooks
   const Navigate = useNavigate();
   const admin = useSelector((state) => state.adminAuth.admin);
@@ -33,12 +33,14 @@ const StudentTable = ({ students }) => {
   const [tableData, setTableData] = useState([]);
   const [mentors, setMentors] = useState([]);
   const [showMentors, setShowMentors] = useState(false);
-  const [filteredStudents, setFilteredStudents] = useState(students);
+  const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [filters, setFilters] = useState({
     year: "",
-    branch: "",
-    searchText: "",
+    programme: "",
+    name: "",
+    roll: "",
   });
   const [selectedNames, setSelectedNames] = useState([]);
   const [isSelectAll, setSelectAll] = useState(false);
@@ -73,6 +75,8 @@ const StudentTable = ({ students }) => {
         .then((result) => {
           result = result.data;
           console.log(result);
+          setStudents(result.students);
+          setFilteredStudents(result.students);
           let temp_data = [];
           result.students.map((student) => {
             temp_data.push({
@@ -131,15 +135,36 @@ const StudentTable = ({ students }) => {
     setFilters({ ...filters, [key]: value });
   };
 
-  const handleSearch = () => {
-    const filteredData = students.filter(
-      (student) =>
-        student.year === filters.year &&
-        student.branch === filters.branch &&
-        student.name.toLowerCase().includes(filters.searchText.toLowerCase())
+  const handleFilter = () => {
+    let filteredArray = [];
+    console.log(filters);
+    filteredArray = students.filter((student) => {
+      const fullName = `${student.fname} ${student.lname}`.toLowerCase();
+      return (
+        (!filters.name || fullName.includes(filters.name.toLowerCase())) &&
+        (!filters.roll ||
+          student.enrollment_no.includes(filters.roll.toUpperCase())) &&
+        (!filters.year || student.enrollment_year == filters.year) &&
+        (!filters.programme || student.programme === filters.programme)
+      );
+    });
+    setFilteredStudents(filteredArray);
+
+    let temp_data = [];
+    filteredArray.map((student) =>
+      temp_data.push({
+        id: student.student_id,
+        name: student.fname + " " + student.lname,
+        rollNo: student.enrollment_no,
+        programme: student.programme,
+        mentor: student.mentor.mentor_name,
+        email: student.email,
+        enrollment_year: student.enrollment_year,
+      })
     );
-    setFilteredStudents(filteredData);
-    setPagination({ ...pagination, current: 1 });
+    setTableData(temp_data);
+
+    // console.log(temp_data);
   };
 
   const columns = React.useMemo(
@@ -194,10 +219,22 @@ const StudentTable = ({ students }) => {
     <div className={classes.header}>
       <Heading className={classes.heading}>Mentees</Heading>
       <div className={classes.searchContainer}>
+        <input
+          type="text"
+          placeholder="Search by Name..."
+          className={classes.searchBar}
+          onChange={(value) => handleFilterChange("name", value.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Search by Roll No..."
+          className={classes.searchBar}
+          onChange={(value) => handleFilterChange("roll", value.target.value)}
+        />
         <Select
           placeholder="Enrollment Year"
           value={filters.year}
-          onChange={(value) => handleFilterChange("year", value)}
+          onChange={(value) => handleFilterChange("year", value.target.value)}
           className={classes.selectBar}
           w={["60%", "70%", "30%", "30%"]}
         >
@@ -212,27 +249,25 @@ const StudentTable = ({ students }) => {
         </Select>
         <Select
           placeholder="Select programme"
-          onChange={(value) => handleFilterChange("branch", value)}
+          onChange={(value) =>
+            handleFilterChange("programme", value.target.value)
+          }
           className={classes.selectBar}
           w={["60%", "70%", "30%", "30%"]}
         >
           <option value="Bachelor of Technology">Bachelor of Technology</option>
-          <option value="Master of Technology(CSE)">
-            Master of Technology(CSE)
+          <option value="Master of Technology (CSE)">
+            Master of Technology (CSE)
           </option>
-          <option value="Master of Technology(IT)">
-            Master of Technology(IT)
+          <option value="Master of Technology (IT)">
+            Master of Technology (IT)
           </option>
           <option value="Master of Computer Applications">
             Master of Computer Applications
           </option>
         </Select>
-        <input
-          type="text"
-          placeholder="Search by Roll No..."
-          className={classes.searchBar}
-        />
-        <button className={classes.searchButton} onClick={handleSearch}>
+
+        <button className={classes.searchButton} onClick={handleFilter}>
           Search
         </button>
       </div>
