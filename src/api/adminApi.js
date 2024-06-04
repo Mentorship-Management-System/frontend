@@ -16,6 +16,22 @@ export const admin_login = async (payload) => {
     }
 }
 
+export const get_admin = async (token, admin_id) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/admins/${admin_id}`,
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
 export const get_all_admins = async (token) => {
     try {
         let options = {
@@ -137,6 +153,23 @@ export const forgot_pass = async (payload) => {
         let options = {
             method: "POST",
             url: `${url}/forgot-password`,
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const update_admin = async (token, admin_id, payload) => {
+    try {
+        let options = {
+            method: "PUT",
+            url: `${url}/admins/${admin_id}`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
             data: payload
         }
         const result = await axios(options);

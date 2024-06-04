@@ -131,7 +131,8 @@ const Settings = () => {
                   <div className={styles.label1}>ID</div>
                   <div className={styles.input1}>
                     <input
-                      disabled={disabled}
+                      disabled={true}
+                      style={{ cursor: "not-allowed" }}
                       value={editedUserData.student_id || ""}
                       onChange={(e) => console.log("Dont Touch")}
                     />
