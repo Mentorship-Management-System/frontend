@@ -12,7 +12,7 @@ const ProgressChart = () => {
   const mentor = useSelector((state) => state.mentorAuth.mentor);
   const params = useParams();
   const [sgpas, setSgpas] = useState([]);
-  
+
   useEffect(() => {
     get_sgpa(mentor.token, params.id)
       .then((result) => {
@@ -165,14 +165,14 @@ const Settings = () => {
                 <div className={styles.buttonDiv}>
                   {!isMobile && (
                     <Flex>
-                      <Button
+                      {/* <Button
                         _hover={{ backgroundColor: "#03ac" }}
                         backgroundColor="#03ac"
                         color="white"
                         onClick={() => setShowTranscript(!showTranscript)}
                       >
                         View Transcript
-                      </Button>
+                      </Button> */}
                       <Button
                         // _hover={{ backgroundColor: "#0d3ffc" }}
                         border="1px solid #03ac"
@@ -344,7 +344,7 @@ const Settings = () => {
                     <div className={styles.input1}>
                       <input
                         disabled={disabled}
-                        value={editedUserData.dob || ""}
+                        value={editedUserData.dob.split("T")[0] || ""}
                         onChange={(e) =>
                           handleFieldChange("dob", e.target.value)
                         }
@@ -354,7 +354,7 @@ const Settings = () => {
                 </div>
               )}
             </div>
-            {showTranscript && <></>}
+            {/* {showTranscript && <></>} */}
           </div>
         </div>
       </Box>
