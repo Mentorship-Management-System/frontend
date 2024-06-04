@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { all_students } from "../../../api/studentApi";
 import { all_mentors } from "../../../api/mentorApi";
+import { auto_assign_mentees, manul_assign_mentees } from "../../../api/adminApi";
 const dummyData = [
   { name: "Dr. Bhogeswar Bora", menteesAllocated: 2 },
   { name: "Dr. Sanjib k. Deka", menteesAllocated: 3 },
@@ -47,6 +48,9 @@ const StudentTable = ({ students }) => {
   );
   const [selectedNames, setSelectedNames] = useState([]);
   const [isSelectAll, setSelectAll] = useState(false);
+  const [selectedMentors, setSelectedMentors] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [mentorMentee, setMentorMentee] = useState([]);
 
   const handleSelectAll = () => {
     if (!isSelectAll) {
@@ -69,7 +73,6 @@ const StudentTable = ({ students }) => {
       setSelectAll(false);
     }
   };
-  console.log(selectedNames);
   //useEffect functions
 
   useEffect(() => {
@@ -89,6 +92,17 @@ const StudentTable = ({ students }) => {
               email: student.email,
               enrollment_year: student.enrollment_year,
             });
+            setMentorMentee(prev => [{
+              enrollment_no: student.enrollment_no,
+              name: student.fname + " " + student.lname,
+              programme: student.programme,
+              gsuite_id: student.gsuite_id,
+              phone: student.phone,
+              enrollment_year: student.enrollment_year,
+              mentor: student.mentor ? student.mentor.mentor_name : "",
+              mentor_phone: student.mentor ? student.mentor.phone : "",
+              mentor_email: student.mentor ? student.mentor.email : ""
+            }, ...prev])
           });
           setTableData(temp_data);
         })
@@ -121,6 +135,65 @@ const StudentTable = ({ students }) => {
       setSelectedNames([...selectedNames, name]);
     }
   };
+
+  const handleClickMentors = (mentor_id) => {
+    if (selectedMentors.includes(mentor_id)) {
+      setSelectedMentors(selectedMentors.filter((selected) => selected !== mentor_id));
+    } else {
+      setSelectedMentors([...selectedMentors, mentor_id]);
+    }
+  };
+
+  const handleClickStudents = (student_ids) => {
+    // if (selectedStudents.includes(student_id)) {
+    //   setSelectedStudents(selectedStudents.filter((selected) => selected !== student_id));
+    // } else {
+    //   setSelectedStudents([...selectedStudents, student_id]);
+    // }
+    const profiles = student_ids.map((d) => d.original.id);
+    setSelectedStudents(profiles);
+  };
+
+  const handleManualAssignMentees = () => {
+    const payload = {
+      students: selectedStudents,
+      mentors: selectedMentors
+    }
+    console.log(payload);
+    manul_assign_mentees(admin.token, payload)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        setShowMentors(!showMentors);
+      })
+  }
+
+  const handleCancelAssign = () => {
+    setShowMentors(!showMentors);
+    setSelectedNames([]);
+    setSelectedMentors([])
+    setSelectedStudents([])
+    setSelectAll(false);
+  }
+
+  const handleAutoAssignMentors = () => {
+    auto_assign_mentees(admin.token)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(() => {
+        Navigate(0)
+      })
+  }
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -246,12 +319,13 @@ const StudentTable = ({ students }) => {
               variant="outline"
               border="1px solid #0d30ac"
               disabled={selectedRowKeys.length === 0}
+              onClick={handleAutoAssignMentors}
             >
               Assign Mentors
             </Button>
           </div>
         </div>
-        <Table columns={columns} data={tableData} />
+        <Table columns={columns} data={tableData} isAssignMentors={true} handleClickStudents={handleClickStudents} mentorMentee={mentorMentee} />
       </div>
       {showMentors && (
         <div className={classes.popupContainer}>
@@ -266,7 +340,8 @@ const StudentTable = ({ students }) => {
                 <div
                   key={index}
                   className={classes.nameRow}
-                  onClick={() =>
+                  onClick={() => {
+                    handleClickMentors(mentor.mentor_id);
                     handleNameClick(
                       mentor.honorifics +
                         " " +
@@ -274,7 +349,7 @@ const StudentTable = ({ students }) => {
                         " " +
                         mentor.lname
                     )
-                  }
+                  }}
                 >
                   <input
                     type="checkbox"
@@ -299,17 +374,11 @@ const StudentTable = ({ students }) => {
             <div className={classes.footer}>
               <Button
                 variant="outline"
-                onClick={() => {
-                  setShowMentors(!showMentors);
-                  setSelectedNames([]);
-                  setSelectAll(false);
-                }}
+                onClick={handleCancelAssign}
               >
                 Cancel
               </Button>
-              <Button
-                onClick={() => console.log("Selected Names:", selectedNames)}
-              >
+              <Button onClick={handleManualAssignMentees}>
                 Confirm
               </Button>
             </div>

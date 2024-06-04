@@ -26,7 +26,7 @@ import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
 import TableList from "./TableList";
 import { useSelector } from "react-redux";
-import { get_all_admins } from "../../../api/adminApi";
+import { get_all_admins, register_admin } from "../../../api/adminApi";
 // import { all_admins } from "../../../api/mentorApi";
 // Dummy data
 const adminsData = [
@@ -76,28 +76,52 @@ const Admin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fname: "",
+    lname: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  console.log(formData);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleRegisterAdmin = (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert("Password didnot match");
       return;
+    } else {
+      // Add your form submission logic here
+      console.log(formData);
+      register_admin(admin.token, formData)
+        .then(result => {
+          result = result.data;
+          // console.log(result);
+          setTableData(prev => [{
+            id: result.admin.admin_id,
+            fname: result.admin.fname,
+            lname: result.admin.lname,
+            email: result.admin.email,
+          }, ...prev])
+          alert("New Admin Registered!")
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          onClose();
+          setFormData({
+            fname: "",
+            lname: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          })
+        })
     }
-    // Add your form submission logic here
-    console.log(formData);
-    onClose();
   };
 
   //useEffect functions
@@ -190,21 +214,21 @@ const Admin = () => {
           <ModalHeader>Add New Admin</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleRegisterAdmin}>
               <Flex className={styles.nameInputs}>
-                <FormControl id="firstName" isRequired>
+                <FormControl id="fname" isRequired>
                   <FormLabel>First Name</FormLabel>
                   <Input
-                    name="firstName"
-                    value={formData.firstName}
+                    name="fname"
+                    value={formData.fname}
                     onChange={handleInputChange}
                   />
                 </FormControl>
-                <FormControl id="lastName" isRequired>
+                <FormControl id="lname" isRequired>
                   <FormLabel>Last Name</FormLabel>
                   <Input
-                    name="lastName"
-                    value={formData.lastName}
+                    name="lname"
+                    value={formData.lname}
                     onChange={handleInputChange}
                   />
                 </FormControl>

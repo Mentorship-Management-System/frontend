@@ -3,8 +3,9 @@ import { useTable, usePagination, useRowSelect } from "react-table";
 import styles from "../Css/Table.module.scss"; // Import SCSS file
 import { Box, Button, Center, Flex, Text } from "@chakra-ui/react";
 import { MdOutlineFileDownload } from "react-icons/md";
+import * as XLSX from "xlsx";
 
-function Table({ columns, data }) {
+function Table({ columns, data, isAssignMentors, handleClickStudents, mentorMentee }) {
   const [selectCount, setSelectCount] = useState(0);
   const initiallySelectedRows = React.useMemo(() => new Set(), []);
   // Use the state and functions returned from useTable to build your UI
@@ -42,7 +43,73 @@ function Table({ columns, data }) {
 
   useEffect(() => {
     setSelectCount(selectedFlatRows.length);
+    handleClickStudents(selectedFlatRows)
   }, [selectedFlatRows]);
+
+  const handleDownloadMentorMentee = () => {
+    console.log("Download mentors");
+
+      // Create a new workbook
+      const workbook = XLSX.utils.book_new();
+
+      // Define custom headers
+      const headers = [
+        { key: "enrollment_no", header: "Roll Number" },
+        { key: "name", header: "Student's Name" },
+        { key: "gsuite_id", header: "Student's G-Suite ID" },
+        { key: "phone", header: "Student's Phone Number" },
+        { key: "mentor", header: "Mentor Name" },
+        { key: "mentor_phone", header: "Mentor's Phone Number" },
+        { key: "mentor_email", header: "Mentor's Email" },
+        { key: "programme", header: "Programme" },
+        { key: "enrollment_year", header: "Enrollment Year" },
+      ];
+
+      // Convert student data to a format with custom headers
+      const dataWithHeaders = mentorMentee.map((student) => {
+        const newObj = {};
+        headers.forEach((header) => {
+          newObj[header.header] = student[header.key];
+        });
+        return newObj;
+      });
+
+      // Add custom headers as the first row
+      const worksheet = XLSX.utils.json_to_sheet(dataWithHeaders, {
+        header: headers.map((h) => h.header),
+      });
+
+      // Append the worksheet to the workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Mentors and Mentees");
+
+      // Generate a binary string representation of the workbook
+      const workbookBinary = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "binary",
+      });
+
+      // Convert the binary string to an ArrayBuffer
+      const buffer = new ArrayBuffer(workbookBinary.length);
+      const view = new Uint8Array(buffer);
+      for (let i = 0; i < workbookBinary.length; i++) {
+        view[i] = workbookBinary.charCodeAt(i) & 0xff;
+      }
+
+      // Create a Blob from the ArrayBuffer and create a URL for it
+      const blob = new Blob([buffer], { type: "application/octet-stream" });
+      const url = URL.createObjectURL(blob);
+
+      // Create a temporary link element, set its href to the Blob URL, and trigger a download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "mentors_and_mentees.xlsx";
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up and remove the temporary link element
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+  }
 
   // Render the UI for your table
   return (
@@ -54,7 +121,7 @@ function Table({ columns, data }) {
             Rows Selected: <strong>{selectCount}</strong>
           </Box>
           <Center cursor="pointer">
-            <MdOutlineFileDownload size={25} />
+            <MdOutlineFileDownload size={25} onClick={handleDownloadMentorMentee} />
           </Center>
         </Flex>
         {/* <button onClick={() => toggleAllRowsSelected()}>Select All Rows</button> */}

@@ -81,3 +81,17 @@ export const delete_mentors = async (token, payload) => {
         return error;
     }
 }
+
+export const register_mentor = async (payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/register`,
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

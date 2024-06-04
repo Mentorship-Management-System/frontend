@@ -116,7 +116,7 @@ const MentorProfile = () => {
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>First Name</div>
+                  <div className={styles.label1}>Honorifics</div>
                   <div className={styles.input1}>
                     <input
                       value={editedUserData.honorifics || ""}
