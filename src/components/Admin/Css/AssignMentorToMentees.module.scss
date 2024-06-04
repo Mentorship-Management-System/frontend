@@ -151,17 +151,21 @@ button {
     }
     .searchContainer {
       flex-wrap: wrap;
+      justify-content: flex-end;
       margin-bottom: 20px;
       gap: 15px;
       .searchBar {
+        flex-grow: 1;
         height: 10vw;
-        width: 60vw;
+        width: 40vw;
       }
       .selectBar {
         height: 10vw;
+        flex-grow: 1;
       }
       .searchButton {
         padding: 6px 18px;
+        margin: 0;
       }
     }
   }

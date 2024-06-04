@@ -11,7 +11,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { mentor_login, register_mentor } from "../../api/mentorApi";
 import { mentorAuthActions } from "../../redux/store";
@@ -38,6 +38,22 @@ export default function MentorLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 450);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const toggleHandler = () => {
     setToggle(!toggle);
@@ -80,7 +96,7 @@ export default function MentorLogin() {
         dispatch(mentorAuthActions.login({ mentor: result.result }));
         navigate("/mentor/dashboard");
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
@@ -96,15 +112,15 @@ export default function MentorLogin() {
       fname,
       lname,
       phone,
-      password
-    }
+      password,
+    };
     console.log(payload);
     register_mentor(payload)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
-        
-        const login_payload = { email, password }
+
+        const login_payload = { email, password };
         mentor_login(login_payload)
           .then((response) => {
             response = response.data;
@@ -112,14 +128,14 @@ export default function MentorLogin() {
             dispatch(mentorAuthActions.login({ mentor: response.result }));
             navigate("/mentor/dashboard");
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
-          })
+          });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
-      })
-  }
+      });
+  };
 
   return (
     <div>
@@ -170,6 +186,20 @@ export default function MentorLogin() {
                   >
                     forgot password?
                   </Text>
+                  {isMobile && (
+                    <Text
+                      style={{
+                        color: "#003285",
+                        cursor: "pointer",
+                      }}
+                      onClick={toggleHandler}
+                    >
+                      Don't have an accoount?{" "}
+                      <span style={{ textDecoration: "underline" }}>
+                        signup
+                      </span>
+                    </Text>
+                  )}
                 </Flex>
               </Flex>
             ) : (
@@ -197,44 +227,48 @@ export default function MentorLogin() {
               </Flex>
             )}
 
-            <Flex
-              className={classes.insideContainer}
-              bgGradient="linear(to-br, #003285, #153F78)"
-            >
-              <Box className={classes.inputContainer}>
-                <Heading>Haven't Registered Yet?</Heading>
-                <Flex className={classes.signUpToggleContainer}>
-                  <Button
-                    onClick={toggleHandler}
-                    bgColor="white"
-                    color="#254060"
-                  >
-                    Sign Up
-                  </Button>
-                </Flex>
-              </Box>
-            </Flex>
+            {!isMobile && (
+              <Flex
+                className={classes.insideContainer}
+                bgGradient="linear(to-br, #003285, #153F78)"
+              >
+                <Box className={classes.inputContainer}>
+                  <Heading>Haven't Registered Yet?</Heading>
+                  <Flex className={classes.signUpToggleContainer}>
+                    <Button
+                      onClick={toggleHandler}
+                      bgColor="white"
+                      color="#254060"
+                    >
+                      Sign Up
+                    </Button>
+                  </Flex>
+                </Box>
+              </Flex>
+            )}
           </Flex>
         )}
         {!toggle && (
           <Flex className={classes.container}>
-            <Flex
-              className={classes.insideContainer}
-              bgGradient="linear(to-br, #003285, #153F78)"
-            >
-              <Box className={classes.inputContainer}>
-                <Heading>Already have an accoount?</Heading>
-                <Flex className={classes.signUpToggleContainer}>
-                  <Button
-                    onClick={toggleHandler}
-                    bgColor="white"
-                    color="#254060"
-                  >
-                    Sign In
-                  </Button>
-                </Flex>
-              </Box>
-            </Flex>
+            {!isMobile && (
+              <Flex
+                className={classes.insideContainer}
+                bgGradient="linear(to-br, #003285, #153F78)"
+              >
+                <Box className={classes.inputContainer}>
+                  <Heading>Already have an accoount?</Heading>
+                  <Flex className={classes.signUpToggleContainer}>
+                    <Button
+                      onClick={toggleHandler}
+                      bgColor="white"
+                      color="#254060"
+                    >
+                      Sign In
+                    </Button>
+                  </Flex>
+                </Box>
+              </Flex>
+            )}
             <Flex className={classes.insideContainer}>
               <Heading className={classes.registerHeader}>
                 Mentor Registration Form
@@ -310,7 +344,9 @@ export default function MentorLogin() {
                     <InputRightElement h={"full"}>
                       <Center
                         onClick={() =>
-                          setShowConfirmPassword((showPassword) => !showPassword)
+                          setShowConfirmPassword(
+                            (showPassword) => !showPassword
+                          )
                         }
                       >
                         {showConfirmPassword ? <IoMdEye /> : <IoMdEyeOff />}
@@ -318,10 +354,28 @@ export default function MentorLogin() {
                     </InputRightElement>
                   </InputGroup>
                 </Box>
-                <Flex className={classes.signUpToggleContainer}>
+                <Flex
+                  className={
+                    isMobile
+                      ? classes.buttonContainer
+                      : classes.signUpToggleContainer
+                  }
+                >
                   <Button type="submit" variant="outline">
                     Sign Up
                   </Button>
+                  {isMobile && (
+                    <Text
+                      style={{
+                        color: "#003285",
+                        cursor: "pointer",
+                      }}
+                      onClick={toggleHandler}
+                    >
+                      Already have an accoount?{" "}
+                      <span style={{ textDecoration: "underline" }}>login</span>
+                    </Text>
+                  )}
                 </Flex>
               </form>
             </Flex>

@@ -97,17 +97,20 @@ const StudentTable = () => {
               email: student.email,
               enrollment_year: student.enrollment_year,
             });
-            setMentorMentee(prev => [{
-              enrollment_no: student.enrollment_no,
-              name: student.fname + " " + student.lname,
-              programme: student.programme,
-              gsuite_id: student.gsuite_id,
-              phone: student.phone,
-              enrollment_year: student.enrollment_year,
-              mentor: student.mentor ? student.mentor.mentor_name : "",
-              mentor_phone: student.mentor ? student.mentor.phone : "",
-              mentor_email: student.mentor ? student.mentor.email : ""
-            }, ...prev])
+            setMentorMentee((prev) => [
+              {
+                enrollment_no: student.enrollment_no,
+                name: student.fname + " " + student.lname,
+                programme: student.programme,
+                gsuite_id: student.gsuite_id,
+                phone: student.phone,
+                enrollment_year: student.enrollment_year,
+                mentor: student.mentor ? student.mentor.mentor_name : "",
+                mentor_phone: student.mentor ? student.mentor.phone : "",
+                mentor_email: student.mentor ? student.mentor.email : "",
+              },
+              ...prev,
+            ]);
           });
           setTableData(temp_data);
         })
@@ -146,7 +149,9 @@ const StudentTable = () => {
 
   const handleClickMentors = (mentor_id) => {
     if (selectedMentors.includes(mentor_id)) {
-      setSelectedMentors(selectedMentors.filter((selected) => selected !== mentor_id));
+      setSelectedMentors(
+        selectedMentors.filter((selected) => selected !== mentor_id)
+      );
     } else {
       setSelectedMentors([...selectedMentors, mentor_id]);
     }
@@ -165,8 +170,8 @@ const StudentTable = () => {
   const handleManualAssignMentees = () => {
     const payload = {
       students: selectedStudents,
-      mentors: selectedMentors
-    }
+      mentors: selectedMentors,
+    };
     console.log(payload);
     setManualLoading(true);
     manul_assign_mentees(admin.token, payload)
@@ -192,7 +197,7 @@ const StudentTable = () => {
           })
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
@@ -204,10 +209,10 @@ const StudentTable = () => {
   const handleCancelAssign = () => {
     setShowMentors(!showMentors);
     setSelectedNames([]);
-    setSelectedMentors([])
-    setSelectedStudents([])
+    setSelectedMentors([]);
+    setSelectedStudents([]);
     setSelectAll(false);
-  }
+  };
 
   const handleAutoAssignMentors = () => {
     setAutoLoading(true);
@@ -234,7 +239,7 @@ const StudentTable = () => {
           })
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
@@ -358,7 +363,8 @@ const StudentTable = () => {
           value={filters.year}
           onChange={(value) => handleFilterChange("year", value.target.value)}
           className={classes.selectBar}
-          w={["60%", "70%", "30%", "30%"]}
+          w={["40%", "40%", "30%", "30%"]}
+          flexGrow="1"
         >
           {Array.from(
             { length: new Date().getFullYear() - 1999 },
@@ -375,7 +381,8 @@ const StudentTable = () => {
             handleFilterChange("programme", value.target.value)
           }
           className={classes.selectBar}
-          w={["60%", "70%", "30%", "30%"]}
+          w={["40%", "40%", "30%", "30%"]}
+          flexGrow="1"
         >
           <option value="Bachelor of Technology">Bachelor of Technology</option>
           <option value="Master of Technology (CSE)">
@@ -432,7 +439,7 @@ const StudentTable = () => {
                         mentor.fname +
                         " " +
                         mentor.lname
-                    )
+                    );
                   }}
                 >
                   <input
@@ -456,10 +463,7 @@ const StudentTable = () => {
               ))}
             </div>
             <div className={classes.footer}>
-              <Button
-                variant="outline"
-                onClick={handleCancelAssign}
-              >
+              <Button variant="outline" onClick={handleCancelAssign}>
                 Cancel
               </Button>
               <Button onClick={handleManualAssignMentees}>

@@ -4,6 +4,7 @@
   background-size: cover;
   backdrop-filter: blur(10px);
 }
+
 .overlay {
   height: 100vh;
   width: 100vw;
@@ -12,9 +13,9 @@
   position: absolute;
   z-index: 1;
   backdrop-filter: blur(3px);
-
   background-color: rgba(0, 0, 0, 0.422);
 }
+
 .container {
   min-width: 30vw;
   max-width: 70vw;
@@ -23,75 +24,158 @@
   border: 2px solid gray;
   position: relative;
   z-index: 2;
+}
+
+.insideContainer {
+  width: 100%;
+  min-width: 27vw;
+  padding: 3%;
+  min-height: 8vw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  right: 5%;
+  top: 5%;
+  cursor: pointer;
+}
+
+.icon svg {
+  font-size: 1.5rem;
+}
+
+.registerHeader {
+  margin-bottom: 4%;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #03ac;
+  text-align: center;
+}
+
+.inputContainer {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inputContainer svg {
+  font-size: 1.4rem;
+}
+
+.inputContainer h2 {
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+}
+
+input {
+  border-radius: 50px;
+  outline: #03ac;
+  box-shadow: none;
+  border-width: 1px;
+}
+
+.buttonContainer {
+  flex-direction: column;
+  align-items: center;
+}
+
+.buttonContainer button {
+  margin: 0;
+  border-radius: 50px;
+  min-width: 8vw;
+}
+
+.buttonContainer p {
+  font-size: 0.9rem;
+}
+
+.signUpToggleContainer {
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  // justify-content: center;
+}
+
+.signUpToggleContainer button {
+  margin: 0;
+  border-radius: 50px;
+  min-width: 8vw;
+}
+
+/* Responsive Styling */
+@media only screen and (max-width: 768px) {
+  .container {
+    min-width: 80vw;
+    max-width: 90vw;
+    min-height: auto;
+    border: 2px solid gray;
+  }
+
   .insideContainer {
+    min-width: auto;
+    padding: 5%;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .inputContainer {
     width: 100%;
-    min-width: 27vw;
-    padding: 3%;
-    min-height: 8vw;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    position: relative;
-    .icon {
-      position: absolute;
-      right: 5%;
-      top: 5%;
-      cursor: pointer;
-      svg {
-        font-size: 1.5rem;
-      }
-    }
-    .registerHeader {
-      margin-bottom: 4%;
-    }
-    h2 {
-      font-size: 2rem;
-      color: #03ac;
-      text-align: center;
-    }
-    .inputContainer {
-      width: 90%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      svg {
-        font-size: 1.4rem;
-      }
-      h2 {
-        font-size: 2rem;
-        color: white;
-        text-align: center;
-      }
-      input {
-        border-radius: 50px;
-        // margin-top: 4%;
-        outline: #03ac;
-        box-shadow: none;
-        border-width: 1px;
-      }
-    }
-    .buttonContainer {
-      flex-direction: column;
-      align-items: center;
-      button {
-        margin: 0;
-        border-radius: 50px;
-        // width: 100%;
-        min-width: 8vw;
-      }
-      p {
-        font-size: 0.9rem;
-      }
-    }
-    .signUpToggleContainer {
-      margin-top: 5%;
-      justify-content: center;
-      button {
-        margin: 0;
-        border-radius: 50px;
-        min-width: 8vw;
-      }
-    }
+    gap: 12px;
+  }
+
+  .inputContainer h2 {
+    font-size: 1.5rem;
+  }
+
+  input {
+    border-radius: 60px !important;
+  }
+
+  .buttonContainer button {
+    min-width: 20vw;
+  }
+
+  .signUpToggleContainer button {
+    min-width: 20vw;
+  }
+
+  .icon svg {
+    font-size: 1.5rem;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .container {
+    min-width: 90vw;
+    max-width: 95vw;
+    min-height: 90vw;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  .inputContainer h2 {
+    font-size: 1.2rem;
+  }
+
+  .buttonContainer button,
+  .signUpToggleContainer button {
+    min-width: 40vw;
+  }
+
+  .icon svg {
+    font-size: 1.5rem;
   }
 }

@@ -26,12 +26,14 @@ import StudentDashboard from "./components/Student/Pages/StudentDashboard";
 import Messages from "./components/Mentor/Pages/Messages";
 import StudentMessage from "./components/Student/Pages/StudentMessage";
 import Admin from "./components/Admin/pages/Admin";
+import ErrorPage from "./components/ErrorPage";
 
 function App() {
   return (
     <div>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/not-found" element={<ErrorPage />} />
         <Route path="student-login" element={<StudentLogin />} />
         <Route path="mentor-login" element={<MentorLogin />} />
         <Route path="admin-login" element={<AdminLogin />} />
