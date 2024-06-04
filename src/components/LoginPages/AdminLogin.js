@@ -66,7 +66,7 @@ export default function AdminLogin() {
         <Flex className={classes.container}>
           {!showForgot ? (
             <Flex className={classes.insideContainer}>
-              <Heading>Admin Login Form</Heading>
+              <Heading className={classes.heading}>Admin Login Form</Heading>
               <Box className={classes.inputContainer}>
                 <Input
                   type="email"
@@ -117,7 +117,7 @@ export default function AdminLogin() {
               >
                 <RxCross2 />
               </Center>
-              <Heading>Forgot Password</Heading>
+              <Heading className={classes.heading}>Forgot Password</Heading>
               <Box className={classes.inputContainer}>
                 <Input
                   type="email"
