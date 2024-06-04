@@ -18,6 +18,7 @@ import {
 import { useSelector } from "react-redux";
 import { get_count } from "../../../api/adminApi";
 import { get_meetings_by_student_id } from "../../../api/meetingApi";
+import { get_students_count_by_year } from "../../../api/studentApi";
 
 const meetings = [
   {
@@ -42,6 +43,20 @@ const data = [
 ];
 
 const TeachersMeetingsChart = () => {
+  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    get_students_count_by_year(mentor.token, mentor.user.mentor_id)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setStats(result.count);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, [])
   const teachersMeetingsData = {
     options: {
       chart: {
@@ -53,15 +68,7 @@ const TeachersMeetingsChart = () => {
         },
       },
       xaxis: {
-        categories: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday",
-        ],
+        categories: stats.map((obj) => obj.enrollment_year),
       },
       colors: ["#26B7ED"],
       stroke: {
@@ -70,8 +77,8 @@ const TeachersMeetingsChart = () => {
     },
     series: [
       {
-        name: "Teachers Meetings",
-        data: [1, 6, 5, 7, 4, 6, 4],
+        name: "Year wise assigned mentees count ",
+        data: stats.map((obj) => obj.student_count),
       },
     ],
   };
@@ -79,7 +86,7 @@ const TeachersMeetingsChart = () => {
   return (
     <Box w="100%" h="100%">
       <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
-        Mentor Mentee Meetings
+        Year wise students count assigned
       </Heading>
       <Chart
         options={teachersMeetingsData.options}
