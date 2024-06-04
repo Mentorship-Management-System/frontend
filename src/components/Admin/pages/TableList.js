@@ -24,9 +24,122 @@ import { MdOutlineFileDownload, MdOutlineFileUpload } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { MdDelete } from "react-icons/md";
-import { delete_students } from "../../../api/studentApi";
+import { delete_students, upload_students } from "../../../api/studentApi";
 import { delete_mentors } from "../../../api/mentorApi";
 import { delete_admins } from "../../../api/adminApi";
+
+const generateRandomPassword = (length) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+  for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      password += characters.charAt(randomIndex);
+  }
+  return password;
+}
+
+const transformData = (arr) => {
+  return arr.map(item => {
+      // Extracting first two digits to determine the year of enrollment
+      const year = parseInt(item.enrollment_no.slice(3, 5)) + 2000;
+      
+      // Determining the program based on the first three characters of enrollment_no
+      let program;
+      switch(item.enrollment_no.slice(0, 3)) {
+          case "CSE":
+              program = "Master of Technology (CSE)";
+              break;
+          case "CSI":
+              program = "Master of Technology (IT)";
+              break;
+          case "CSM":
+              program = "Master of Computer Application";
+              break;
+          case "CSB":
+              program = "Bachelor of Technology";
+              break;
+          default:
+              program = "Unknown Program";
+      }
+
+      // Transforming name to fname and lname in camel case
+      const nameParts = item.name.toLowerCase().split(' ');
+      const fname = nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1);
+      const lname = nameParts.slice(1).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+
+      // Creating the transformed object
+      return {
+        enrollment_no: item.enrollment_no,
+        fname: fname,
+        lname: lname,
+        programme: program,
+        enrollment_year: year,
+        gsuite_id: item.gsuite_id,
+        email: item.email,
+        phone: item.phone,
+        password: generateRandomPassword(8)
+      };
+  });
+}
+
+const download_student_credentials = (transformedData) => {
+  const download_workbook = XLSX.utils.book_new();
+
+  // Define custom headers
+  const headers = [
+    { key: "fname", header: "First Name" },
+    { key: "lname", header: "Last Name" },
+    { key: "gsuite_id", header: "GSuite ID" },
+    { key: "enrollment_no", header: "Enrollment No" },
+    { key: "programme", header: "Programme" },
+    { key: "password", header: "Password" },
+  ];
+
+  // Convert student data to a format with custom headers
+  const dataWithHeaders = transformedData.map((student) => {
+    const newObj = {};
+    headers.forEach((header) => {
+      newObj[header.header] = student[header.key];
+    });
+    return newObj;
+  });
+
+  // Add custom headers as the first row
+  const download_worksheet = XLSX.utils.json_to_sheet(dataWithHeaders, {
+    header: headers.map((h) => h.header),
+  });
+
+  // Append the download_worksheet to the download_workbook
+  XLSX.utils.book_append_sheet(download_workbook, download_worksheet, "Students");
+
+  // Generate a binary string representation of the download_workbook
+  const workbookBinary = XLSX.write(download_workbook, {
+    bookType: "xlsx",
+    type: "binary",
+  });
+
+  // Convert the binary string to an ArrayBuffer
+  const buffer = new ArrayBuffer(workbookBinary.length);
+  const view = new Uint8Array(buffer);
+  for (let i = 0; i < workbookBinary.length; i++) {
+    view[i] = workbookBinary.charCodeAt(i) & 0xff;
+  }
+
+  // Create a Blob from the ArrayBuffer and create a URL for it
+  const blob = new Blob([buffer], { type: "application/octet-stream" });
+  const url = URL.createObjectURL(blob);
+
+  // Create a temporary link element, set its href to the Blob URL, and trigger a download
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "students_with_credentials.xlsx";
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up and remove the temporary link element
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 function Table({
   columns,
@@ -52,11 +165,49 @@ function Table({
     setFile(event.target.files[0]);
   };
 
-  const handleUpload = () => {
+  const handleUploadStudents = () => {
     if (file) {
-      // Handle the file upload logic here
       console.log("File uploaded:", file);
-      onClose();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+
+        // Assuming the data is in the first sheet
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+
+        // Convert the sheet to JSON
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        // Convert JSON data to array of records, filtering out empty rows
+        const records = jsonData.slice(1).filter(row => row[1] && row[2] && row[3] && row[4] && row[5]).map((row) => ({
+          enrollment_no: row[1],
+          name: row[2],
+          gsuite_id: row[3],
+          email: row[4],
+          phone: row[5]
+        }));
+        // console.log("File data:", records);
+        const transformedData = transformData(records);
+        console.log(transformedData);
+
+        upload_students(admin.token, transformedData)
+          .then(result => {
+            result = result.data;
+            console.log(result);
+            alert(result.message);
+            download_student_credentials(transformedData);
+          })
+          .catch(error => {
+            console.log(error);
+          })
+          .finally(() => {
+            onClose();
+          })
+      };
+      reader.readAsArrayBuffer(file);
+      
     } else {
       alert("Please select a file to upload.");
     }
@@ -431,7 +582,7 @@ function Table({
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={handleUpload}>
+              <Button colorScheme="blue" mr={3} onClick={handleUploadStudents}>
                 Upload
               </Button>
               <Button variant="ghost" onClick={onClose}>

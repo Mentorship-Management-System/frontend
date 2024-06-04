@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { mentor_login } from "../../api/mentorApi";
+import { mentor_login, register_mentor } from "../../api/mentorApi";
 import { mentorAuthActions } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import classes from "./login.module.scss";
@@ -31,7 +31,7 @@ export default function MentorLogin() {
   const [phone, setPhone] = useState("");
   const [gsuite, setGsuite] = useState("");
   const [password, setPassword] = useState("");
-  const [currentpassword, setCurrentPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [toggle, setToggle] = useState(true);
   const [showForgot, setShowForgot] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -60,8 +60,8 @@ export default function MentorLogin() {
     setPassword(e.target.value);
   };
 
-  const currentpasswordHandler = (e) => {
-    setCurrentPassword(e.target.value);
+  const confirmPasswordHandler = (e) => {
+    setConfirmPassword(e.target.value);
   };
 
   const SubmitSignInHandler = () => {
@@ -71,15 +71,51 @@ export default function MentorLogin() {
     };
     console.log(payload);
 
-    mentor_login(payload).then((result) => {
-      result = result.data;
-      console.log(result.mentor);
-      dispatch(mentorAuthActions.login({ mentor: result.result }));
-      navigate("/mentor/dashboard");
-    });
+    mentor_login(payload)
+      .then((result) => {
+        result = result.data;
+        console.log(result.mentor);
+        dispatch(mentorAuthActions.login({ mentor: result.result }));
+        navigate("/mentor/dashboard");
+      })
+      .catch(error => {
+        console.log(error);
+      })
   };
 
-  const SubmitSignUpHandler = () => {};
+  const SubmitSignUpHandler = (e) => {
+    e.preventDefault();
+    const payload = {
+      email,
+      gsuite_id: gsuite,
+      fname,
+      lname,
+      phone,
+      password
+    }
+    console.log(payload);
+    register_mentor(payload)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        
+        const login_payload = { email, password }
+        mentor_login(login_payload)
+          .then((response) => {
+            response = response.data;
+            console.log(response);
+            dispatch(mentorAuthActions.login({ mentor: response.result }));
+            navigate("/mentor/dashboard");
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
   return (
     <div>
       <Center className={classes.root}>
@@ -198,82 +234,91 @@ export default function MentorLogin() {
               <Heading className={classes.registerHeader}>
                 Mentor Registration Form
               </Heading>
-              <Box className={classes.inputContainer}>
-                <Flex gap={5}>
-                  <Input
-                    type="text"
-                    value={fname}
-                    placeholder="First Name"
-                    onChange={nameFHandler}
-                  />
-                  <Input
-                    type="text"
-                    value={lname}
-                    placeholder="Last Name"
-                    onChange={nameLHandler}
-                  />
-                </Flex>
+              <form onSubmit={SubmitSignUpHandler}>
+                <Box className={classes.inputContainer}>
+                  <Flex gap={5}>
+                    <Input
+                      required
+                      type="text"
+                      value={fname}
+                      placeholder="First Name"
+                      onChange={nameFHandler}
+                    />
+                    <Input
+                      required
+                      type="text"
+                      value={lname}
+                      placeholder="Last Name"
+                      onChange={nameLHandler}
+                    />
+                  </Flex>
 
-                <Input
-                  type="email"
-                  value={email}
-                  placeholder="Enter personal email"
-                  onChange={emailHandler}
-                />
-                <Input
-                  type="email"
-                  value={gsuite}
-                  placeholder="Enter your Gsuite Id"
-                  onChange={gsuiteHandler}
-                />
-                <Input
-                  type="text"
-                  value={phone}
-                  placeholder="Enter your phone number"
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-                <InputGroup>
                   <Input
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    placeholder="Password"
-                    onChange={passwordHandler}
+                    required
+                    type="email"
+                    value={email}
+                    placeholder="Enter personal email"
+                    onChange={emailHandler}
                   />
-                  <InputRightElement h={"full"}>
-                    <Center
-                      onClick={() =>
-                        setShowPassword((showPassword) => !showPassword)
-                      }
-                    >
-                      {showPassword ? <IoMdEye /> : <IoMdEyeOff />}
-                    </Center>
-                  </InputRightElement>
-                </InputGroup>
-                <InputGroup>
                   <Input
-                    name="password"
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={password}
-                    placeholder="Reenter Password"
-                    onChange={currentpasswordHandler}
+                    required
+                    type="email"
+                    value={gsuite}
+                    placeholder="Enter your Gsuite Id"
+                    onChange={gsuiteHandler}
                   />
-                  <InputRightElement h={"full"}>
-                    <Center
-                      onClick={() =>
-                        setShowConfirmPassword((showPassword) => !showPassword)
-                      }
-                    >
-                      {showConfirmPassword ? <IoMdEye /> : <IoMdEyeOff />}
-                    </Center>
-                  </InputRightElement>
-                </InputGroup>
-              </Box>
-              <Flex className={classes.signUpToggleContainer}>
-                <Button onClick={SubmitSignInHandler} variant="outline">
-                  Sign Up
-                </Button>
-              </Flex>
+                  <Input
+                    required
+                    type="number"
+                    value={phone}
+                    placeholder="Enter your phone number"
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                  <InputGroup>
+                    <Input
+                      required
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      placeholder="Password"
+                      onChange={passwordHandler}
+                    />
+                    <InputRightElement h={"full"}>
+                      <Center
+                        onClick={() =>
+                          setShowPassword((showPassword) => !showPassword)
+                        }
+                      >
+                        {showPassword ? <IoMdEye /> : <IoMdEyeOff />}
+                      </Center>
+                    </InputRightElement>
+                  </InputGroup>
+                  <InputGroup>
+                    <Input
+                      required
+                      name="password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      placeholder="Reenter Password"
+                      onChange={confirmPasswordHandler}
+                    />
+                    <InputRightElement h={"full"}>
+                      <Center
+                        onClick={() =>
+                          setShowConfirmPassword((showPassword) => !showPassword)
+                        }
+                      >
+                        {showConfirmPassword ? <IoMdEye /> : <IoMdEyeOff />}
+                      </Center>
+                    </InputRightElement>
+                  </InputGroup>
+                </Box>
+                <Flex className={classes.signUpToggleContainer}>
+                  <Button type="submit" variant="outline">
+                    Sign Up
+                  </Button>
+                </Flex>
+              </form>
             </Flex>
           </Flex>
         )}
