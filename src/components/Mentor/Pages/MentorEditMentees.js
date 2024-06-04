@@ -344,7 +344,7 @@ const Settings = () => {
                     <div className={styles.input1}>
                       <input
                         disabled={disabled}
-                        value={editedUserData.dob.split("T")[0] || ""}
+                        value={editedUserData.dob && editedUserData.dob.split("T")[0] || ""}
                         onChange={(e) =>
                           handleFieldChange("dob", e.target.value)
                         }

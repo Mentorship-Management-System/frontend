@@ -1,17 +1,17 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const initialAdminAuth = {
-    auth: JSON.parse(localStorage.getItem("mm_cse_admin")) || false,
+    auth: JSON.parse(localStorage.getItem("mm_cse_admin")) ? true : false,
     admin: JSON.parse(localStorage.getItem("mm_cse_admin")) || null
 }
 
 const initialMentorAuth = {
-    auth: JSON.parse(localStorage.getItem("mm_cse_mentor")) || false,
+    auth: JSON.parse(localStorage.getItem("mm_cse_mentor")) ? true : false,
     mentor: JSON.parse(localStorage.getItem("mm_cse_mentor")) || null
 }
 
 const initialStudentAuth = {
-    auth: JSON.parse(localStorage.getItem("mm_cse_student")) || false,
+    auth: JSON.parse(localStorage.getItem("mm_cse_student")) ? true : false,
     student: JSON.parse(localStorage.getItem("mm_cse_student")) || null
 }
 

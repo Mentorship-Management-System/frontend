@@ -9,12 +9,10 @@ import cartoon4 from "../../../media/research.png";
 import { Box, Center, Flex, HStack, Heading } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { get_count } from "../../../api/adminApi";
-import { all_count_by_year } from "../../../api/studentApi";
+import { all_count_by_year, year_gender_count } from "../../../api/studentApi";
+import { all_month_wise_meeting } from "../../../api/meetingApi";
 
-const data = [
-  { title: "Students", count: 580, icon: cartoon1 },
-  { title: "Teachers", count: "40+", icon: cartoon2 },
-];
+const months = ["Months", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 const YearWiseStudentCount = () => {
   const admin = useSelector(state => state.adminAuth.admin);
@@ -22,11 +20,18 @@ const YearWiseStudentCount = () => {
   const [stats, setStats] = useState([]);
 
   useEffect(() => {
-    all_count_by_year(admin.token)
+    all_month_wise_meeting(admin.token)
       .then(result => {
         result = result.data;
-        console.log(result);
-        setStats(result.count)
+        let formated = Array.from({ length: 12 }, (_, index) => {
+          const month = index + 1;
+          const monthData = (result.data).find(item => item.month === month);
+          return {
+            month,
+            meeting_count: monthData ? monthData.meeting_count : 0
+          };
+        })
+        setStats(formated)
       })
       .catch(error => {
         console.log(error);
@@ -44,7 +49,7 @@ const YearWiseStudentCount = () => {
         },
       },
       xaxis: {
-        categories: stats.map((obj) => obj.enrollment_year),
+        categories: stats.map((obj) => months[obj.month]),
       },
       colors: ["#26B7ED"],
       stroke: {
@@ -53,8 +58,8 @@ const YearWiseStudentCount = () => {
     },
     series: [
       {
-        name: "No of students",
-        data: stats.map((obj) => obj.student_count),
+        name: "Mentor Mentee Meetings",
+        data: stats.map((obj) => obj.meeting_count),
       },
     ],
   };
@@ -63,7 +68,7 @@ const YearWiseStudentCount = () => {
     <Box w="100%" h="100%">
       {" "}
       <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
-        Year wise students count
+        Mentor Mentee Meetings
       </Heading>
       <Chart
         options={yearWiseStudentData.options}
@@ -77,6 +82,22 @@ const YearWiseStudentCount = () => {
 };
 
 const BoysGirlsCountChart = () => {
+  const admin = useSelector(state => state.adminAuth.admin);
+
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    year_gender_count(admin.token)
+      .then(result => {
+        result = result.data;
+        console.log(result);
+        setStats(result.data)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }, [])
+
   const boysGirlsCountData = {
     options: {
       chart: {
@@ -97,7 +118,7 @@ const BoysGirlsCountChart = () => {
         },
       },
       xaxis: {
-        categories: ["2019", "2020", "2021", "2022", "2023", "2024"],
+        categories: stats.map((obj) => obj.enrollment_year),
       },
       dataLabels: {
         enabled: false,
@@ -107,11 +128,11 @@ const BoysGirlsCountChart = () => {
     series: [
       {
         name: "Boys",
-        data: [150, 200, 180, 220, 250, 200],
+        data: stats.map((obj) => obj.male_count),
       },
       {
         name: "Girls",
-        data: [120, 180, 150, 200, 230, 210],
+        data: stats.map((obj) => obj.female_count),
       },
     ],
   };

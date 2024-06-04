@@ -17,41 +17,39 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { get_count } from "../../../api/adminApi";
-import { get_meetings_by_student_id } from "../../../api/meetingApi";
+import { get_meetings_by_mentor_id, get_meetings_by_student_id, month_wise_meeting } from "../../../api/meetingApi";
 import { get_students_count_by_year } from "../../../api/studentApi";
 
-const meetings = [
-  {
-    id: 1,
-    title: "Weekly Team Meeting",
-    date: "2024-04-01",
-    time: "10:00 AM",
-    description: "Discuss project updates and plan for the week.",
-  },
-  {
-    id: 2,
-    title: "Client Presentation",
-    date: "2024-04-05",
-    time: "2:00 PM",
-    description: "Present new product features to the client.",
-  },
-  // Add more dummy meeting data as needed
-];
-const data = [
-  { title: "Mentees", count: 40, icon: cartoon1 },
-  { title: "Mentors", count: "40+", icon: cartoon2 },
-];
+const months = ["Months", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 const TeachersMeetingsChart = () => {
   const mentor = useSelector(state => state.mentorAuth.mentor);
   const [stats, setStats] = useState([]);
+  const [meetingCount, setMeetingCount] = useState([]);
 
   useEffect(() => {
-    get_students_count_by_year(mentor.token, mentor.user.mentor_id)
+    // get_students_count_by_year(mentor.token, mentor.user.mentor_id)
+    //   .then(result => {
+    //     result = result.data;
+    //     // console.log(result);
+    //     setStats(result.count);
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   })
+      month_wise_meeting(mentor.token, mentor.user.mentor_id)
       .then(result => {
         result = result.data;
-        console.log(result);
-        setStats(result.count);
+        // console.log(result);
+        let formated = Array.from({ length: 12 }, (_, index) => {
+          const month = index + 1;
+          const monthData = (result.data).find(item => item.month === month);
+          return {
+            month,
+            meeting_count: monthData ? monthData.meeting_count : 0
+          };
+        })
+        setMeetingCount(formated);
       })
       .catch(error => {
         console.log(error);
@@ -68,7 +66,7 @@ const TeachersMeetingsChart = () => {
         },
       },
       xaxis: {
-        categories: stats.map((obj) => obj.enrollment_year),
+        categories: meetingCount.map((obj) => months[obj.month]),
       },
       colors: ["#26B7ED"],
       stroke: {
@@ -77,8 +75,8 @@ const TeachersMeetingsChart = () => {
     },
     series: [
       {
-        name: "Year wise assigned mentees count ",
-        data: stats.map((obj) => obj.student_count),
+        name: "Mentor Mentee Meetings",
+        data: meetingCount.map((obj) => obj.meeting_count),
       },
     ],
   };
@@ -86,7 +84,7 @@ const TeachersMeetingsChart = () => {
   return (
     <Box w="100%" h="100%">
       <Heading fontSize={["1rem", "1.2rem", "1.2rem", "1.3rem"]}>
-        Year wise students count assigned
+        Mentor Mentee Meetings
       </Heading>
       <Chart
         options={teachersMeetingsData.options}
@@ -121,7 +119,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    get_meetings_by_student_id(mentor.token, mentor.user.mentor_id)
+    get_meetings_by_mentor_id(mentor.token, mentor.user.mentor_id)
       .then((result) => {
         result = result.data;
         console.log(result.meetings, "meeting data");

@@ -179,3 +179,19 @@ export const all_count_by_year = async (token) => {
         return error;
     }
 }
+
+export const year_gender_count = async (token) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/year/gender-count`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
