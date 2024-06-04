@@ -15,6 +15,14 @@
 }
 .buttons {
   justify-content: flex-end;
+  .subButton {
+    gap: 5px;
+    button {
+      margin: 0;
+      background-color: #03ac;
+      min-width: 8vw;
+    }
+  }
 }
 
 .meetingsContainer {

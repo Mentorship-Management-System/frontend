@@ -40,11 +40,6 @@ const StudentTable = ({ students }) => {
     branch: "",
     searchText: "",
   });
-  const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: currentYear - 2014 },
-    (_, index) => 2015 + index
-  );
   const [selectedNames, setSelectedNames] = useState([]);
   const [isSelectAll, setSelectAll] = useState(false);
 
@@ -200,14 +195,16 @@ const StudentTable = ({ students }) => {
       <Heading className={classes.heading}>Mentees</Heading>
       <div className={classes.searchContainer}>
         <Select
-          placeholder="Select Year"
+          placeholder="Enrollment Year"
+          value={filters.year}
           onChange={(value) => handleFilterChange("year", value)}
           className={classes.selectBar}
-          // h="6vh"
-          // w="30%"
-          w={["46%", "50%", "30%", "30%"]}
+          w={["60%", "70%", "30%", "30%"]}
         >
-          {years.map((year) => (
+          {Array.from(
+            { length: new Date().getFullYear() - 1999 },
+            (_, i) => 2000 + i
+          ).map((year) => (
             <option key={year} value={year}>
               {year}
             </option>
@@ -217,15 +214,18 @@ const StudentTable = ({ students }) => {
           placeholder="Select programme"
           onChange={(value) => handleFilterChange("branch", value)}
           className={classes.selectBar}
-          // h="6vh"
-          // w="30%"
-          w={["46%", "50%", "30%", "30%"]}
+          w={["60%", "70%", "30%", "30%"]}
         >
-          <option value="cse">B-Tech</option>
-          <option value="ece">M-Tech</option>
-          <option value="mech">MCA</option>
-          <option value="civil">BCA</option>
-          {/* Add more options for other branches */}
+          <option value="Bachelor of Technology">Bachelor of Technology</option>
+          <option value="Master of Technology(CSE)">
+            Master of Technology(CSE)
+          </option>
+          <option value="Master of Technology(IT)">
+            Master of Technology(IT)
+          </option>
+          <option value="Master of Computer Applications">
+            Master of Computer Applications
+          </option>
         </Select>
         <input
           type="text"

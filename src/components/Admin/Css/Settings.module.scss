@@ -75,6 +75,16 @@
             justify-content: flex-end;
           }
         }
+        .switch {
+          align-items: center;
+          margin-left: 2%;
+          margin-bottom: 2%;
+          p {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-right: 1%;
+          }
+        }
         .referral {
           display: flex;
           gap: 5;
@@ -91,6 +101,7 @@
               color: #0d30acd7;
               font-size: 1rem;
               font-weight: 600;
+              margin: 0;
               // word-wrap: break-word;
               &:hover {
                 cursor: pointer;
@@ -385,6 +396,7 @@
               justify-content: flex-end;
             }
           }
+
           .referral {
             justify-content: center;
             margin-top: 3%;

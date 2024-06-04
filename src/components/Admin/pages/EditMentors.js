@@ -272,13 +272,17 @@ const Settings = () => {
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Gender</div>
                   <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
+                    <select
                       value={editedUserData.gender || ""}
+                      disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("gender", e.target.value)
                       }
-                    />
+                    >
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </select>
                   </div>
                 </Flex>
               </div>

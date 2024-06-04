@@ -162,10 +162,6 @@ const Mentees = () => {
     fetchStudents();
   }, []);
 
-  const handleDownloadMeetings = () => {
-    console.log("Download meetings");
-  }
-
   return (
     <div className={styles.menteesContainer}>
       {/* Heading */}
@@ -189,12 +185,18 @@ const Mentees = () => {
           className={styles.selectBar}
           w={["60%", "70%", "30%", "30%"]}
         >
-          <option value="cse">B-Tech</option>
-          <option value="ece">M-Tech</option>
-          <option value="mech">MCA</option>
-          <option value="civil">BCA</option>
-          {/* Add more options for other branches */}
+          <option value="Bachelor of Technology">Bachelor of Technology</option>
+          <option value="Master of Technology(CSE)">
+            Master of Technology(CSE)
+          </option>
+          <option value="Master of Technology(IT)">
+            Master of Technology(IT)
+          </option>
+          <option value="Master of Computer Applications">
+            Master of Computer Applications
+          </option>
         </Select>
+
         <button className={styles.searchButton}>Search</button>
       </div>
 
