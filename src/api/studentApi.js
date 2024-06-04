@@ -130,3 +130,20 @@ export const delete_students = async (token, payload) => {
         return error;
     }
 }
+
+export const upload_students = async (token, payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/upload-students`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
