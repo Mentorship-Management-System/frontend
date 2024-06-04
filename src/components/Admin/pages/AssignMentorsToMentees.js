@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Select, Input, Button, Center, Heading } from "@chakra-ui/react";
+import { Select, Input, Button, Center, Heading, Spinner, useToast } from "@chakra-ui/react";
 import Table from "./Table";
 import classes from "../Css/AssignMentorToMentees.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { all_students } from "../../../api/studentApi";
-import { all_mentors } from "../../../api/mentorApi";
-import {
-  auto_assign_mentees,
-  manul_assign_mentees,
-} from "../../../api/adminApi";
+import { all_available_mentors, all_mentors } from "../../../api/mentorApi";
+import { auto_assign_mentees, manul_assign_mentees } from "../../../api/adminApi";
 const dummyData = [
   { name: "Dr. Bhogeswar Bora", menteesAllocated: 2 },
   { name: "Dr. Sanjib k. Deka", menteesAllocated: 3 },
@@ -32,6 +29,7 @@ const StudentTable = () => {
   //hooks
   const Navigate = useNavigate();
   const admin = useSelector((state) => state.adminAuth.admin);
+  const toast = useToast();
 
   //state variables
   const [tableData, setTableData] = useState([]);
@@ -51,6 +49,10 @@ const StudentTable = () => {
   const [selectedMentors, setSelectedMentors] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [mentorMentee, setMentorMentee] = useState([]);
+  
+  const [loading, setLoading] = useState(false);
+  const [manualLoading, setManualLoading] = useState(false);
+  const [autoLoading, setAutoLoading] = useState(false);
 
   const handleSelectAll = () => {
     if (!isSelectAll) {
@@ -77,6 +79,7 @@ const StudentTable = () => {
 
   useEffect(() => {
     const fetchData = () => {
+      setLoading(true);
       all_students(admin.token)
         .then((result) => {
           result = result.data;
@@ -113,14 +116,17 @@ const StudentTable = () => {
         })
         .catch((error) => {
           console.log(error);
-        });
+        })
+        .finally(() => {
+          setLoading(false);
+        })
     };
     fetchData();
   }, []);
 
   useEffect(() => {
     const fetchMentors = () => {
-      all_mentors(admin.token)
+      all_available_mentors(admin.token) //on available mentors
         .then((result) => {
           result = result.data;
           console.log(result);
@@ -167,18 +173,38 @@ const StudentTable = () => {
       mentors: selectedMentors,
     };
     console.log(payload);
+    setManualLoading(true);
     manul_assign_mentees(admin.token, payload)
-      .then((result) => {
-        result = result.data;
-        console.log(result);
+      .then(result => {
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          toast({
+            title: 'Success',
+            description: result.message,
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: result.response.data.error,
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => {
         setShowMentors(!showMentors);
-      });
-  };
+        setManualLoading(false);
+      })
+  }
 
   const handleCancelAssign = () => {
     setShowMentors(!showMentors);
@@ -189,18 +215,38 @@ const StudentTable = () => {
   };
 
   const handleAutoAssignMentors = () => {
+    setAutoLoading(true);
     auto_assign_mentees(admin.token)
-      .then((result) => {
-        result = result.data;
-        console.log(result);
+      .then(result => {
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          toast({
+            title: 'Success',
+            description: result.message,
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: result.response.data.error,
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => {
+        setAutoLoading(false);
         Navigate(0);
-      });
-  };
+      })
+  }
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -366,17 +412,11 @@ const StudentTable = () => {
               disabled={selectedRowKeys.length === 0}
               onClick={handleAutoAssignMentors}
             >
-              Assign Mentors
+              {autoLoading ? <Spinner /> : "Auto assign Mentors"}
             </Button>
           </div>
         </div>
-        <Table
-          columns={columns}
-          data={tableData}
-          isAssignMentors={true}
-          handleClickStudents={handleClickStudents}
-          mentorMentee={mentorMentee}
-        />
+        {loading ? <Spinner /> : <Table columns={columns} data={tableData} isAssignMentors={true} handleClickStudents={handleClickStudents} mentorMentee={mentorMentee} />}
       </div>
       {showMentors && (
         <div className={classes.popupContainer}>
@@ -417,7 +457,7 @@ const StudentTable = () => {
                     {mentor.honorifics} {mentor.fname} {mentor.lname}
                   </span>
                   <span className={classes.menteesAllocated}>
-                    Mentees allocated: {mentor.assigned_mentees.length}
+                    Mentees allocated: {mentor.assigned_mentees[0] && mentor.assigned_mentees[0].length || "0"}
                   </span>
                 </div>
               ))}
@@ -426,7 +466,9 @@ const StudentTable = () => {
               <Button variant="outline" onClick={handleCancelAssign}>
                 Cancel
               </Button>
-              <Button onClick={handleManualAssignMentees}>Confirm</Button>
+              <Button onClick={handleManualAssignMentees}>
+                {manualLoading ? <Spinner /> : "Confirm"}
+              </Button>
             </div>
           </div>
         </div>

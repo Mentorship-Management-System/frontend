@@ -131,3 +131,17 @@ export const auto_assign_mentees = async (token) => {
         return error;
     }
 }
+
+export const forgot_pass = async (payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/forgot-password`,
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

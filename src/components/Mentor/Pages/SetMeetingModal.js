@@ -10,6 +10,7 @@ import {
   Stack,
   Flex,
   Center,
+  Spinner,
 } from "@chakra-ui/react";
 import styles from "../Css/Meetings.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +43,7 @@ export default function SetMeetingModal({
   isEditMeeting,
   setShowModal,
   setMeetings,
+  replyMeetLoading
 }) {
   //hooks
   const Navigate = useNavigate();
@@ -242,7 +244,7 @@ export default function SetMeetingModal({
               </Button>
             )}
             <Button colorScheme="blue" onClick={setMeeting}>
-              {centerModal ? "Set" : "Confirm"}
+              {centerModal ? "Set" : "Confirm"} {replyMeetLoading && <Spinner />}
             </Button>
           </Flex>
         </div>

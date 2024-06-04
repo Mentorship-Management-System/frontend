@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "../Css/StudentMessage.module.scss";
 
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Spinner, Text, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -14,12 +14,14 @@ const StudentMessage = () => {
   //hooks
   const student = useSelector((state) => state.studentAuth.student);
   const Navigate = useNavigate();
+  const toast = useToast();
 
   //state variables
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   //useEffect functions
   useEffect(() => {
@@ -50,15 +52,36 @@ const StudentMessage = () => {
       date: new Date().toISOString(),
       time: new Date().toISOString(),
     };
+    setLoading(true);
     send_chat_by_student(student.token, payload)
       .then((result) => {
-        result = result.data;
-        setChats(result.chats);
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          toast({
+            title: 'Success',
+            description: result.message || "Message sent successfully.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+          setChats(result.chats);
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: result.response.data.error || "Error sending message.",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => {
+        setLoading(false);
         setShowModal(false);
         setMessage("");
       });
@@ -146,7 +169,7 @@ const StudentMessage = () => {
                 color="white"
                 onClick={handleSend}
               >
-                Send
+                {loading ? <Spinner /> : "Send"}
               </Button>
               <Button
                 variant="outline"

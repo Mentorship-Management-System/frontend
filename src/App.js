@@ -43,10 +43,7 @@ function App() {
           <Route path="Mentees/:id" element={<EditMentees />} />
           <Route path="Mentors" element={<Mentors />} />
           <Route path="Mentors/:id" element={<EditMentors />} />
-          <Route
-            path="Mentor-mentee list"
-            element={<AssignMentorsToMentees />}
-          />
+          <Route path="Mentor-mentee list" element={<AssignMentorsToMentees />} />
           <Route path="Profile" element={<Settings />} />
           <Route path="Admins" element={<Admin />} />
           <Route path="" element={<Navigate to="Dashboard" />} />

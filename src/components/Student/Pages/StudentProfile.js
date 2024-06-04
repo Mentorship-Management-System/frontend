@@ -1,6 +1,6 @@
 import styles from "../../Admin/Css/Settings.module.scss";
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, Spinner, useToast } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +18,7 @@ const StudentProfile = () => {
   const student = useSelector((state) => state.studentAuth.student);
   const Navigate = useNavigate();
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [editedUserData, setEditedUserData] = useState({});
@@ -28,6 +29,7 @@ const StudentProfile = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedSemester, setSelectedSemester] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   setEditedUserData(student.user);
@@ -75,12 +77,15 @@ const StudentProfile = () => {
     // hooks
     const student = useSelector((state) => state.studentAuth.student);
     const formRef = useRef(null);
+    const toast = useToast();
+    
 
     // state variables
     const [sgpas, setSgpas] = useState([]);
     const [sgpaData, setSgpaData] = useState({});
     const [isFormChanged, setIsFormChanged] = useState(false);
     const [initialSgpaData, setInitialSgpaData] = useState({});
+    const [saveLoading, setSaveLoading] = useState(false);
 
     // useEffect to fetch SGPA data
     useEffect(() => {
@@ -127,6 +132,7 @@ const StudentProfile = () => {
     // Form submission handler
     const semesterSumbitHandler = (e) => {
       e.preventDefault();
+      setSaveLoading(true);
       console.log("form handler");
       const formData = new FormData(formRef.current);
       const data = {};
@@ -146,14 +152,35 @@ const StudentProfile = () => {
       console.log(payload);
       save_sgpa(student.token, payload)
         .then((result) => {
-          result = result.data;
-          console.log(result);
-          togglePopup();
-          setSgpas(payload);
+          if(result.data){
+            result = result.data;
+            console.log(result);
+            toast({
+              title: 'Success',
+              description: result.message || "SGPAs updated successfully.",
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            })
+            togglePopup();
+            setSgpas(payload);
+          } else {
+            console.log(result.response);
+            toast({
+              title: result.response.statusText,
+              description: result.response.data.error || "Error updating SGPAs.",
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            })
+          }
         })
         .catch((error) => {
           console.log(error);
-        });
+        })
+        .finally(() => {
+          setSaveLoading(false);
+        })
     };
 
     // Generate form elements
@@ -189,7 +216,7 @@ const StudentProfile = () => {
             Close
           </button>
           <button type="submit" disabled={!isFormChanged}>
-            Set
+            {saveLoading ? <Spinner /> : "Set"}
           </button>
         </div>
       </form>
@@ -211,6 +238,7 @@ const StudentProfile = () => {
   }, []);
 
   const handleSaveProfile = () => {
+    setLoading(true);
     let updated_fields = editedUserData;
     if (
       updated_fields.dob !== null &&
@@ -228,14 +256,33 @@ const StudentProfile = () => {
 
     updated_student(student.token, student.user.enrollment_no, updated_fields)
       .then((result) => {
-        result = result.data;
-        console.log(result);
-        setEditedUserData(result.student);
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          toast({
+            title: 'Success',
+            description: result.message || "Profile updated successfully.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+          setEditedUserData(result.student);
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: result.response.data.error || "Error updating profile.",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => {
+        setLoading(false);
         handleEdit();
       });
   };
@@ -507,7 +554,7 @@ const StudentProfile = () => {
                 </div>
                 <div className={styles.sbmtbtn}>
                   <button disabled={disabled} onClick={handleSaveProfile}>
-                    Save
+                    {loading ? <Spinner /> : "Save"}
                   </button>
                 </div>
               </div>

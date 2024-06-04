@@ -32,6 +32,22 @@ export const all_mentors = async (token) => {
     }
 }
 
+export const all_available_mentors = async (token) => {
+    try {
+        let options = {
+            method: "GET",
+            url: `${url}/all-available`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
 export const get_mentor = async (token, mentor_id) => {
     try {
         let options = {

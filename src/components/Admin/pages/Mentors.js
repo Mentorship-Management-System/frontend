@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../Css/Mentees.module.scss"; // Import SCSS module for styling
-import { Button, Center, Flex, Heading, Select } from "@chakra-ui/react";
+import { Button, Center, Flex, Heading, Select, Spinner } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
@@ -93,6 +93,7 @@ const Mentors = () => {
   //state variables
   const [mentors, setMentors] = useState([]);
   const [filteredMentors, setFilteredMentors] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [tableData, setTableData] = useState([]);
   const [filters, setFilters] = useState({
@@ -104,6 +105,7 @@ const Mentors = () => {
   //useEffect functions
   useEffect(() => {
     const fetchMentors = () => {
+      setLoading(true);
       all_mentors(admin.token)
         .then((result) => {
           result = result.data;
@@ -123,7 +125,10 @@ const Mentors = () => {
         })
         .catch((error) => {
           console.log(error);
-        });
+        })
+        .finally(() => {
+          setLoading(false);
+        })
     };
     fetchMentors();
   }, []);
@@ -229,12 +234,12 @@ const Mentors = () => {
       </div>
 
       <div className={styles.table}>
-        <TableList
+        {loading ? <Spinner /> : <TableList
           columns={columns}
           data={tableData}
           mentors={filteredMentors}
           admin={admin}
-        />
+        />}
       </div>
     </div>
   );

@@ -1,13 +1,16 @@
 import React, { memo, useState } from "react";
 import styles from "../../Mentor/Css/Meetings.module.scss";
 
-import { Button, Box, Text, Stack, Flex, Center } from "@chakra-ui/react";
+import { Button, Box, Text, Stack, Flex, Center, Spinner, useToast } from "@chakra-ui/react";
 import { IoMdClose } from "react-icons/io";
 import { update_feedback } from "../../../api/meetingApi";
 
 const Model = ({ isOpenModal, toggleOpenModal, meeting, setOpenModal, openmodal, student, meetings, setMeetings }) => {
+  const toast = useToast();
+
   //state variables
   const [feedback, setFeedback] = useState("");
+  const [feedLoading, setFeedLoading] = useState(false);
 
   const submitHandler = () => {
     // toggleOpenModal();
@@ -20,17 +23,36 @@ const Model = ({ isOpenModal, toggleOpenModal, meeting, setOpenModal, openmodal,
     const index = temp_meetings.findIndex(obj => obj.meeting_id === new_meeting.meeting_id);
     if (index !== -1) temp_meetings[index] = new_meeting;
 
+    setFeedLoading(true);
     update_feedback(student.token, meeting.meeting_id, payload)
       .then(result => {
-        result = result.data;
-        console.log(result);
-        setMeetings(temp_meetings)
+        if(result.data){
+          result = result.data;
+          console.log(result);
+          setMeetings(temp_meetings)
+          toast({
+            title: 'Success',
+            description: result.message,
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        } else {
+          toast({
+            title: result.response.statusText,
+            description: result.response.data.error,
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch(error => {
         console.log(error);
       })
       .finally(() => {
         setOpenModal(meeting.meeting_id === openmodal ? null : meeting.meeting_id);
+        setFeedLoading(false);
       })
   };
   return (
@@ -76,7 +98,7 @@ const Model = ({ isOpenModal, toggleOpenModal, meeting, setOpenModal, openmodal,
             </div>
             {(meeting.feedback === null || meeting.feedback === "" || meeting.feedback === undefined) && <Flex justify="flex-end" gap="10px" mt="3%">
               <Button colorScheme="blue" onClick={submitHandler}>
-                Submit Feedback
+                {feedLoading ? <Spinner /> : "Submit Feedback"}
               </Button>
             </Flex>}
           </div>

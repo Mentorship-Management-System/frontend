@@ -19,6 +19,7 @@ import {
   Input,
   useDisclosure,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { MdOutlineFileDownload, MdOutlineFileUpload } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -152,6 +153,7 @@ function Table({
 }) {
   const Navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast();
   const [selectCount, setSelectCount] = useState(0);
   const segments = location.pathname.split("/");
   const initiallySelectedRows = React.useMemo(() => new Set(), []);
@@ -194,9 +196,27 @@ function Table({
 
         upload_students(admin.token, transformedData)
           .then(result => {
-            result = result.data;
-            console.log(result);
-            alert(result.message);
+            if(result.data){
+              result = result.data;
+              console.log(result);
+              toast({
+                title: 'Success',
+                description: result.message || "Students details uploaded successfully.",
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+            } else {
+              console.log(result.response);
+              toast({
+                title: result.response.statusText,
+                description: result.response.data.error || "Error uploading students details.",
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+              })
+            }
+            // alert(result.message);
             download_student_credentials(transformedData);
           })
           .catch(error => {
@@ -246,7 +266,7 @@ function Table({
     setSelectCount(selectedFlatRows.length);
   }, [selectedFlatRows]);
 
-  const handleDownloadMentees = () => {
+  const handleDownload = () => {
     if (students) {
       console.log("Download students");
 
@@ -314,6 +334,13 @@ function Table({
       // Clean up and remove the temporary link element
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      toast({
+        title: 'Success',
+        description: "Students details downloaded successfully.",
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
     } else if (mentors) {
       console.log("Download mentors");
 
@@ -384,6 +411,13 @@ function Table({
       // Clean up and remove the temporary link element
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      toast({
+        title: 'Success',
+        description: "Mentors details downloaded successfully.",
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
     } else if (admins) {
     }
   };
@@ -397,9 +431,27 @@ function Table({
         const payload = { studentIds: profiles };
         delete_students(admin.token, payload)
           .then((result) => {
-            result = result.data;
-            console.log(result);
-            Navigate(0);
+            if(result.data){
+              result = result.data;
+              console.log(result);
+              toast({
+                title: 'Success',
+                description: result.message,
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+              Navigate(0);
+            } else {
+              console.log(result.response);
+              toast({
+                title: result.response.statusText,
+                description: result.response.data.error,
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+              })
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -409,9 +461,27 @@ function Table({
         const payload = { mentorIds: profiles };
         delete_mentors(admin.token, payload)
           .then((result) => {
-            result = result.data;
-            console.log(result);
-            Navigate(0);
+            if(result.data){
+              result = result.data;
+              console.log(result);
+              toast({
+                title: 'Success',
+                description: result.message,
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+              Navigate(0);
+            } else {
+              console.log(result.response);
+              toast({
+                title: result.response.statusText,
+                description: result.response.data.error,
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+              })
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -421,9 +491,27 @@ function Table({
         const payload = { adminIds: profiles };
         delete_admins(admin.token, payload)
           .then((result) => {
-            result = result.data;
-            console.log(result);
-            Navigate(0);
+            if(result.data){
+              result = result.data;
+              console.log(result);
+              toast({
+                title: 'Success',
+                description: result.message,
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+              Navigate(0);
+            } else {
+              console.log(result.response);
+              toast({
+                title: result.response.statusText,
+                description: result.response.data.error,
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+              })
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -461,7 +549,7 @@ function Table({
               <Center cursor="pointer" className={styles.tooltip}>
                 <MdOutlineFileDownload
                   size={25}
-                  onClick={handleDownloadMentees}
+                  onClick={handleDownload}
                 />
                 <span className={styles.tooltiptext}>Download</span>
               </Center>

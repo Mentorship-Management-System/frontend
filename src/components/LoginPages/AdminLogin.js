@@ -7,6 +7,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -27,6 +28,7 @@ export default function AdminLogin() {
 
   const [showForgot, setShowForgot] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   //hooks
   const dispatch = useDispatch();
@@ -45,7 +47,8 @@ export default function AdminLogin() {
       email: email,
       password: password,
     };
-    console.log(payload);
+    // console.log(payload);
+    setLoading(true);
     admin_login(payload)
       .then((result) => {
         result = result.data;
@@ -55,7 +58,10 @@ export default function AdminLogin() {
       })
       .catch((error) => {
         console.log(error);
-      });
+      })
+      .finally(() => {
+        setLoading(false);
+      })
   };
 
   return (
@@ -95,7 +101,7 @@ export default function AdminLogin() {
               </Box>
               <Flex className={classes.buttonContainer}>
                 <Button onClick={SubmitSignInHandler} variant="outline">
-                  Sign In
+                  {loading ? <Spinner /> : "Sign In"}
                 </Button>
                 <Text
                   style={{

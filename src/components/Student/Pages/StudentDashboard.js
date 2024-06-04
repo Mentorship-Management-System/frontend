@@ -188,7 +188,6 @@ const Dashboard = () => {
                     <p className={styles.meetingDescription}>
                       {meeting.description}
                     </p>
-                    {/* Add more meeting details as needed */}
                   </Box>
                 ))
               )}
