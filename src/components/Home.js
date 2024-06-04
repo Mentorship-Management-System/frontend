@@ -7,6 +7,7 @@ import {
   Heading,
   Image,
   Text,
+  VStack,
 } from "@chakra-ui/react";
 import img from "../media/img1-removebg-preview.png";
 import { NavLink } from "react-router-dom";
@@ -23,11 +24,9 @@ export default function Home() {
         w="100vw"
       >
         <Box className="HeaderBox">
-          <Box>
-            <Heading className="Title" mt="20%" fontSize="5rem" w="38vw">
-              MENTORSHIP MANAGEMENT SYSTEM
-            </Heading>
-            <Flex justify="space-between" mt="5%">
+          <VStack className="HeaderInBox">
+            <Heading className="Title">MENTORSHIP MANAGEMENT SYSTEM</Heading>
+            <Flex mt="5%">
               <Center>
                 <NavLink to="/student-login">
                   <button className="homeButton">Student login</button>
@@ -44,8 +43,8 @@ export default function Home() {
                 </NavLink>
               </Center>
             </Flex>
-          </Box>
-          <Image w="35vw" src={img} />
+          </VStack>
+          <Image className="homeImage" src={img} />
         </Box>
       </Box>
     </div>

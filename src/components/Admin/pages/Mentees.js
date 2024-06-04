@@ -244,7 +244,8 @@ const Mentees = () => {
             handleFilterChange("programme", value.target.value)
           }
           className={styles.selectBar}
-          w={["60%", "70%", "30%", "30%"]}
+          w={["40%", "40%", "30%", "30%"]}
+          flexGrow="1"
         >
           <option value="Bachelor of Technology">Bachelor of Technology</option>
           <option value="Master of Technology (CSE)">
@@ -262,7 +263,8 @@ const Mentees = () => {
           value={filters.year}
           onChange={(value) => handleFilterChange("year", value.target.value)}
           className={styles.selectBar}
-          w={["60%", "70%", "30%", "30%"]}
+          w={["40%", "40%", "30%", "30%"]}
+          flexGrow="1"
         >
           {Array.from(
             { length: new Date().getFullYear() - 1999 },

@@ -6,7 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { all_students } from "../../../api/studentApi";
 import { all_mentors } from "../../../api/mentorApi";
-import { auto_assign_mentees, manul_assign_mentees } from "../../../api/adminApi";
+import {
+  auto_assign_mentees,
+  manul_assign_mentees,
+} from "../../../api/adminApi";
 const dummyData = [
   { name: "Dr. Bhogeswar Bora", menteesAllocated: 2 },
   { name: "Dr. Sanjib k. Deka", menteesAllocated: 3 },
@@ -91,17 +94,20 @@ const StudentTable = () => {
               email: student.email,
               enrollment_year: student.enrollment_year,
             });
-            setMentorMentee(prev => [{
-              enrollment_no: student.enrollment_no,
-              name: student.fname + " " + student.lname,
-              programme: student.programme,
-              gsuite_id: student.gsuite_id,
-              phone: student.phone,
-              enrollment_year: student.enrollment_year,
-              mentor: student.mentor ? student.mentor.mentor_name : "",
-              mentor_phone: student.mentor ? student.mentor.phone : "",
-              mentor_email: student.mentor ? student.mentor.email : ""
-            }, ...prev])
+            setMentorMentee((prev) => [
+              {
+                enrollment_no: student.enrollment_no,
+                name: student.fname + " " + student.lname,
+                programme: student.programme,
+                gsuite_id: student.gsuite_id,
+                phone: student.phone,
+                enrollment_year: student.enrollment_year,
+                mentor: student.mentor ? student.mentor.mentor_name : "",
+                mentor_phone: student.mentor ? student.mentor.phone : "",
+                mentor_email: student.mentor ? student.mentor.email : "",
+              },
+              ...prev,
+            ]);
           });
           setTableData(temp_data);
         })
@@ -137,7 +143,9 @@ const StudentTable = () => {
 
   const handleClickMentors = (mentor_id) => {
     if (selectedMentors.includes(mentor_id)) {
-      setSelectedMentors(selectedMentors.filter((selected) => selected !== mentor_id));
+      setSelectedMentors(
+        selectedMentors.filter((selected) => selected !== mentor_id)
+      );
     } else {
       setSelectedMentors([...selectedMentors, mentor_id]);
     }
@@ -156,43 +164,43 @@ const StudentTable = () => {
   const handleManualAssignMentees = () => {
     const payload = {
       students: selectedStudents,
-      mentors: selectedMentors
-    }
+      mentors: selectedMentors,
+    };
     console.log(payload);
     manul_assign_mentees(admin.token, payload)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
         setShowMentors(!showMentors);
-      })
-  }
+      });
+  };
 
   const handleCancelAssign = () => {
     setShowMentors(!showMentors);
     setSelectedNames([]);
-    setSelectedMentors([])
-    setSelectedStudents([])
+    setSelectedMentors([]);
+    setSelectedStudents([]);
     setSelectAll(false);
-  }
+  };
 
   const handleAutoAssignMentors = () => {
     auto_assign_mentees(admin.token)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
-        Navigate(0)
-      })
-  }
+        Navigate(0);
+      });
+  };
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -309,7 +317,8 @@ const StudentTable = () => {
           value={filters.year}
           onChange={(value) => handleFilterChange("year", value.target.value)}
           className={classes.selectBar}
-          w={["60%", "70%", "30%", "30%"]}
+          w={["40%", "40%", "30%", "30%"]}
+          flexGrow="1"
         >
           {Array.from(
             { length: new Date().getFullYear() - 1999 },
@@ -326,7 +335,8 @@ const StudentTable = () => {
             handleFilterChange("programme", value.target.value)
           }
           className={classes.selectBar}
-          w={["60%", "70%", "30%", "30%"]}
+          w={["40%", "40%", "30%", "30%"]}
+          flexGrow="1"
         >
           <option value="Bachelor of Technology">Bachelor of Technology</option>
           <option value="Master of Technology (CSE)">
@@ -360,7 +370,13 @@ const StudentTable = () => {
             </Button>
           </div>
         </div>
-        <Table columns={columns} data={tableData} isAssignMentors={true} handleClickStudents={handleClickStudents} mentorMentee={mentorMentee} />
+        <Table
+          columns={columns}
+          data={tableData}
+          isAssignMentors={true}
+          handleClickStudents={handleClickStudents}
+          mentorMentee={mentorMentee}
+        />
       </div>
       {showMentors && (
         <div className={classes.popupContainer}>
@@ -383,7 +399,7 @@ const StudentTable = () => {
                         mentor.fname +
                         " " +
                         mentor.lname
-                    )
+                    );
                   }}
                 >
                   <input
@@ -407,15 +423,10 @@ const StudentTable = () => {
               ))}
             </div>
             <div className={classes.footer}>
-              <Button
-                variant="outline"
-                onClick={handleCancelAssign}
-              >
+              <Button variant="outline" onClick={handleCancelAssign}>
                 Cancel
               </Button>
-              <Button onClick={handleManualAssignMentees}>
-                Confirm
-              </Button>
+              <Button onClick={handleManualAssignMentees}>Confirm</Button>
             </div>
           </div>
         </div>
