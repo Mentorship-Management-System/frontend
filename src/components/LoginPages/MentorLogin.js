@@ -145,7 +145,7 @@ export default function MentorLogin() {
           <Flex className={classes.container}>
             {!showForgot ? (
               <Flex className={classes.insideContainer}>
-                <Heading>Mentor Login</Heading>
+                <Heading className={classes.heading}>Mentor Login</Heading>
                 <Box className={classes.inputContainer}>
                   <Input
                     type="email"
@@ -210,7 +210,7 @@ export default function MentorLogin() {
                 >
                   <RxCross2 />
                 </Center>
-                <Heading>Forgot Password</Heading>
+                <Heading className={classes.heading}>Forgot Password</Heading>
                 <Box className={classes.inputContainer}>
                   <Input
                     type="email"
@@ -233,7 +233,9 @@ export default function MentorLogin() {
                 bgGradient="linear(to-br, #003285, #153F78)"
               >
                 <Box className={classes.inputContainer}>
-                  <Heading>Haven't Registered Yet?</Heading>
+                  <Heading className={classes.heading}>
+                    Haven't Registered Yet?
+                  </Heading>
                   <Flex className={classes.signUpToggleContainer}>
                     <Button
                       onClick={toggleHandler}
@@ -256,7 +258,9 @@ export default function MentorLogin() {
                 bgGradient="linear(to-br, #003285, #153F78)"
               >
                 <Box className={classes.inputContainer}>
-                  <Heading>Already have an accoount?</Heading>
+                  <Heading className={classes.heading}>
+                    Already have an accoount?
+                  </Heading>
                   <Flex className={classes.signUpToggleContainer}>
                     <Button
                       onClick={toggleHandler}
