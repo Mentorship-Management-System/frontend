@@ -226,101 +226,107 @@ const Meetings = () => {
       </Flex>
       {/* Display meetings */}
       <Box className={styles.meetingsContainer}>
-        {filteredMeetings.map((meeting) => (
-          <Box
-            key={meeting.meeting_id}
-            className={`${styles.meetingItem} ${
-              meeting.approve ? styles.completed : styles.pending
-            }`}
-          >
-            <Box className={styles.details}>
-              <Heading className={styles.meetingName}>{meeting.title}</Heading>
-              <Text className={styles.meetingTime}>
-                {meeting.date.split("T")[0]} |{" "}
-                {meeting && meeting.time && meeting.time.substring(0, 5)}
-              </Text>
-              <Text className={styles.meetingDescription}>
-                {meeting.description}
-              </Text>
-            </Box>
-            <Flex className={styles.modalContainer}>
-              <Heading color={meeting.approve ? "green" : "#ffc107"}>
-                {meeting.approve ? "Completed" : "Pending"}
-              </Heading>
-              <Flex justify="flex-end" align="center">
-                <Model
-                  isOpenModal={meeting.meeting_id === openmodal}
-                  toggleOpenModal={(e) =>
-                    toggleOpenModal(e, meeting.meeting_id)
-                  }
-                  meeting={meeting}
-                  meetings={meetings}
-                  // setFilter={setFilter}
-                  setMeetings={setMeetings}
-                  mentor={mentor}
-                  setOpenModal={setOpenModal}
-                  openmodal={openmodal}
-                />
-                {!meeting.approve && (
-                  <>
-                    <Center
-                      className={styles.editButton}
-                      onClick={() => {
-                        setShowEditPopup((prev) => !prev);
-                        setPopupId(meeting.meeting_id);
-                        setToEditMeeting(meeting);
-                      }}
-                    >
-                      <MdEdit size={22} />
-                    </Center>
-                    <Center
-                      className={styles.editButton}
-                      onClick={() => {
-                        setShowDeletePopup((prev) => !prev);
-                        setPopupId(meeting.meeting_id);
-                      }}
-                    >
-                      <MdDelete size={22} />
-                    </Center>
-                  </>
+        {filteredMeetings.length !== 0 ? (
+          filteredMeetings.map((meeting) => (
+            <Box
+              key={meeting.meeting_id}
+              className={`${styles.meetingItem} ${
+                meeting.approve ? styles.completed : styles.pending
+              }`}
+            >
+              <Box className={styles.details}>
+                <Heading className={styles.meetingName}>
+                  {meeting.title}
+                </Heading>
+                <Text className={styles.meetingTime}>
+                  {meeting.date.split("T")[0]} |{" "}
+                  {meeting && meeting.time && meeting.time.substring(0, 5)}
+                </Text>
+                <Text className={styles.meetingDescription}>
+                  {meeting.description}
+                </Text>
+              </Box>
+              <Flex className={styles.modalContainer}>
+                <Heading color={meeting.approve ? "green" : "#ffc107"}>
+                  {meeting.approve ? "Completed" : "Pending"}
+                </Heading>
+                <Flex justify="flex-end" align="center">
+                  <Model
+                    isOpenModal={meeting.meeting_id === openmodal}
+                    toggleOpenModal={(e) =>
+                      toggleOpenModal(e, meeting.meeting_id)
+                    }
+                    meeting={meeting}
+                    meetings={meetings}
+                    // setFilter={setFilter}
+                    setMeetings={setMeetings}
+                    mentor={mentor}
+                    setOpenModal={setOpenModal}
+                    openmodal={openmodal}
+                  />
+                  {!meeting.approve && (
+                    <>
+                      <Center
+                        className={styles.editButton}
+                        onClick={() => {
+                          setShowEditPopup((prev) => !prev);
+                          setPopupId(meeting.meeting_id);
+                          setToEditMeeting(meeting);
+                        }}
+                      >
+                        <MdEdit size={22} />
+                      </Center>
+                      <Center
+                        className={styles.editButton}
+                        onClick={() => {
+                          setShowDeletePopup((prev) => !prev);
+                          setPopupId(meeting.meeting_id);
+                        }}
+                      >
+                        <MdDelete size={22} />
+                      </Center>
+                    </>
+                  )}
+                </Flex>
+                {showDeletePopup && popupId === meeting.meeting_id && (
+                  <Box className={styles.editPopup}>
+                    <Text>Are you sure?</Text>
+                    <Text>You can't undo this afterwards</Text>
+                    <Flex justify="flex-end" align="center">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowDeletePopup(false)}
+                      >
+                        No
+                      </Button>
+                      <Button
+                        colorScheme="facebook"
+                        onClick={handleDeleteMeeting}
+                      >
+                        Yes
+                      </Button>
+                    </Flex>
+                  </Box>
                 )}
               </Flex>
-              {showDeletePopup && popupId === meeting.meeting_id && (
-                <Box className={styles.editPopup}>
-                  <Text>Are you sure?</Text>
-                  <Text>You can't undo this afterwards</Text>
-                  <Flex justify="flex-end" align="center">
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowDeletePopup(false)}
-                    >
-                      No
-                    </Button>
-                    <Button
-                      colorScheme="facebook"
-                      onClick={handleDeleteMeeting}
-                    >
-                      Yes
-                    </Button>
-                  </Flex>
-                </Box>
+              {showEditPopup && popupId === meeting.meeting_id && (
+                <SetMeetingModal
+                  handelShowModal={handelShowEditModal}
+                  handleSetMeeting={handleSetMeeting}
+                  meetingDetails={meeting}
+                  isChatMeeting={false}
+                  centerModal={false}
+                  meeting_id={popupId}
+                  isEditMeeting={true}
+                  setShowModal={setShowModal}
+                  setMeetings={setMeetings}
+                />
               )}
-            </Flex>
-            {showEditPopup && popupId === meeting.meeting_id && (
-              <SetMeetingModal
-                handelShowModal={handelShowEditModal}
-                handleSetMeeting={handleSetMeeting}
-                meetingDetails={meeting}
-                isChatMeeting={false}
-                centerModal={false}
-                meeting_id={popupId}
-                isEditMeeting={true}
-                setShowModal={setShowModal}
-                setMeetings={setMeetings}
-              />
-            )}
-          </Box>
-        ))}
+            </Box>
+          ))
+        ) : (
+          <Text>No meeting available</Text>
+        )}
       </Box>
       {/* Modal for setting new meeting */}
       {showModal && (
