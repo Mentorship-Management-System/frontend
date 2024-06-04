@@ -94,17 +94,19 @@ const Meetings = () => {
   const handleDeleteMeeting = () => {
     console.log(popupId);
     delete_meeting(mentor.token, popupId)
-      .then(result => {
+      .then((result) => {
         result = result.data;
         console.log(result);
-        setMeetings(prev => prev.filter(meeting => meeting.meeting_id !== popupId))
+        setMeetings((prev) =>
+          prev.filter((meeting) => meeting.meeting_id !== popupId)
+        );
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       })
       .finally(() => {
         setShowDeletePopup(!showDeletePopup);
-      })
+      });
   };
   const handleDownloadMeetings = () => {
     console.log("Download meetings");
@@ -120,7 +122,7 @@ const Meetings = () => {
         <Center cursor="pointer" m="auto 2%">
           <MdOutlineFileDownload size={25} onClick={handleDownloadMeetings} />
         </Center>
-        <Flex>
+        <Flex className={styles.subButton}>
           <Select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="all">All Meetings</option>
             <option value="pending">Pending Meetings</option>
@@ -142,7 +144,10 @@ const Meetings = () => {
           >
             <Box className={styles.details}>
               <Heading className={styles.meetingName}>{meeting.title}</Heading>
-              <Text className={styles.meetingTime}>{(meeting.date).split("T")[0]} | {meeting && meeting.time && (meeting.time).substring(0, 5)}</Text>
+              <Text className={styles.meetingTime}>
+                {meeting.date.split("T")[0]} |{" "}
+                {meeting && meeting.time && meeting.time.substring(0, 5)}
+              </Text>
               <Text className={styles.meetingDescription}>
                 {meeting.description}
               </Text>

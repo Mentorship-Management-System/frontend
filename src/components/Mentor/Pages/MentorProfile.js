@@ -1,6 +1,6 @@
 import styles from "../../Admin/Css/Settings.module.scss";
 import React, { useEffect, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Switch, Text } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
 import { useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { get_mentor, update_mentor } from "../../../api/mentorApi";
 
 const MentorProfile = () => {
   //hooks
-  const mentor = useSelector(state => state.mentorAuth.mentor);
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
   console.log(mentor.user);
 
   //state variables
@@ -18,6 +18,7 @@ const MentorProfile = () => {
   const [uploaded, setUploaded] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
+  const [isAvailable, setIsAvailable] = useState(false);
 
   useEffect(() => {
     get_mentor(mentor.token, mentor.user.mentor_id)
@@ -29,7 +30,7 @@ const MentorProfile = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [])
+  }, []);
 
   const handleFieldChange = (fieldName, value) => {
     setEditedUserData({
@@ -191,13 +192,17 @@ const MentorProfile = () => {
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Gender</div>
                   <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
+                    <select
                       value={editedUserData.gender || ""}
+                      disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("gender", e.target.value)
                       }
-                    />
+                    >
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </select>
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
@@ -212,8 +217,15 @@ const MentorProfile = () => {
                     />
                   </div>
                 </Flex>
-                
               </div>
+              <Flex className={styles.switch}>
+                <Text>Available Status</Text>
+                <Switch
+                  isChecked={isAvailable}
+                  onChange={(e) => setIsAvailable(e.target.checked)}
+                  color="navy"
+                />
+              </Flex>
               <div className={styles.referral}>
                 <div className={styles.cnclbtn}>
                   <button onClick={handleEdit}>
@@ -232,7 +244,13 @@ const MentorProfile = () => {
       </Box>
       {showResetPassword && (
         <div className={styles.resetPass}>
-          <ResetPassword onSubmit={handleResetPasswordClick} isStudent={false} isMentor={true} isAdmin={false} user={mentor} />
+          <ResetPassword
+            onSubmit={handleResetPasswordClick}
+            isStudent={false}
+            isMentor={true}
+            isAdmin={false}
+            user={mentor}
+          />
         </div>
       )}
     </div>

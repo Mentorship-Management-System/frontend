@@ -62,7 +62,7 @@ const Settings = () => {
       updated_fields.dob !== null &&
       updated_fields.dob !== undefined &&
       updated_fields.dob
-    ){
+    ) {
       updated_fields["dob"] = new Date(updated_fields["dob"]).toISOString();
     }
     delete updated_fields.mentor;
@@ -234,13 +234,17 @@ const Settings = () => {
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Gender</div>
                   <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
+                    <select
                       value={editedUserData.gender || ""}
+                      disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("gender", e.target.value)
                       }
-                    />
+                    >
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </select>
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
