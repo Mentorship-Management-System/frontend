@@ -81,3 +81,53 @@ export const delete_admins = async (token, payload) => {
         return error;
     }
 }
+
+export const register_admin = async (token, payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/register`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const manul_assign_mentees = async (token, payload) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/manual-allocate`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            },
+            data: payload
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+export const auto_assign_mentees = async (token) => {
+    try {
+        let options = {
+            method: "POST",
+            url: `${url}/auto-allocate`,
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        }
+        const result = await axios(options);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}

@@ -117,7 +117,7 @@ const MentorProfile = () => {
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
-                  <div className={styles.label1}>First Name</div>
+                  <div className={styles.label1}>Honorifics</div>
                   <div className={styles.input1}>
                     <input
                       value={editedUserData.honorifics || ""}
@@ -219,10 +219,13 @@ const MentorProfile = () => {
                 </Flex>
               </div>
               <Flex className={styles.switch}>
-                <Text>Available Status</Text>
+                <Text>Is available as mentor?</Text>
                 <Switch
-                  isChecked={isAvailable}
-                  onChange={(e) => setIsAvailable(e.target.checked)}
+                  disabled={disabled}
+                  isChecked={Boolean(editedUserData.isAvailableAsMentor)}
+                  onChange={(e) => {
+                    handleFieldChange("isAvailableAsMentor", Number(Boolean(!editedUserData.isAvailableAsMentor)));
+                  }}
                   color="navy"
                 />
               </Flex>

@@ -6,9 +6,25 @@ import { IoCameraOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import Chart from "react-apexcharts";
 import { useSelector } from "react-redux";
-import { get_student } from "../../../api/studentApi";
+import { get_sgpa, get_student } from "../../../api/studentApi";
 
 const ProgressChart = () => {
+  const mentor = useSelector((state) => state.mentorAuth.mentor);
+  const params = useParams();
+  const [sgpas, setSgpas] = useState([]);
+  
+  useEffect(() => {
+    get_sgpa(mentor.token, params.id)
+      .then((result) => {
+        result = result.data;
+        console.log("sgpas", result.sgpas);
+        setSgpas(result.sgpas);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const teachersMeetingsData = {
     options: {
       chart: {
@@ -20,15 +36,7 @@ const ProgressChart = () => {
         },
       },
       xaxis: {
-        categories: [
-          "1st Sem",
-          "2st Sem",
-          "3st Sem",
-          "4st Sem",
-          "5st Sem",
-          "6st Sem",
-          "7st Sem",
-        ],
+        categories: sgpas.map((obj) => obj.semester),
       },
       colors: ["#26B7ED"],
       stroke: {
@@ -38,7 +46,7 @@ const ProgressChart = () => {
     series: [
       {
         name: "SGPA",
-        data: [8.1, 7.6, 8.4, 6.9, 7.8, 7.8, 8.6],
+        data: sgpas.map((obj) => obj.sgpa),
       },
     ],
   };
