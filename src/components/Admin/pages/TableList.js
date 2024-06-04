@@ -415,19 +415,19 @@ function Table({
           })
           .catch((error) => {
             console.log(error);
-          })
-      } else if(admins){
+          });
+      } else if (admins) {
         console.log("Delete admins");
-        const payload = { adminIds: profiles }
+        const payload = { adminIds: profiles };
         delete_admins(admin.token, payload)
-          .then(result => {
+          .then((result) => {
             result = result.data;
             console.log(result);
-            Navigate(0)
+            Navigate(0);
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
-          })
+          });
       }
     }
   };
@@ -442,21 +442,28 @@ function Table({
           </Box>
           <Flex gap={5}>
             {segments[1] === "admin" && segments[2] === "Mentees" && (
-              <Center cursor="pointer" onClick={onOpen}>
+              <Center
+                cursor="pointer"
+                onClick={onOpen}
+                className={styles.tooltip}
+              >
                 <MdOutlineFileUpload size={25} />
+                <span className={styles.tooltiptext}>Upload</span>
               </Center>
             )}
             {segments[1] === "admin" && (
-              <Center cursor="pointer">
+              <Center cursor="pointer" className={styles.tooltip}>
                 <MdDelete size={25} onClick={() => setShowDeletePopup(true)} />
+                <span className={styles.tooltiptext}>Delete</span>
               </Center>
             )}
             {!admins && (
-              <Center cursor="pointer">
+              <Center cursor="pointer" className={styles.tooltip}>
                 <MdOutlineFileDownload
                   size={25}
                   onClick={handleDownloadMentees}
                 />
+                <span className={styles.tooltiptext}>Download</span>
               </Center>
             )}
           </Flex>
