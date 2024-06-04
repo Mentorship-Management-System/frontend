@@ -3,6 +3,7 @@
 .tableContainer {
   width: 100%;
 }
+
 .tableBody {
   width: 100%;
   overflow-x: auto;
@@ -43,6 +44,36 @@
 .table tbody td:last-child,
 .table thead th:last-child {
   border-right: none;
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  // width: 120px;
+  background-color: white;
+  border: 1px solid #03ac;
+  color: navy;
+  text-align: center;
+  padding: 1px 4px;
+  border-radius: 3px;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  top: -30%; /* Place the tooltip above the button */
+  // left: 50%;
+  // margin-left: -20px; /* Use half of the width (120/2 = 60) to center the tooltip */
+  /* Fade in tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }
 
 .pagination {

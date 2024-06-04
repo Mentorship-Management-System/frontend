@@ -71,7 +71,7 @@ const Settings = () => {
   //   const [uploaded, setUploaded] = useState(0);
   //   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
-
+  const [showTranscript, setShowTranscript] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 450);
 
   useEffect(() => {
@@ -156,16 +156,24 @@ const Settings = () => {
                 </div>
                 <div className={styles.buttonDiv}>
                   {!isMobile && (
-                    <>
+                    <Flex>
+                      <Button
+                        _hover={{ backgroundColor: "#03ac" }}
+                        backgroundColor="#03ac"
+                        color="white"
+                        onClick={() => setShowTranscript(!showTranscript)}
+                      >
+                        View Transcript
+                      </Button>
                       <Button
                         // _hover={{ backgroundColor: "#0d3ffc" }}
-                        border="1px solid #0d30ac"
-                        color="#0d30ac"
+                        border="1px solid #03ac"
+                        color="#03ac"
                         onClick={() => setShowGraph(!showGraph)}
                       >
                         View Progress
                       </Button>
-                    </>
+                    </Flex>
                   )}
                   <Button
                     className={styles.profileBtns}
@@ -338,6 +346,7 @@ const Settings = () => {
                 </div>
               )}
             </div>
+            {showTranscript && <></>}
           </div>
         </div>
       </Box>
