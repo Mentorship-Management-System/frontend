@@ -5,7 +5,12 @@ import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "../../Admin/pages/ResetPassword";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { get_sgpa, get_student, save_sgpa, updated_student } from "../../../api/studentApi";
+import {
+  get_sgpa,
+  get_student,
+  save_sgpa,
+  updated_student,
+} from "../../../api/studentApi";
 import { studentAuthActions } from "../../../redux/store";
 
 const StudentProfile = () => {
@@ -211,7 +216,7 @@ const StudentProfile = () => {
       updated_fields.dob !== null &&
       updated_fields.dob !== undefined &&
       updated_fields.dob
-    ){
+    ) {
       updated_fields["dob"] = new Date(updated_fields["dob"]).toISOString();
     }
     delete updated_fields.type;
@@ -457,13 +462,17 @@ const StudentProfile = () => {
                 <Flex className={styles.doublecontent}>
                   <div className={styles.label1}>Gender</div>
                   <div className={styles.input1}>
-                    <input
-                      disabled={disabled}
+                    <select
                       value={editedUserData.gender || ""}
+                      disabled={disabled}
                       onChange={(e) =>
                         handleFieldChange("gender", e.target.value)
                       }
-                    />
+                    >
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </select>
                   </div>
                 </Flex>
                 <Flex className={styles.doublecontent}>
@@ -508,7 +517,13 @@ const StudentProfile = () => {
       </Box>
       {showResetPassword && (
         <div className={styles.resetPass}>
-          <ResetPassword onSubmit={handleResetPasswordClick} isStudent={true} isMentor={false} isAdmin={false} user={student} />
+          <ResetPassword
+            onSubmit={handleResetPasswordClick}
+            isStudent={true}
+            isMentor={false}
+            isAdmin={false}
+            user={student}
+          />
         </div>
       )}
     </div>
