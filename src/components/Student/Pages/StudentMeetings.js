@@ -21,6 +21,7 @@ import {
   Flex,
   List,
   ListItem,
+  Spinner,
 } from "@chakra-ui/react";
 import styles from "../../Mentor/Css/Meetings.module.scss";
 import Model from "./Model";
@@ -40,6 +41,8 @@ const StudentMeetings = () => {
   const [meetingDescription, setMeetingDescription] = useState("");
   const [filter, setFilter] = useState("all");
   const [meetings, setMeetings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
 
   // Function to handle setting a new meeting
   const handleSetMeeting = () => {
@@ -58,6 +61,7 @@ const StudentMeetings = () => {
 
   //useEffect functions
   useEffect(() => {
+    setLoading(true);
     get_meetings_by_student_id(student.token, student.user.student_id)
       .then(result => {
         result = result.data;
@@ -66,6 +70,9 @@ const StudentMeetings = () => {
       })
       .catch(error => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       })
   }, [])
 
@@ -93,7 +100,7 @@ const StudentMeetings = () => {
       </Flex>
       {/* Display meetings */}
       <Box className={styles.meetingsContainer}>
-        {filteredMeetings.map((meeting) => (
+        {loading ? <Spinner /> : filteredMeetings.map((meeting) => (
           <>
             <Box
               key={meeting.meeting_id}

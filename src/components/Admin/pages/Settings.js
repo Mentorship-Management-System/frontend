@@ -1,6 +1,6 @@
 import styles from ".././Css/Settings.module.scss";
 import React, { useEffect, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Spinner, useToast } from "@chakra-ui/react";
 import { IoCameraOutline } from "react-icons/io5";
 import ResetPassword from "./ResetPassword";
 import { useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 const Settings = () => {
   //hooks
   const admin = useSelector((state) => state.adminAuth.admin);
+  const toast = useToast();
 
   //state variables
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -16,6 +17,8 @@ const Settings = () => {
   const [uploaded, setUploaded] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [disabled, setDisabled] = useState(true);
+
+  const [loading, setLoading] = useState(false);
 
   //useEffect functions
   useEffect(() => {
@@ -125,7 +128,7 @@ const Settings = () => {
                   </div>
                 </Flex>
               </div>
-              <div className={styles.referral}>
+              {/* <div className={styles.referral}>
                 <div className={styles.cnclbtn}>
                   <button onClick={handleEdit}>
                     {disabled ? "Edit" : "Cancel"}{" "}
@@ -133,10 +136,10 @@ const Settings = () => {
                 </div>
                 <div className={styles.sbmtbtn}>
                   <button disabled={disabled} onClick={() => setClicked(true)}>
-                    Save
+                    {loading ? <Spinner /> : "Save"}
                   </button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

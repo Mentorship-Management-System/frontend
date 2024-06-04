@@ -172,7 +172,7 @@ const Dashboard = () => {
               Upcoming Meetings
             </Heading>
             <Box flexGrow="1">
-              {meetings
+              {/* {meetings
                 .filter((met) => new Date(met.date) > new Date())
                 .slice(0, 2)
                 .map((meeting) => (
@@ -184,9 +184,8 @@ const Dashboard = () => {
                     <p className={styles.meetingDescription}>
                       {meeting.description}
                     </p>
-                    {/* Add more meeting details as needed */}
                   </Box>
-                ))}
+                ))} */}
             </Box>
             <Flex justify="center">
               <Button

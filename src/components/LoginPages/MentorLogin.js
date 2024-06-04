@@ -7,6 +7,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -36,6 +37,7 @@ export default function MentorLogin() {
   const [showForgot, setShowForgot] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toggleHandler = () => {
     setToggle(!toggle);
@@ -70,7 +72,7 @@ export default function MentorLogin() {
       password,
     };
     console.log(payload);
-
+    setLoading(true);
     mentor_login(payload)
       .then((result) => {
         result = result.data;
@@ -80,6 +82,9 @@ export default function MentorLogin() {
       })
       .catch(error => {
         console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
       })
   };
 
@@ -153,7 +158,7 @@ export default function MentorLogin() {
                 </Box>
                 <Flex className={classes.buttonContainer}>
                   <Button onClick={SubmitSignInHandler} variant="outline">
-                    Sign In
+                    {loading ? <Spinner /> : "Sign In"}
                   </Button>
                   <Text
                     style={{

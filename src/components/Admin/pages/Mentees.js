@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../Css/Mentees.module.scss"; // Import SCSS module for styling
-import { Button, Center, Flex, Heading, Select } from "@chakra-ui/react";
+import { Button, Center, Flex, Heading, Select, Spinner } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { CiGrid41 } from "react-icons/ci";
 import { IoListOutline } from "react-icons/io5";
@@ -103,10 +103,12 @@ const Mentees = () => {
   const [filteredStudents, setFilteredStudents] = useState([]);
 
   const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   //useEffect functions
   useEffect(() => {
     const fetchMentees = async () => {
+      setLoading(true);
       all_students(admin.token)
         .then((result) => {
           result = result.data;
@@ -129,7 +131,10 @@ const Mentees = () => {
         })
         .catch((error) => {
           console.log(error);
-        });
+        })
+        .finally(() => {
+          setLoading(false);
+        })
     };
     fetchMentees();
   }, []);
@@ -279,13 +284,13 @@ const Mentees = () => {
       </div>
 
       <div className={styles.table}>
-        <TableList
+        {loading ? <Spinner /> : <TableList
           columns={columns}
           data={tableData}
           students={filteredStudents}
           admin={admin}
           setStudents={setStudents}
-        />
+        />}
       </div>
     </div>
   );

@@ -18,6 +18,8 @@ import {
   InputGroup,
   InputRightElement,
   useDisclosure,
+  Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
@@ -62,6 +64,7 @@ const Admin = () => {
   //hooks
   const Navigate = useNavigate();
   const admin = useSelector((state) => state.adminAuth.admin);
+  const toast = useToast();
 
   //state variables
   const [admins, setAdmins] = useState([]);
@@ -82,6 +85,8 @@ const Admin = () => {
     password: "",
     confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [regsiterLoading, setRegsiterLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -91,22 +96,41 @@ const Admin = () => {
   const handleRegisterAdmin = (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert("Password didnot match");
+      alert("Password did not match");
       return;
     } else {
       // Add your form submission logic here
       console.log(formData);
+      setRegsiterLoading(true);
       register_admin(admin.token, formData)
         .then(result => {
-          result = result.data;
-          // console.log(result);
-          setTableData(prev => [{
-            id: result.admin.admin_id,
-            fname: result.admin.fname,
-            lname: result.admin.lname,
-            email: result.admin.email,
-          }, ...prev])
-          alert("New Admin Registered!")
+          if(result.data){
+            result = result.data;
+            toast({
+              title: 'Success',
+              description: result.message,
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            })
+            // console.log(result);
+            setTableData(prev => [{
+              id: result.admin.admin_id,
+              fname: result.admin.fname,
+              lname: result.admin.lname,
+              email: result.admin.email,
+            }, ...prev])
+            // alert("New Admin Registered!")
+          } else {
+            console.log(result.response);
+            toast({
+              title: result.response.statusText,
+              description: result.response.data.error,
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            })
+          }
         })
         .catch(error => {
           console.log(error);
@@ -120,12 +144,14 @@ const Admin = () => {
             password: "",
             confirmPassword: "",
           })
+          setRegsiterLoading(false);
         })
     }
   };
 
   //useEffect functions
     useEffect(() => {
+      setLoading(true);
       get_all_admins(admin.token)
         .then(result => {
           result = result.data;
@@ -148,6 +174,9 @@ const Admin = () => {
         })
         .catch(error => {
           console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
         })
     }, []);
 
@@ -206,7 +235,7 @@ const Admin = () => {
         </Button>
       </Flex>
       <div className={styles.table}>
-        <TableList columns={columns} data={tableData} admins={admins} admin={admin} />
+        {loading ? <Spinner /> : <TableList columns={columns} data={tableData} admins={admins} admin={admin} />}
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -286,7 +315,7 @@ const Admin = () => {
               </FormControl>
               <ModalFooter>
                 <Button colorScheme="blue" mr={3} type="submit">
-                  Submit
+                  {regsiterLoading ? <Spinner /> : "Submit"}
                 </Button>
                 <Button onClick={onClose}>Cancel</Button>
               </ModalFooter>

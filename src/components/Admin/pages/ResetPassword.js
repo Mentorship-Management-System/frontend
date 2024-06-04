@@ -3,7 +3,7 @@ import { SiSpringsecurity } from "react-icons/si";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 import styles from ".././Css/ResetPassword.module.scss";
-import { Center } from "@chakra-ui/react";
+import { Center, Spinner, useToast } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { student_login } from "../../../api/studentApi";
 import { useSelector } from "react-redux";
@@ -14,6 +14,7 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
   //hooks
   const student = useSelector(state => state.studentAuth.student);
   console.log(student);
+  const toast = useToast();
 
   //state variables
   const [currentPassword, setCurrentPassword] = useState("");
@@ -25,6 +26,8 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const handleResetPassword = async () => {
     if(newPassword !== reenteredPassword){
       alert("New password does not match!")
@@ -34,6 +37,7 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
           tezu_email: user.user.gsuite_id,
           password: currentPassword
         }
+        setLoading(true);
         student_login(payload)
           .then(result => {
             if(result && result.data && result.data.success){
@@ -41,15 +45,35 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
               let creds = {email: payload.tezu_email, newPassword}
               reset_password(user.token, creds)
                 .then(response => {
-                  response = response.data;
-                  console.log(response);
-                  alert(response.message);
-                  onSubmit();
+                  if(response.data){
+                    response = response.data;
+                    console.log(response);
+                    toast({
+                      title: 'Success',
+                      description: response.message,
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                    // alert(response.message);
+                    onSubmit();
+                  } else {
+                    console.log(response.response);
+                    toast({
+                      title: response.response.statusText,
+                      description: response.response.data.error,
+                      status: 'error',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                  }
                 })
                 .catch(err => {
                   console.log(err);
                 })
-              console.log(creds);
+                .finally(() => {
+                  setLoading(false);
+                })
             } else {
               alert("Current password does not match!");
             }
@@ -63,6 +87,7 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
           email: user.user.email,
           password: currentPassword
         }
+        setLoading(true);
         mentor_login(payload)
           .then(result => {
             if(result && result.data && result.data.success){
@@ -70,13 +95,34 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
               let creds = {email: payload.email, newPassword}
               reset_password(user.token, creds)
                 .then(response => {
-                  response = response.data;
-                  console.log(response);
-                  alert(response.message);
-                  onSubmit();
+                  if(response.data){
+                    response = response.data;
+                    console.log(response);
+                    toast({
+                      title: 'Success',
+                      description: response.message,
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                    // alert(response.message);
+                    onSubmit();
+                  } else {
+                    console.log(response.response);
+                    toast({
+                      title: response.response.statusText,
+                      description: response.response.data.error,
+                      status: 'error',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                  }
                 })
                 .catch(err => {
                   console.log(err);
+                })
+                .finally(() => {
+                  setLoading(false);
                 })
               console.log(creds);
             } else {
@@ -92,6 +138,7 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
           email: user.user.email,
           password: currentPassword
         }
+        setLoading(true);
         admin_login(payload)
           .then(result => {
             if(result && result.data && result.data.success){
@@ -99,13 +146,34 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
               let creds = {email: payload.email, newPassword}
               reset_password(user.token, creds)
                 .then(response => {
-                  response = response.data;
-                  console.log(response);
-                  alert(response.message);
-                  onSubmit();
+                  if(response.data){
+                    response = response.data;
+                    console.log(response);
+                    toast({
+                      title: 'Success',
+                      description: response.message,
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                    // alert(response.message);
+                    onSubmit();
+                  } else {
+                    console.log(response.response);
+                    toast({
+                      title: response.response.statusText,
+                      description: response.response.data.error,
+                      status: 'error',
+                      duration: 9000,
+                      isClosable: true,
+                    })
+                  }
                 })
                 .catch(err => {
                   console.log(err);
+                })
+                .finally(() => {
+                  setLoading(false);
                 })
               console.log(creds);
             } else {
@@ -192,7 +260,7 @@ const ResetPassword = ({ onSubmit, isStudent, isMentor, isAdmin, user }) => {
         )}
       </div>
       <div className={styles.submitBtn}>
-        <button onClick={handleResetPassword}> Submit</button>
+        <button onClick={handleResetPassword}>{loading ? <Spinner /> :"Submit"}</button>
       </div>
 
       {successMessage && <p>{successMessage}</p>}

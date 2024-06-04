@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import styles from "../Css/Messages.module.scss";
-import { Box, Button, Input, Text } from "@chakra-ui/react";
+import { Box, Button, Input, Spinner, Text, useToast } from "@chakra-ui/react";
 import SetMeetingModal from "./SetMeetingModal";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -14,6 +14,7 @@ const Messages = () => {
   // Hooks
   const navigate = useNavigate();
   const mentor = useSelector((state) => state.mentorAuth.mentor);
+  const toast = useToast();
 
   // State variables
   const [reply, setReply] = useState("");
@@ -23,6 +24,9 @@ const Messages = () => {
   const [messages, setMessages] = useState([]);
   const cardHeightRefs = useRef([]); // Array of refs for card heights
   const [meetingChat, setMeetingChat] = useState(null);
+
+  const [replyLoading, setReplyLoading] = useState(false);
+  const [replyMeetLoading, setReplyMeetLoading] = useState(false);
 
   // useEffect functions
   useEffect(() => {
@@ -76,15 +80,38 @@ const Messages = () => {
         temp_chats[index].reply_by_mentor = reply;
       }
 
+      setReplyLoading(true);
       ack_reply_chat(mentor.token, payload, chat.chat_id)
         .then((result) => {
-          result = result.data;
-          console.log(result);
-          setMessages(temp_chats);
+          if(result.data){
+            result = result.data;
+            console.log(result);
+            toast({
+              title: 'Success',
+              description: result.message || "Reply sent successfully.",
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            })
+            setMessages(temp_chats);
+          } else {
+            console.log(result.response);
+            toast({
+              title: result.response.statusText,
+              description: result.response.data.error || "Error sending reply.",
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            })
+          }
         })
         .catch((error) => {
           console.log(error);
-        });
+        })
+        .finally(() => {
+          handleReply();
+          setReplyLoading(false);
+        })
     } else {
       alert("Your reply message cannot be empty.");
     }
@@ -94,30 +121,53 @@ const Messages = () => {
     console.log(payload);
     console.log(meetingChat);
 
+    setReplyMeetLoading(true);
     set_meeting_message(mentor.token, payload, meetingChat.chat_id)
       .then((result) => {
-        result = result.data;
-        alert(result.message);
-        // console.log(result.meeting);
-        const index = messages.findIndex(
-          (message) => message.chat_id === meetingChat.chat_id
-        );
-        // console.log(index);
-        let temp_chats = messages;
-        temp_chats[index] = {
-          ...meetingChat,
-          acknowledged: 1,
-          meeting_id: result.meetings.find(
-            (meeting) => meeting.chat_id === meetingChat.chat_id
-          ).meeting_id,
-        };
-        setMessages(temp_chats);
-        setShowModal(false);
-        setMeetingChat(null);
+        if(result.data){
+          result = result.data;
+          // alert(result.message);
+          // console.log(result.meeting);
+          console.log(result);
+          toast({
+            title: 'Success',
+            description: result.message || "Meeting scheduled successfully.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+          const index = messages.findIndex(
+            (message) => message.chat_id === meetingChat.chat_id
+          );
+          // console.log(index);
+          let temp_chats = messages;
+          temp_chats[index] = {
+            ...meetingChat,
+            acknowledged: 1,
+            meeting_id: result.meetings.find(
+              (meeting) => meeting.chat_id === meetingChat.chat_id
+            ).meeting_id,
+          };
+          setMessages(temp_chats);
+        } else {
+          console.log(result.response);
+          toast({
+            title: result.response.statusText,
+            description: result.response.data.error || "Error scheduling meeting.",
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          })
+        }
       })
       .catch((error) => {
         console.log(error);
-      });
+      })
+      .finally(() => {
+        setShowModal(false);
+        setMeetingChat(null);
+        setReplyMeetLoading(false);
+      })
   };
 
   // Calculate initial card heights (optional for improved performance)
@@ -198,7 +248,7 @@ const Messages = () => {
                     className={styles.button}
                     onClick={() => handleSendReply(message)}
                   >
-                    Send
+                    {replyLoading ? <Spinner /> : "Send"}
                   </button>
                 )}
                 {showReply !== index && (
@@ -241,6 +291,7 @@ const Messages = () => {
           centerModal={true}
           meetingChat={meetingChat}
           handleSetChatMeeting={handleSetChatMeeting}
+          replyMeetLoading={replyMeetLoading}
         />
       )}
     </Box>
