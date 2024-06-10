@@ -457,8 +457,8 @@ const StudentTable = () => {
                     {mentor.honorifics} {mentor.fname} {mentor.lname}
                   </span>
                   <span className={classes.menteesAllocated}>
-                    Mentees allocated: {mentor.assigned_mentees[0] && mentor.assigned_mentees[0].length || "0"}
-                  </span>
+                    Mentees allocated: {mentor.assigned_mentees[0] ? mentor.assigned_mentees[0].length === 1 && mentor.assigned_mentees[0].student_id === null ? "0" : mentor.assigned_mentees[0].length : "0"}
+                  </span> 
                 </div>
               ))}
             </div>
